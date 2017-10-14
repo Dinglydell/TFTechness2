@@ -1,0 +1,31 @@
+package dinglydell.tftechness.item;
+
+import com.bioxx.tfc.api.TFCItems;
+
+import net.minecraft.item.ItemStack;
+import blusunrize.immersiveengineering.common.IEContent;
+
+public class TFTMeta {
+	public static ItemStack ieCokeBrick = new ItemStack(IEContent.blockStoneDecoration, 1, 1);
+	public static ItemStack ieBlastBrick = new ItemStack(IEContent.blockStoneDecoration, 1, 2);
+	public static ItemStack ieBlastBrickAdv = new ItemStack(IEContent.blockStoneDecoration, 1, 6);
+	public static ItemStack ieCoalCoke = new ItemStack(IEContent.itemMaterial, 1, 6);
+	public static ItemStack ieCoalCokeBlock = new ItemStack(IEContent.blockStoneDecoration, 1, 3);
+	
+	public static ItemStack hopGraphite = new ItemStack(IEContent.itemMetal, 1, 19);
+	
+	public static ItemStack ieIronPlate = new ItemStack(IEContent.itemMetal, 1, 30);
+	public static ItemStack ieAluminiumPlate = new ItemStack(IEContent.itemMetal, 1, 32);
+	public static ItemStack ieLeadPlate = new ItemStack(IEContent.itemMetal, 1, 33);
+	public static ItemStack ieConstantanPlate = new ItemStack(IEContent.itemMetal, 1, 36);
+	public static ItemStack ieSteelPlate = new ItemStack(IEContent.itemMetal, 1, 38);
+	
+	public static ItemStack ieConstantanNugget =  new ItemStack(IEContent.itemMetal, 1, 27);
+	
+	public static ItemStack bituminousCoal = new ItemStack(TFCItems.oreChunk, 1, 14);
+	
+	public static ItemStack charcoal = new ItemStack(TFCItems.coal, 1, 1);
+	public static ItemStack graphite = new ItemStack(TFCItems.powder, 1, 2);
+	
+	
+}

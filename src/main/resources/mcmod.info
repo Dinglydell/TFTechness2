@@ -1,0 +1,18 @@
+[
+{
+  "modid": "TFTechness",
+  "name": "TFTechness (2)",
+  "description": "TFC turns into tech... or something",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Dinglydell"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": [
+    "terrafirmacraft"
+  ]
+}
+]
