@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.bioxx.tfc.Core.Metal.Alloy;
+import com.bioxx.tfc.Core.Metal.MetalRegistry;
 import com.bioxx.tfc.Items.ItemIngot;
 import com.bioxx.tfc.Items.ItemMeltedMetal;
 import com.bioxx.tfc.api.HeatRaw;
@@ -49,10 +50,18 @@ public class Material {
 	}
 	
 	public void initialise(){
+		registerMetal();
 		addUnshaped();
 		addIngots();
 		addSheets();
 		addRod();
+	}
+
+	private void registerMetal() {
+		metal = new Metal(name, unshaped, ingot);
+		TFTMetals.metals.put(name, metal);
+		MetalRegistry.instance.addMetal(metal, alloyTier);
+		
 	}
 
 	private void addRod() {

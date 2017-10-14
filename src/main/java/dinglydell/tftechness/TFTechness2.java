@@ -131,7 +131,7 @@ public class TFTechness2
 
 	private void registerItems() {
 		materials = new Material[] {
-				new Material("constantan", 5, Alloy.EnumTier.TierIV, TFTMeta.ieConstantanNugget)
+				new Material("Constantan", 5, Alloy.EnumTier.TierIV, TFTMeta.ieConstantanNugget)
 		};
 		
 		for(Material m : materials){
