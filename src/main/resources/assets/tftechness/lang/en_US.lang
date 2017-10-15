@@ -26,3 +26,7 @@ item.ore.Rich Bauxite.name=Rich Bauxite
 item.ore.Poor Bauxite.name=Poor Bauxite
 
 item.metalRod.name=Rod
+
+metal.Aluminium.name=Aluminium
+metal.Electrum.name=Electrum
+metal.Constantan.name=Constantan

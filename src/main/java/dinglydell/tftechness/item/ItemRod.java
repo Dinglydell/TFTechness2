@@ -48,8 +48,8 @@ public class ItemRod extends ItemIngot {
 	@Override
 	public String getItemStackDisplayName(ItemStack is) {
 
-		return StatCollector.translateToLocal("metal." + metal.name) + " "
-				+ StatCollector.translateToLocal(getUnlocalizedName());
+		return StatCollector.translateToLocal("metal." + metal.name + ".name")
+				+ " " + StatCollector.translateToLocal("item.metalRod.name");
 	}
 
 }
