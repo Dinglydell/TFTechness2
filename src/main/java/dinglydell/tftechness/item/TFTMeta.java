@@ -26,6 +26,10 @@ public class TFTMeta {
 	public static ItemStack ieMoldPlate = new ItemStack(IEContent.itemMold,1,0);
 	public static ItemStack ieMoldRod = new ItemStack(IEContent.itemMold,1,2);
 	
+	public static ItemStack ieHammer = new ItemStack(IEContent.itemTool, 1, 0);
+	public static ItemStack ieWireCutters = new ItemStack(IEContent.itemTool, 1, 1);
+	
+	
 	public static ItemStack bituminousCoal = new ItemStack(TFCItems.oreChunk, 1, 14);
 	
 	public static ItemStack charcoal = new ItemStack(TFCItems.coal, 1, 1);

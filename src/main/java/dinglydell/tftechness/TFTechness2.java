@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -177,6 +178,8 @@ public class TFTechness2
 		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieBlastBrickAdv, TFCBlocks.fireBrick));
 		GameRegistry.addRecipe(ItemUtil.clone(TFTMeta.ieCokeBrick, 2), "PXP", "X X", "PXP", 'P', new ItemStack(TFCItems.fireBrick, 1, 1), 'X', new ItemStack(TFCItems.mortar, 1));
 		
+		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieHammer, TFCItems.steelHammerHead, TFCItems.stick, Items.string));
+		
 	}
 
 	private void addIEMachineRecipes() {
@@ -211,6 +214,8 @@ public class TFTechness2
 		batch.addCrafting(TFTMeta.ieConstantanPlate);
 		batch.addCrafting(TFTMeta.ieSteelPlate);
 		batch.addCrafting(TFTMeta.ieAluminiumPlate);
+		
+		batch.addCrafting(TFTMeta.ieHammer);
 		
 		batch.Execute();
 		
