@@ -41,7 +41,7 @@ import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.util.ItemUtil;
 
-@Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft")
+@Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
 public class TFTechness2
 {
     public static final String MODID = "TFTechness";
@@ -50,7 +50,7 @@ public class TFTechness2
     
     public static org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger("TFTechness");
-	private Material[] materials;
+	public static Material[] materials;
     
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -155,7 +155,6 @@ public class TFTechness2
 		tfcAlloyRecipes();
 		for(Material m: materials){
 			m.addMachineRecipes();
-			m.addAnvilRecipes();
 		}
 		logger.info(IEApi.modPreference);
 	}

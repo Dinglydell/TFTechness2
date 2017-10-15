@@ -25,7 +25,7 @@ import dinglydell.tftechness.item.ItemTFTMetalSheet;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
-import dinglydell.tftechness.recipe.TFTAnvilPlans;
+import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 
 public class Material {
 	/**Whether this metal exists in vanilla TFC*/
@@ -214,7 +214,7 @@ public class Material {
 			
 			//sheet
 			manager.addRecipe(new AnvilRecipe(new ItemStack(ingot2x), null,
-					TFTAnvilPlans.sheetPlan, req, new ItemStack(sheet)));
+					TFTAnvilRecipeHandler.sheetPlan, req, new ItemStack(sheet)));
 
 			//sheet2x
 			manager.addWeldRecipe(new AnvilRecipe(new ItemStack(sheet),
