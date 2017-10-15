@@ -5,44 +5,37 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
-import blusunrize.immersiveengineering.api.energy.DieselHandler.SqueezerRecipe;
-import blusunrize.immersiveengineering.common.IEContent;
-import blusunrize.immersiveengineering.common.IERecipes;
-import blusunrize.immersiveengineering.common.blocks.stone.BlockStoneDecoration;
-import blusunrize.immersiveengineering.common.util.compat.minetweaker.Squeezer;
-import blusunrize.immersiveengineering.common.util.compat.opencomputers.SqueezerDriver;
-
-import com.bioxx.tfc.Items.ItemTerra;
-import com.bioxx.tfc.Items.Tools.ItemCustomBucketMilk;
-import com.bioxx.tfc.api.TFCBlocks;
-import com.bioxx.tfc.api.TFCFluids;
-import com.bioxx.tfc.api.TFCItems;
-import com.bioxx.tfc.api.Enums.EnumSize;
-import com.bioxx.tfc.api.Enums.EnumWeight;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import org.apache.logging.log4j.LogManager;
+
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.common.IEContent;
+
+import com.bioxx.tfc.Core.Metal.Alloy;
+import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
+import com.bioxx.tfc.api.TFCBlocks;
+import com.bioxx.tfc.api.TFCFluids;
+import com.bioxx.tfc.api.TFCItems;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
-import com.bioxx.tfc.Core.Metal.Alloy;
-
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
+import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.RemoveBatch;
@@ -62,10 +55,18 @@ public class TFTechness2
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		replaceWater();
+		editIEMetalRelations();
 		initStatMap();
 	}
     
-    private void initStatMap() {
+    private void editIEMetalRelations() {
+		IEApi.prefixToIngotMap.put("nugget", new Integer[] { 1, 10 });
+		IEApi.prefixToIngotMap.put("plate", new Integer[] { 2, 1 });
+		IEApi.prefixToIngotMap.put("block", new Integer[] { 10, 1 });
+		
+	}
+
+	private void initStatMap() {
     	
     		// Stock TFC
     		// For multiple metals with the same stat entry
@@ -107,7 +108,7 @@ public class TFTechness2
 
     		// IE
     		statMap.put("Constantan", new MetalStat(0.39, 1210, 987));
-
+    		statMap.put("Electrum", new MetalStat(0.181, 650, 1629));
 
     		// TFT
     		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
@@ -131,7 +132,8 @@ public class TFTechness2
 
 	private void registerItems() {
 		materials = new Material[] {
-				new Material("Constantan", 5, Alloy.EnumTier.TierIV, TFTMeta.ieConstantanNugget)
+				new Material("Constantan", 5, Alloy.EnumTier.TierIV, false).setNugget(TFTMeta.ieConstantanNugget).setAlloyRecipe(new AlloyIngred[]{ new AlloyIngred("Copper", 50, 60), new AlloyIngred("Nickel", 40, 50) }),
+				new Material("Electrum", 5, Alloy.EnumTier.TierIV, false).setNugget(TFTMeta.ieElectrumNugget).setAlloyRecipe(new AlloyIngred[]{ new AlloyIngred("Gold", 50, 60), new AlloyIngred("Silver", 40, 50) })
 		};
 		
 		for(Material m : materials){
@@ -150,9 +152,22 @@ public class TFTechness2
 		removeRecipes();
 		addIEMachineRecipes();
 		addIERecipes();
+		tfcAlloyRecipes();
+		for(Material m: materials){
+			m.addMachineRecipes();
+			m.addAnvilRecipes();
+		}
+		logger.info(IEApi.modPreference);
 	}
     
     
+	private void tfcAlloyRecipes() {
+		for(Material m : materials){
+			m.initAlloyRecipe();
+		}
+		
+	}
+
 	private void addIERecipes() {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieBlastBrickAdv, TFCBlocks.fireBrick, "plateSteel"));
 		
@@ -167,6 +182,12 @@ public class TFTechness2
 		CokeOvenRecipe.addRecipe(TFTMeta.ieCoalCoke, TFTMeta.bituminousCoal, 1800, 500);
 		CokeOvenRecipe.addRecipe(TFTMeta.charcoal, TFCItems.logs, 1800, 100);
 		
+		MetalPressRecipe.removeRecipes(TFTMeta.ieIronPlate);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieLeadPlate);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieConstantanPlate);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieSteelPlate);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieAluminiumPlate);
+		
 		
 		DieselHandler.addSqueezerRecipe(ItemUtil.clone(TFTMeta.graphite, 4), 19200, null, TFTMeta.hopGraphite);
 		
@@ -175,6 +196,10 @@ public class TFTechness2
 
 	private void removeRecipes() {
 		RemoveBatch batch = new RemoveBatch();
+		
+		for(Material m : materials){
+			m.batchRemove(batch);
+		}
 		
 		batch.addCrafting(TFTMeta.ieCokeBrick);
 		batch.addCrafting(TFTMeta.ieBlastBrick);

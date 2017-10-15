@@ -1,1 +1,18 @@
 item.woodenBucketCreosote.name=Wooden Bucket (Creosote Oil)
+
+item.ConstantanIngot.name=Constantan Ingot
+item.ConstantanIngot2x.name=Constantan Double Ingot
+item.ConstantanSheet.name=Constantan Sheet
+item.ConstantanSheet2x.name=Constantan Double Sheet
+item.ConstantanUnshaped.name=Unshaped: Constantan
+
+item.ElectrumIngot.name=Electrum Ingot
+item.ElectrumIngot2x.name=Electrum Double Ingot
+item.ElectrumSheet.name=Electrum Sheet
+item.ElectrumSheet2x.name=Electrum Double Sheet
+item.ElectrumUnshaped.name=Unshaped: Electrum
+
+gui.metal.Electrum=Electrum
+gui.metal.constantan=Constantan
+
+item.metalRod=Rod

@@ -1,9 +1,7 @@
 package dinglydell.tftechness.item;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -35,11 +33,11 @@ public class ItemRod extends ItemIngot {
 		return super.setMetal(m, amt);
 	}
 	
-	@Override
-	public void registerIcons(IIconRegister reg) {
-		//IconRegistry.addIcon("metalRod" + metal.name, TFTechness.MODID + ":metal/" + metal.name.replaceAll(" ", "")
-		//		+ "Rod", reg);
-	}
+	//@Override
+	//public void registerIcons(IIconRegister reg) {
+	//	//IconRegistry.addIcon("metalRod" + metal.name, TFTechness.MODID + ":metal/" + metal.name.replaceAll(" ", "")
+	//	//		+ "Rod", reg);
+	//}
 	
 	//@Override
 	//public IIcon getIcon(ItemStack stack, int pass) {
@@ -49,7 +47,7 @@ public class ItemRod extends ItemIngot {
 	@Override
 	public String getItemStackDisplayName(ItemStack is) {
 		
-		return StatCollector.translateToLocal("metal." + metal) + " " + StatCollector.translateToLocal(getUnlocalizedName());
+		return StatCollector.translateToLocal("metal." + metal.name) + " " + StatCollector.translateToLocal(getUnlocalizedName());
 	}
 	
 }
