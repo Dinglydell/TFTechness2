@@ -22,10 +22,14 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.Metal.Alloy;
+import com.bioxx.tfc.Items.Pottery.ItemPotteryMold;
 import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
 import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
+import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
+import com.bioxx.tfc.api.Crafting.KilnCraftingManager;
+import com.bioxx.tfc.api.Crafting.KilnRecipe;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -176,6 +180,11 @@ public class TFTechness2 {
 						.setNugget(TFTMeta.ieNickelNugget)
 
 		};
+		TFTItems.nuggetMold = new ItemPotteryMold()
+				.setUnlocalizedName("nuggetMold");
+
+		//TFTItems.nuggetMold.setContainerItem(TFTItems.nuggetMold);
+		GameRegistry.registerItem(TFTItems.nuggetMold, "nuggetMold");
 
 		for (Material m : materials) {
 			m.initialise();
@@ -200,10 +209,34 @@ public class TFTechness2 {
 		addIEMachineRecipes();
 		addIERecipes();
 		tfcAlloyRecipes();
+		tfcClayRecipes();
+		tfcKilnRecipes();
 		for (Material m : materials) {
 			m.addMachineRecipes();
 		}
 		logger.info(IEApi.modPreference);
+	}
+
+	private void tfcKilnRecipes() {
+		KilnCraftingManager manager = KilnCraftingManager.getInstance();
+
+		manager.addRecipe(new KilnRecipe(new ItemStack(TFTItems.nuggetMold, 1,
+				0), 0, new ItemStack(TFTItems.nuggetMold, 1, 1)));
+
+	}
+
+	private void tfcClayRecipes() {
+		//nugget mold
+		CraftingManagerTFC.getInstance().addRecipe(new ItemStack(
+				TFTItems.nuggetMold, 2),
+				new Object[] { "     ",
+						" # # ",
+						"  #  ",
+						" # # ",
+						"     ",
+						'#',
+						new ItemStack(TFCItems.flatClay, 1, 1) });
+
 	}
 
 	private void tfcAlloyRecipes() {

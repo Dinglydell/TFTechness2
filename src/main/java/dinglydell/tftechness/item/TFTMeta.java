@@ -44,7 +44,7 @@ public class TFTMeta {
 	public static ItemStack ieSteelNugget = new ItemStack(IEContent.itemMetal,
 			1, 29);
 	public static ItemStack ieCopperNugget = new ItemStack(IEContent.itemMetal,
-			1, 29);
+			1, 22);
 	public static ItemStack ieSilverNugget = new ItemStack(IEContent.itemMetal,
 			1, 25);
 	public static ItemStack ieNickelNugget = new ItemStack(IEContent.itemMetal,

@@ -6,16 +6,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 
+import com.bioxx.tfc.Core.Recipes;
 import com.bioxx.tfc.Core.Metal.Alloy;
 import com.bioxx.tfc.Core.Metal.AlloyManager;
 import com.bioxx.tfc.Core.Metal.MetalRegistry;
 import com.bioxx.tfc.Items.ItemIngot;
 import com.bioxx.tfc.Items.ItemMeltedMetal;
+import com.bioxx.tfc.Items.ItemTerra;
 import com.bioxx.tfc.api.HeatRaw;
 import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.Crafting.AnvilManager;
 import com.bioxx.tfc.api.Crafting.AnvilRecipe;
 import com.bioxx.tfc.api.Crafting.AnvilReq;
+import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
 import com.bioxx.tfc.api.Enums.EnumSize;
 
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -26,6 +29,7 @@ import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
+import dinglydell.tftechness.util.ItemUtil;
 
 public class Material {
 	/** Whether this metal exists in vanilla TFC */
@@ -36,6 +40,7 @@ public class Material {
 	public Item sheet2x;
 	public Item unshaped;
 	public Item rod;
+	public Item nuggetMold;
 	public ItemStack nugget;
 	public Block block;
 
@@ -71,7 +76,16 @@ public class Material {
 			registerMetal();
 			addSheets();
 		}
+		addMolds();
 		addRod();
+	}
+
+	private void addMolds() {
+		nuggetMold = new ItemTerra().setUnlocalizedName(metal.name
+				+ "NuggetMold");
+		nuggetMold.setContainerItem(TFTItems.nuggetMold);
+		GameRegistry.registerItem(nuggetMold, metal.name + "NuggetMold");
+
 	}
 
 	private void registerMetal() {
@@ -193,6 +207,20 @@ public class Material {
 			batch.addCrafting(new ItemStack(this.block));
 		}
 
+	}
+
+	public void addMoldRecipes() {
+		CraftingManagerTFC.getInstance()
+				.addRecipe(new ItemStack(nuggetMold, 1),
+						new Object[] { "12",
+								'1',
+								Recipes.getStackTemp(new ItemStack(unshaped, 1,
+										1)),
+								'2',
+								new ItemStack(TFTItems.nuggetMold, 1, 1) });
+
+		GameRegistry.addShapelessRecipe(ItemUtil.clone(nugget, 10),
+				Recipes.getStackNoTemp(new ItemStack(nuggetMold, 1)));
 	}
 
 	public void addMachineRecipes() {

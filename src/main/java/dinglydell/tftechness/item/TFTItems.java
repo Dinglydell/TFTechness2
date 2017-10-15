@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 public class TFTItems {
 	public static ItemStack woodenBucketCreosote;
 	public static Item ore;
+	public static Item nuggetMold;
 
 	public static Map<String, Item> unshaped = new HashMap<String, Item>();
 	public static Map<String, Item> ingots = new HashMap<String, Item>();
