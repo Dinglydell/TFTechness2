@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -39,6 +40,7 @@ import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.RemoveBatch;
+import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.util.ItemUtil;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
@@ -149,6 +151,8 @@ public class TFTechness2
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+		MinecraftForge.EVENT_BUS.register(new TFTAnvilRecipeHandler());
+		
 		removeRecipes();
 		addIEMachineRecipes();
 		addIERecipes();
