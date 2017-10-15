@@ -15,4 +15,8 @@ item.ElectrumUnshaped.name=Unshaped: Electrum
 gui.metal.Electrum=Electrum
 gui.metal.constantan=Constantan
 
+item.ore.Bauxite.name=Bauxite
+item.ore.Rich Bauxite.name=Rich Bauxite
+item.ore.Poor Bauxite.name=Poor Bauxite
+
 item.metalRod=Rod
