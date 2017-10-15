@@ -16,7 +16,7 @@ public class ItemRod extends ItemIngot {
 
 	public ItemRod(String metal) {
 		super();
-		this.setMetal(metal, 100);
+		this.setMetal(metal, 50);
 		setUnlocalizedName(metal + "Rod");
 	}
 

@@ -37,6 +37,18 @@ public class TFTMeta {
 			IEContent.itemMetal, 1, 28);
 	public static ItemStack ieAluminiumNugget = new ItemStack(
 			IEContent.itemMetal, 1, 23);
+	public static ItemStack ieIronNugget = new ItemStack(IEContent.itemMetal,
+			1, 21);
+	public static ItemStack ieLeadNugget = new ItemStack(IEContent.itemMetal,
+			1, 24);
+	public static ItemStack ieSteelNugget = new ItemStack(IEContent.itemMetal,
+			1, 29);
+	public static ItemStack ieCopperNugget = new ItemStack(IEContent.itemMetal,
+			1, 29);
+	public static ItemStack ieSilverNugget = new ItemStack(IEContent.itemMetal,
+			1, 25);
+	public static ItemStack ieNickelNugget = new ItemStack(IEContent.itemMetal,
+			1, 26);
 
 	public static ItemStack ieMoldPlate = new ItemStack(IEContent.itemMold, 1,
 			0);

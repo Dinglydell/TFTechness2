@@ -30,3 +30,7 @@ item.metalRod.name=Rod
 metal.Aluminium.name=Aluminium
 metal.Electrum.name=Electrum
 metal.Constantan.name=Constantan
+metal.Lead.name=Lead
+metal.Wrought Iron.name=Wrought Iron
+metal.Steel.name=Steel
+metal.Copper.name=Copper

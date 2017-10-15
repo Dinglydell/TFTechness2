@@ -153,7 +153,29 @@ public class TFTechness2 {
 								"Gold", 50, 60),
 								new AlloyIngred("Silver", 40, 50) }),
 				new Material("Aluminium", 3, Alloy.EnumTier.TierIII, false)
-						.setNugget(TFTMeta.ieAluminiumNugget) };
+						.setNugget(TFTMeta.ieAluminiumNugget),
+
+				new Material("WroughtIron", 3, Alloy.EnumTier.TierIII, true)
+						.setUnshaped(TFCItems.wroughtIronUnshaped)
+						.setIngot(TFCItems.wroughtIronIngot)
+						.setIngot2x(TFCItems.wroughtIronIngot2x)
+						.setSheet(TFCItems.wroughtIronSheet)
+						.setSheet2x(TFCItems.wroughtIronSheet2x)
+						.setNugget(TFTMeta.ieIronNugget),
+				new Material("Lead", 2, true).setIngot(TFCItems.leadIngot)
+						.setNugget(TFTMeta.ieLeadNugget),
+				new Material("Steel", 4, true).setIngot(TFCItems.steelIngot)
+						.setNugget(TFTMeta.ieSteelNugget),
+				new Material("Copper", 1, true).setIngot(TFCItems.copperIngot)
+						.setNugget(TFTMeta.ieCopperNugget),
+				new Material("Tin", 0, true).setIngot(TFCItems.tinIngot),
+				new Material("Bronze", 2, true).setIngot(TFCItems.bronzeIngot),
+				new Material("Silver", 2, true).setIngot(TFCItems.silverIngot)
+						.setNugget(TFTMeta.ieSilverNugget),
+				new Material("Nickel", 4, true).setIngot(TFCItems.nickelIngot)
+						.setNugget(TFTMeta.ieNickelNugget)
+
+		};
 
 		for (Material m : materials) {
 			m.initialise();
