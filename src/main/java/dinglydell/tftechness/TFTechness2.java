@@ -151,7 +151,9 @@ public class TFTechness2 {
 						.setNugget(TFTMeta.ieElectrumNugget)
 						.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
 								"Gold", 50, 60),
-								new AlloyIngred("Silver", 40, 50) }) };
+								new AlloyIngred("Silver", 40, 50) }),
+				new Material("Aluminium", 3, Alloy.EnumTier.TierIII, false)
+						.setNugget(TFTMeta.ieAluminiumNugget) };
 
 		for (Material m : materials) {
 			m.initialise();
