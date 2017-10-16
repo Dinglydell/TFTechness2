@@ -10,14 +10,15 @@ import com.bioxx.tfc.Items.ItemIngot;
 import com.bioxx.tfc.Items.ItemTerra;
 import com.bioxx.tfc.api.Metal;
 
-public class ItemRod extends ItemIngot {
+public class ItemMetal extends ItemIngot {
 
 	protected Metal metal;
+	private String name;
 
-	public ItemRod(String metal) {
+	public ItemMetal(String metal, int amt, String name) {
 		super();
-		this.setMetal(metal, 50);
-		setUnlocalizedName(metal + "Rod");
+		this.setMetal(metal, amt);
+		this.name = name;
 	}
 
 	@Override
@@ -49,7 +50,8 @@ public class ItemRod extends ItemIngot {
 	public String getItemStackDisplayName(ItemStack is) {
 
 		return StatCollector.translateToLocal("metal." + metal.name + ".name")
-				+ " " + StatCollector.translateToLocal("item.metalRod.name");
+				+ " "
+				+ StatCollector.translateToLocal("item." + name + ".name");
 	}
 
 }

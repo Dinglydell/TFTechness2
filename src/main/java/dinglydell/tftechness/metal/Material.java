@@ -12,8 +12,9 @@ import com.bioxx.tfc.Core.Metal.AlloyManager;
 import com.bioxx.tfc.Core.Metal.MetalRegistry;
 import com.bioxx.tfc.Items.ItemIngot;
 import com.bioxx.tfc.Items.ItemMeltedMetal;
-import com.bioxx.tfc.Items.ItemTerra;
+import com.bioxx.tfc.api.HeatIndex;
 import com.bioxx.tfc.api.HeatRaw;
+import com.bioxx.tfc.api.HeatRegistry;
 import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.Crafting.AnvilManager;
 import com.bioxx.tfc.api.Crafting.AnvilRecipe;
@@ -23,13 +24,12 @@ import com.bioxx.tfc.api.Enums.EnumSize;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import dinglydell.tftechness.TFTechness2;
-import dinglydell.tftechness.item.ItemRod;
+import dinglydell.tftechness.item.ItemMetal;
 import dinglydell.tftechness.item.ItemTFTMetalSheet;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
-import dinglydell.tftechness.util.ItemUtil;
 
 public class Material {
 	/** Whether this metal exists in vanilla TFC */
@@ -41,7 +41,8 @@ public class Material {
 	public Item unshaped;
 	public Item rod;
 	public Item nuggetMold;
-	public ItemStack nugget;
+	public ItemStack oldNugget;
+	public Item nugget;
 	public Block block;
 
 	public HeatRaw heatRaw;
@@ -77,12 +78,27 @@ public class Material {
 			addSheets();
 		}
 		addMolds();
+		addNuggets();
 		addRod();
 	}
 
+	private void addNuggets() {
+		nugget = ((ItemMetal) new ItemMetal(metal.name, 10, "nugget")
+				.setUnlocalizedName("metal_nugget" + name))
+				.setSize(EnumSize.TINY);
+
+		TFTItems.nuggets.put(name, nugget);
+		GameRegistry.registerItem(nugget, name + "Nugget");
+		OreDictionary.registerOre("nugget" + name, nugget);
+
+		addHeatIndex(nugget, 1, 91);
+
+	}
+
 	private void addMolds() {
-		nuggetMold = new ItemTerra().setUnlocalizedName(metal.name
-				+ "NuggetMold");
+
+		nuggetMold = new ItemMetal(metal.name, 100, "NuggetMold")
+				.setUnlocalizedName(metal.name + "NuggetMold");
 		nuggetMold.setContainerItem(TFTItems.nuggetMold);
 		GameRegistry.registerItem(nuggetMold, metal.name + "NuggetMold");
 
@@ -96,12 +112,15 @@ public class Material {
 	}
 
 	private void addRod() {
-		rod = new ItemRod(metal.name);
+
+		rod = new ItemMetal(metal.name, 50, "metalRod").setUnlocalizedName(name
+				+ "Rod");
 
 		TFTItems.rods.put(name, rod);
 		GameRegistry.registerItem(rod, name + "Rod");
 		OreDictionary.registerOre("rod" + name, rod);
 
+		addHeatIndex(rod, 0, 50);
 	}
 
 	private void addSheets() {
@@ -113,14 +132,18 @@ public class Material {
 		GameRegistry.registerItem(sheet, name + "Sheet");
 		OreDictionary.registerOre("plate" + name, sheet);
 
+		addHeatIndex(sheet, 2, 0);
+
+		//double
+
 		sheet2x = ((ItemTFTMetalSheet) new ItemTFTMetalSheet(name)
 				.setUnlocalizedName(name + "Sheet2x")).setMetal(name, 400);
 
-		//double
 		TFTItems.sheets2x.put(name, sheet2x);
 		GameRegistry.registerItem(sheet2x, name + "Sheet2x");
 		OreDictionary.registerOre("plateDouble" + name, sheet2x);
 
+		addHeatIndex(sheet2x, 4, 0);
 	}
 
 	private void addIngots() {
@@ -131,6 +154,7 @@ public class Material {
 		GameRegistry.registerItem(ingot, name + "Ingot");
 		OreDictionary.registerOre("ingot" + name, ingot);
 
+		addHeatIndex(ingot, 1, 0);
 		//double
 		ingot2x = ((ItemIngot) new ItemIngot().setUnlocalizedName(name
 				+ "Ingot2x")).setSize(EnumSize.LARGE).setMetal(name, 200);
@@ -138,6 +162,7 @@ public class Material {
 		TFTItems.ingots2x.put(name, ingot2x);
 		GameRegistry.registerItem(ingot2x, name + "Ingot2x");
 		OreDictionary.registerOre("ingotDouble" + name, ingot2x);
+		addHeatIndex(ingot2x, 2, 0);
 	}
 
 	private void addUnshaped() {
@@ -145,6 +170,15 @@ public class Material {
 
 		TFTItems.unshaped.put(name, unshaped);
 		GameRegistry.registerItem(unshaped, "Unshaped" + name);
+		addHeatIndex(unshaped, 1, 0);
+
+	}
+
+	private void addHeatIndex(Item metal, int quantity, int meta) {
+		HeatRegistry manager = HeatRegistry.getInstance();
+		manager.addIndex(new HeatIndex(new ItemStack(metal, 1),
+				TFTechness2.statMap.get(this.name).heat, new ItemStack(
+						unshaped, quantity, meta)));
 
 	}
 
@@ -184,7 +218,7 @@ public class Material {
 	}
 
 	public Material setNugget(ItemStack nugget) {
-		this.nugget = nugget;
+		this.oldNugget = nugget;
 		return this;
 	}
 
@@ -200,8 +234,8 @@ public class Material {
 	}
 
 	public void batchRemove(RemoveBatch batch) {
-		if (this.nugget != null) {
-			batch.addCrafting(this.nugget);
+		if (this.oldNugget != null) {
+			batch.addCrafting(this.oldNugget);
 		}
 		if (this.block != null) {
 			batch.addCrafting(new ItemStack(this.block));
@@ -219,7 +253,7 @@ public class Material {
 								'2',
 								new ItemStack(TFTItems.nuggetMold, 1, 1) });
 
-		GameRegistry.addShapelessRecipe(ItemUtil.clone(nugget, 10),
+		GameRegistry.addShapelessRecipe(new ItemStack(nugget, 10),
 				Recipes.getStackNoTemp(new ItemStack(nuggetMold, 1)));
 	}
 

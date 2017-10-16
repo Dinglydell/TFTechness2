@@ -18,6 +18,9 @@ item.AluminiumSheet.name=Aluminium Sheet
 item.AluminiumSheet2x.name=Aluminium Double Sheet
 item.AluminiumUnshaped.name=Unshaped: Aluminium
 
+item.nuggetMold.Ceramic Nugget Mold.name=Ceramic Nugget Mold
+item.nuggetMold.Clay Nugget Mold.name=Clay Nugget Mold
+
 gui.metal.Electrum=Electrum
 gui.metal.constantan=Constantan
 
@@ -26,6 +29,7 @@ item.ore.Rich Bauxite.name=Rich Bauxite
 item.ore.Poor Bauxite.name=Poor Bauxite
 
 item.metalRod.name=Rod
+item.nugget.name=Nugget
 
 metal.Aluminium.name=Aluminium
 metal.Electrum.name=Electrum

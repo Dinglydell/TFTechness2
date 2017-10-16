@@ -167,20 +167,29 @@ public class TFTechness2 {
 						.setSheet2x(TFCItems.wroughtIronSheet2x)
 						.setNugget(TFTMeta.ieIronNugget),
 				new Material("Lead", 2, true).setIngot(TFCItems.leadIngot)
+						.setUnshaped(TFCItems.leadUnshaped)
 						.setNugget(TFTMeta.ieLeadNugget),
 				new Material("Steel", 4, true).setIngot(TFCItems.steelIngot)
-						.setNugget(TFTMeta.ieSteelNugget),
+						.setNugget(TFTMeta.ieSteelNugget)
+						.setUnshaped(TFCItems.steelUnshaped),
 				new Material("Copper", 1, true).setIngot(TFCItems.copperIngot)
-						.setNugget(TFTMeta.ieCopperNugget),
-				new Material("Tin", 0, true).setIngot(TFCItems.tinIngot),
-				new Material("Bronze", 2, true).setIngot(TFCItems.bronzeIngot),
+						.setNugget(TFTMeta.ieCopperNugget)
+						.setUnshaped(TFCItems.copperUnshaped),
+				new Material("Tin", 0, true).setIngot(TFCItems.tinIngot)
+						.setUnshaped(TFCItems.tinUnshaped),
+				new Material("Bronze", 2, true).setIngot(TFCItems.bronzeIngot)
+						.setUnshaped(TFCItems.bronzeUnshaped),
 				new Material("Silver", 2, true).setIngot(TFCItems.silverIngot)
-						.setNugget(TFTMeta.ieSilverNugget),
+						.setNugget(TFTMeta.ieSilverNugget)
+						.setUnshaped(TFCItems.silverUnshaped),
 				new Material("Nickel", 4, true).setIngot(TFCItems.nickelIngot)
 						.setNugget(TFTMeta.ieNickelNugget)
+						.setUnshaped(TFCItems.nickelUnshaped)
 
 		};
 		TFTItems.nuggetMold = new ItemPotteryMold()
+				.setMetaNames(new String[] { "Clay Nugget Mold",
+						"Ceramic Nugget Mold" })
 				.setUnlocalizedName("nuggetMold");
 
 		//TFTItems.nuggetMold.setContainerItem(TFTItems.nuggetMold);
@@ -213,6 +222,7 @@ public class TFTechness2 {
 		tfcKilnRecipes();
 		for (Material m : materials) {
 			m.addMachineRecipes();
+			m.addMoldRecipes();
 		}
 		logger.info(IEApi.modPreference);
 	}
