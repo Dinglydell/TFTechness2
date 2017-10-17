@@ -94,4 +94,9 @@ public class TFTMeta {
 			IEContent.itemMaterial, 1, 11);
 	public static ItemStack ieComponentSteel = new ItemStack(
 			IEContent.itemMaterial, 1, 12);
+
+	public static ItemStack ieFocusedNozzle = new ItemStack(
+			IEContent.itemToolUpgrades, 1, 7);
+	public static ItemStack ieFluidPipe = new ItemStack(
+			IEContent.blockMetalDevice2, 1, 5);
 }

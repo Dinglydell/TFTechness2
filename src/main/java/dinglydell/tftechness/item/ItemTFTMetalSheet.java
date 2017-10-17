@@ -27,6 +27,7 @@ public class ItemTFTMetalSheet extends ItemMetalSheet {
 		int[] sides = sidesMap[side];
 		if (!world.isRemote && world.getBlock(x, y, z) != TFTBlocks.metalSheet
 				&& valid(world, sides[0] + x, sides[1] + y, sides[2] + z)) {
+			itemstack.stackSize--;
 			world.setBlock(sides[0] + x,
 					sides[1] + y,
 					sides[2] + z,

@@ -313,6 +313,11 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
 				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
 				"ingotSteel", 's', TFTMeta.ieTreatedStick));
+
+		//focused nozzle (uses vanilla hopper)
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieFocusedNozzle,
+				" ss", "pph", " ss", 's', "ingotSteel", 'p',
+				TFTMeta.ieFluidPipe, 'h', TFCBlocks.hopper));
 	}
 
 	private void addIEMachineRecipes() {
