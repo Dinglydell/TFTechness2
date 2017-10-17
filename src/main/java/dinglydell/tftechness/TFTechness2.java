@@ -150,6 +150,8 @@ public class TFTechness2 {
 		TFTBlocks.metalSheet = new BlockTFTMetalSheet()
 				.setBlockName("MetalSheet").setHardness(80);
 
+		GameRegistry.registerBlock(TFTBlocks.metalSheet, "MetalSheet");
+
 		TFTOreRegistry.registerAllOreBlocks();
 	}
 
