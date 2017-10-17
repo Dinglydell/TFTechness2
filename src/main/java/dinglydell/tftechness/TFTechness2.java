@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +49,7 @@ import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
+import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.util.ItemUtil;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
@@ -136,6 +138,12 @@ public class TFTechness2 {
 	public void init(FMLInitializationEvent event) {
 		registerItems();
 		registerBlocks();
+		registerTileEntities();
+	}
+
+	private void registerTileEntities() {
+		GameRegistry.registerTileEntity(TETFTMetalSheet.class, "TFTMetalSheet");
+
 	}
 
 	private void registerBlocks() {
@@ -257,6 +265,7 @@ public class TFTechness2 {
 	}
 
 	private void addIERecipes() {
+
 		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieBlastBrickAdv,
 				TFCBlocks.fireBrick, "plateSteel"));
 
@@ -274,6 +283,34 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieHammer,
 				TFCItems.steelHammerHead, TFCItems.stick, Items.string));
 
+		// conveyor belt
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieConveyor, 8), "lll", "wrw", 'l',
+				new ItemStack(TFCItems.leather, 1, 1), 'w', "ingotIron", 'r',
+				"dustRedstone"));
+		//dropping belt
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieConveyorDrop, 8), "c", "h", 'c',
+				TFTMeta.ieConveyor, 'h', TFCBlocks.hopper));
+
+		//wire coils
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieLvWire, 4), " m ", "msm", " m ", 'm',
+				"ingotCopper", 's', TFTMeta.ieTreatedStick));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieMvWire, 4), " m ", "msm", " m ", 'm',
+				"ingotElectrum", 's', TFTMeta.ieTreatedStick));
+		GameRegistry
+				.addRecipe(new ShapedOreRecipe(ItemUtil.clone(TFTMeta.ieHvWire,
+						4), " a ", "msm", " a ", 'm', "ingotSteel", 'a',
+						"ingotAluminum", 's', TFTMeta.ieTreatedStick));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieHempWire, 4), " m ", "msm", " m ", 'm',
+				TFTMeta.ieHempFibre, 's', TFTMeta.ieTreatedStick));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
+				"ingotSteel", 's', TFTMeta.ieTreatedStick));
 	}
 
 	private void addIEMachineRecipes() {
@@ -314,6 +351,12 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.ieAluminiumPlate);
 
 		batch.addCrafting(TFTMeta.ieHammer);
+
+		batch.addCrafting(TFTMeta.ieLvWire);
+		batch.addCrafting(TFTMeta.ieMvWire);
+		batch.addCrafting(TFTMeta.ieHvWire);
+		batch.addCrafting(TFTMeta.ieHempWire);
+		batch.addCrafting(TFTMeta.ieSteelWire);
 
 		batch.Execute();
 

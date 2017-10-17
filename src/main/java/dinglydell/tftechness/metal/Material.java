@@ -97,7 +97,7 @@ public class Material {
 
 	private void addMolds() {
 
-		nuggetMold = new ItemMetal(metal.name, 100, "NuggetMold")
+		nuggetMold = new ItemMetal(metal.name, 100, "nuggetMold")
 				.setUnlocalizedName(metal.name + "NuggetMold");
 		nuggetMold.setContainerItem(TFTItems.nuggetMold);
 		GameRegistry.registerItem(nuggetMold, metal.name + "NuggetMold");
@@ -118,7 +118,7 @@ public class Material {
 
 		TFTItems.rods.put(name, rod);
 		GameRegistry.registerItem(rod, name + "Rod");
-		OreDictionary.registerOre("rod" + name, rod);
+		OreDictionary.registerOre("stick" + name, rod);
 
 		addHeatIndex(rod, 0, 50);
 	}

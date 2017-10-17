@@ -20,6 +20,7 @@ item.AluminiumUnshaped.name=Unshaped: Aluminium
 
 item.nuggetMold.Ceramic Nugget Mold.name=Ceramic Nugget Mold
 item.nuggetMold.Clay Nugget Mold.name=Clay Nugget Mold
+item.nuggetMold.name=Nugget Mold
 
 gui.metal.Electrum=Electrum
 gui.metal.constantan=Constantan

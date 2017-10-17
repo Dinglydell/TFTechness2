@@ -58,10 +58,40 @@ public class TFTMeta {
 	public static ItemStack ieWireCutters = new ItemStack(IEContent.itemTool,
 			1, 1);
 
+	public static ItemStack ieConveyor = new ItemStack(
+			IEContent.blockMetalDevice, 1, 11);
+	public static ItemStack ieConveyorDrop = new ItemStack(
+			IEContent.blockMetalDevice, 1, 15);
+
 	public static ItemStack bituminousCoal = new ItemStack(TFCItems.oreChunk,
 			1, 14);
 
 	public static ItemStack charcoal = new ItemStack(TFCItems.coal, 1, 1);
 	public static ItemStack graphite = new ItemStack(TFCItems.powder, 1, 2);
 
+	public static ItemStack ieLvWire = new ItemStack(IEContent.itemWireCoil, 1,
+			0);
+	public static ItemStack ieMvWire = new ItemStack(IEContent.itemWireCoil, 1,
+			1);
+	public static ItemStack ieHvWire = new ItemStack(IEContent.itemWireCoil, 1,
+			2);
+	public static ItemStack ieHempWire = new ItemStack(IEContent.itemWireCoil,
+			1, 3);
+	public static ItemStack ieSteelWire = new ItemStack(IEContent.itemWireCoil,
+			1, 4);
+	public static ItemStack ieTreatedStick = new ItemStack(
+			IEContent.itemMaterial);
+	public static ItemStack ieHempFibre = new ItemStack(IEContent.itemMaterial,
+			1, 3);
+
+	public static ItemStack ieToughFabric = new ItemStack(
+			IEContent.itemMaterial, 1, 4);
+	public static ItemStack ieRevolverBarrel = new ItemStack(
+			IEContent.itemMaterial, 1, 7);
+	public static ItemStack ieRevolverDrum = new ItemStack(
+			IEContent.itemMaterial, 1, 8);
+	public static ItemStack ieComponentIron = new ItemStack(
+			IEContent.itemMaterial, 1, 11);
+	public static ItemStack ieComponentSteel = new ItemStack(
+			IEContent.itemMaterial, 1, 12);
 }
