@@ -167,7 +167,8 @@ public class TFTechness2 {
 								"Gold", 50, 60),
 								new AlloyIngred("Silver", 40, 50) }),
 				new Material("Aluminium", 3, Alloy.EnumTier.TierIII, false)
-						.setNugget(TFTMeta.ieAluminiumNugget),
+						.setNugget(TFTMeta.ieAluminiumNugget)
+						.setOreName("Aluminum"),
 
 				new Material("WroughtIron", 3, Alloy.EnumTier.TierIII, true)
 						.setUnshaped(TFCItems.wroughtIronUnshaped)
@@ -175,7 +176,7 @@ public class TFTechness2 {
 						.setIngot2x(TFCItems.wroughtIronIngot2x)
 						.setSheet(TFCItems.wroughtIronSheet)
 						.setSheet2x(TFCItems.wroughtIronSheet2x)
-						.setNugget(TFTMeta.ieIronNugget),
+						.setNugget(TFTMeta.ieIronNugget).setOreName("Iron"),
 				new Material("Lead", 2, true).setIngot(TFCItems.leadIngot)
 						.setUnshaped(TFCItems.leadUnshaped)
 						.setNugget(TFTMeta.ieLeadNugget),

@@ -48,6 +48,7 @@ public class Material {
 	public HeatRaw heatRaw;
 	public int tier;
 	public String name;
+
 	public Metal metal;
 	public Alloy.EnumTier alloyTier;
 	public String oreName;
@@ -89,7 +90,7 @@ public class Material {
 
 		TFTItems.nuggets.put(name, nugget);
 		GameRegistry.registerItem(nugget, name + "Nugget");
-		OreDictionary.registerOre("nugget" + name, nugget);
+		OreDictionary.registerOre("nugget" + oreName, nugget);
 
 		addHeatIndex(nugget, 1, 91);
 
@@ -118,7 +119,7 @@ public class Material {
 
 		TFTItems.rods.put(name, rod);
 		GameRegistry.registerItem(rod, name + "Rod");
-		OreDictionary.registerOre("stick" + name, rod);
+		OreDictionary.registerOre("stick" + oreName, rod);
 
 		addHeatIndex(rod, 0, 50);
 	}
@@ -130,7 +131,7 @@ public class Material {
 
 		TFTItems.sheets.put(name, sheet);
 		GameRegistry.registerItem(sheet, name + "Sheet");
-		OreDictionary.registerOre("plate" + name, sheet);
+		OreDictionary.registerOre("plate" + oreName, sheet);
 
 		addHeatIndex(sheet, 2, 0);
 
@@ -141,7 +142,7 @@ public class Material {
 
 		TFTItems.sheets2x.put(name, sheet2x);
 		GameRegistry.registerItem(sheet2x, name + "Sheet2x");
-		OreDictionary.registerOre("plateDouble" + name, sheet2x);
+		OreDictionary.registerOre("plateDouble" + oreName, sheet2x);
 
 		addHeatIndex(sheet2x, 4, 0);
 	}
@@ -152,7 +153,7 @@ public class Material {
 
 		TFTItems.ingots.put(name, ingot);
 		GameRegistry.registerItem(ingot, name + "Ingot");
-		OreDictionary.registerOre("ingot" + name, ingot);
+		OreDictionary.registerOre("ingot" + oreName, ingot);
 
 		addHeatIndex(ingot, 1, 0);
 		//double
@@ -161,7 +162,7 @@ public class Material {
 
 		TFTItems.ingots2x.put(name, ingot2x);
 		GameRegistry.registerItem(ingot2x, name + "Ingot2x");
-		OreDictionary.registerOre("ingotDouble" + name, ingot2x);
+		OreDictionary.registerOre("ingotDouble" + oreName, ingot2x);
 		addHeatIndex(ingot2x, 2, 0);
 	}
 
@@ -180,6 +181,11 @@ public class Material {
 				TFTechness2.statMap.get(this.name).heat, new ItemStack(
 						unshaped, quantity, meta)));
 
+	}
+
+	public Material setOreName(String oreName) {
+		this.oreName = oreName;
+		return this;
 	}
 
 	public Material setAlloyRecipe(AlloyIngred[] alloyIngreds) {
