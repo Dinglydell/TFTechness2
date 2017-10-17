@@ -268,6 +268,9 @@ public class TFTechness2 {
 
 	private void addIERecipes() {
 
+		GameRegistry.addRecipe(new ShapelessOreRecipe(Blocks.hopper,
+				TFCBlocks.hopper, "dustRedstone"));
+
 		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieBlastBrickAdv,
 				TFCBlocks.fireBrick, "plateSteel"));
 
@@ -291,10 +294,6 @@ public class TFTechness2 {
 				.clone(TFTMeta.ieConveyor, 8), "lll", "wrw", 'l',
 				new ItemStack(TFCItems.leather, 1, 1), 'w', "ingotIron", 'r',
 				"dustRedstone"));
-		//dropping belt
-		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieConveyorDrop, 8), "c", "h", 'c',
-				TFTMeta.ieConveyor, 'h', TFCBlocks.hopper));
 
 		//wire coils
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
@@ -314,10 +313,6 @@ public class TFTechness2 {
 				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
 				"ingotSteel", 's', TFTMeta.ieTreatedStick));
 
-		//focused nozzle (uses vanilla hopper)
-		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieFocusedNozzle,
-				" ss", "pph", " ss", 's', "ingotSteel", 'p',
-				TFTMeta.ieFluidPipe, 'h', TFCBlocks.hopper));
 	}
 
 	private void addIEMachineRecipes() {
