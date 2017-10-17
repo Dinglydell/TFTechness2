@@ -28,11 +28,13 @@ gui.metal.constantan=Constantan
 item.ore.Bauxite.name=Bauxite
 item.ore.Rich Bauxite.name=Rich Bauxite
 item.ore.Poor Bauxite.name=Poor Bauxite
+item.crushedBauxite.name=Crushed Bauxite
+item.alumina.name=Alumina
 
 item.metalRod.name=Rod
 item.nugget.name=Nugget
 
-metal.Aluminium.name=Aluminium
+metal.Aluminium.name=Aluminum
 metal.Electrum.name=Electrum
 metal.Constantan.name=Constantan
 metal.Lead.name=Lead

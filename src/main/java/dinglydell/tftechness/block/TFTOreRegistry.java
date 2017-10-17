@@ -70,6 +70,7 @@ public class TFTOreRegistry {
 				itemOreTiers.toArray(new EnumTier[size]))
 				.setUnlocalizedName("ore");
 		GameRegistry.registerItem(TFTItems.ore, "ore");
+
 	}
 
 	public static int getDamageDropped(int num, int dmg) {

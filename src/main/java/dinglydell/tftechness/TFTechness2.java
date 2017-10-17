@@ -18,19 +18,25 @@ import org.apache.logging.log4j.LogManager;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.Metal.Alloy;
+import com.bioxx.tfc.Items.ItemTerra;
 import com.bioxx.tfc.Items.Pottery.ItemPotteryMold;
 import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
+import com.bioxx.tfc.api.HeatIndex;
+import com.bioxx.tfc.api.HeatRegistry;
 import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
 import com.bioxx.tfc.api.Crafting.KilnCraftingManager;
 import com.bioxx.tfc.api.Crafting.KilnRecipe;
+import com.bioxx.tfc.api.Enums.EnumSize;
+import com.bioxx.tfc.api.Enums.EnumWeight;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -219,6 +225,15 @@ public class TFTechness2 {
 				TFTItems.woodenBucketCreosote,
 				new ItemStack(TFCItems.woodenBucketEmpty));
 
+		TFTItems.crushedBauxite = new ItemTerra().setSize(EnumSize.TINY)
+				.setWeight(EnumWeight.MEDIUM)
+				.setUnlocalizedName("crushedBauxite");
+		GameRegistry.registerItem(TFTItems.crushedBauxite, "crushedBauxite");
+
+		TFTItems.alumina = new ItemTerra().setSize(EnumSize.TINY)
+				.setWeight(EnumWeight.MEDIUM).setUnlocalizedName("alumina");
+		GameRegistry.registerItem(TFTItems.alumina, "alumina");
+
 	}
 
 	@EventHandler
@@ -230,12 +245,21 @@ public class TFTechness2 {
 		addIERecipes();
 		tfcAlloyRecipes();
 		tfcClayRecipes();
+		tfcHeatRecipes();
 		tfcKilnRecipes();
 		for (Material m : materials) {
 			m.addMachineRecipes();
 			m.addMoldRecipes();
 		}
 		logger.info(IEApi.modPreference);
+	}
+
+	private void tfcHeatRecipes() {
+		// crushed bauxite -> alumina
+		HeatRegistry manager = HeatRegistry.getInstance();
+		manager.addIndex(new HeatIndex(
+				new ItemStack(TFTItems.crushedBauxite, 1), 1, 1100,
+				new ItemStack(TFTItems.alumina, 1)));
 	}
 
 	private void tfcKilnRecipes() {
@@ -335,6 +359,17 @@ public class TFTechness2 {
 				19200,
 				null,
 				TFTMeta.hopGraphite);
+
+		//Aluminium refinement - stage 1
+		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 5),
+				"oreBauxite",
+				3600);
+		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 3),
+				"orePoorBauxite",
+				3200);
+		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 7),
+				"oreRichBauxite",
+				4000);
 
 	}
 

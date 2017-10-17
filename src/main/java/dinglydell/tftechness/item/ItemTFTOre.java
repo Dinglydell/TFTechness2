@@ -1,6 +1,7 @@
 package dinglydell.tftechness.item;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
 import com.bioxx.tfc.Items.ItemOre;
 import com.bioxx.tfc.api.Metal;
@@ -17,6 +18,11 @@ public class ItemTFTOre extends ItemOre {
 		this.metals = metals;
 		this.amounts = amounts;
 		this.tiers = tiers;
+		for (int i = 0; i < metaNames.length; i++) {
+			String name = metaNames[i];
+			OreDictionary.registerOre("ore" + name.replaceAll("\\s+", ""),
+					new ItemStack(this, 1, i));
+		}
 	}
 
 	@Override
