@@ -99,4 +99,14 @@ public class TFTMeta {
 			IEContent.itemToolUpgrades, 1, 7);
 	public static ItemStack ieFluidPipe = new ItemStack(
 			IEContent.blockMetalDevice2, 1, 5);
+	public static ItemStack ieSteelScaffolding = new ItemStack(
+			IEContent.blockMetalDecoration, 1, 1);
+	public static ItemStack ieHeavyEngineering = new ItemStack(
+			IEContent.blockMetalDecoration, 1, 5);
+	public static ItemStack ieLightEngineering = new ItemStack(
+			IEContent.blockMetalDecoration, 1, 7);
+	public static ItemStack ieSteelBlock = new ItemStack(
+			IEContent.blockStorage, 1, 7);
+	public static ItemStack ieSteelSlab = new ItemStack(
+			IEContent.blockStorageSlabs, 1, 7);
 }

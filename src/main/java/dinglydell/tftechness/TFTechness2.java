@@ -17,6 +17,7 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.LogManager;
 
 import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -43,19 +44,24 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
+import dinglydell.tftechness.gui.TFTGuiHandler;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalStat;
+import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
+import dinglydell.tftechness.tileentities.TileTFTMachineBase;
 import dinglydell.tftechness.util.ItemUtil;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
@@ -67,9 +73,11 @@ public class TFTechness2 {
 	public static org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger("TFTechness");
 	public static Material[] materials;
+	public static TFTechness2 instance;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		instance = this;
 		replaceWater();
 		editIEMetalRelations();
 		initStatMap();
@@ -144,11 +152,26 @@ public class TFTechness2 {
 	public void init(FMLInitializationEvent event) {
 		registerItems();
 		registerBlocks();
+		registerGui();
+		registerIEMultiblocks();
 		registerTileEntities();
+	}
+
+	private void registerGui() {
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new TFTGuiHandler());
+
+	}
+
+	private void registerIEMultiblocks() {
+		MultiblockHandler.registerMultiblock(MultiblockElectrolyser.instance);
+
 	}
 
 	private void registerTileEntities() {
 		GameRegistry.registerTileEntity(TETFTMetalSheet.class, "TFTMetalSheet");
+
+		GameRegistry.registerTileEntity(TileTFTMachineBase.class,
+				"TFTElectrolyser");
 
 	}
 
@@ -157,6 +180,9 @@ public class TFTechness2 {
 				.setBlockName("MetalSheet").setHardness(80);
 
 		GameRegistry.registerBlock(TFTBlocks.metalSheet, "MetalSheet");
+
+		TFTBlocks.machine = new BlockTFTMachine().setBlockName("Machine")
+				.setHardness(80);
 
 		TFTOreRegistry.registerAllOreBlocks();
 	}
