@@ -61,7 +61,7 @@ import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
-import dinglydell.tftechness.tileentities.TileTFTMachineBase;
+import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.util.ItemUtil;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
@@ -170,7 +170,7 @@ public class TFTechness2 {
 	private void registerTileEntities() {
 		GameRegistry.registerTileEntity(TETFTMetalSheet.class, "TFTMetalSheet");
 
-		GameRegistry.registerTileEntity(TileTFTMachineBase.class,
+		GameRegistry.registerTileEntity(TileTFTElectrolyser.class,
 				"TFTElectrolyser");
 
 	}
@@ -183,6 +183,8 @@ public class TFTechness2 {
 
 		TFTBlocks.machine = new BlockTFTMachine().setBlockName("Machine")
 				.setHardness(80);
+
+		GameRegistry.registerBlock(TFTBlocks.machine, "Machine");
 
 		TFTOreRegistry.registerAllOreBlocks();
 	}

@@ -14,7 +14,7 @@ import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.tileentities.TileTFTMachineBase;
 
 public class BlockTFTMachine extends BlockContainer {
-	enum TFTMachines {
+	public enum TFTMachines {
 		electrolyser
 	}
 
@@ -43,13 +43,20 @@ public class BlockTFTMachine extends BlockContainer {
 	}
 
 	@Override
+	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+		//TileTFTMachineBase tile = (TileTFTMachineBase) world.getTileEntity(x,
+		//	y,
+		//z);
+		//tile.getMultiblock().restore(world, tile.getMasterX(), tile.getMasterY(), tile.getMasterZ(), tile.getFacing());
+	}
+
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		TileTFTMachineBase te = (TileTFTMachineBase) world.getTileEntity(x,
 				y,
 				z);
-		te.openGui(world, player);
-		return true;
+		return te.openGui(world, player);
 
 	}
 

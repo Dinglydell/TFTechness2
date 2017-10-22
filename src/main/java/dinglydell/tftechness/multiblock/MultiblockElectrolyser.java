@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -13,11 +14,14 @@ import blusunrize.immersiveengineering.api.MultiblockHandler.IMultiblock;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.block.BlockTFTMachine.TFTMachines;
+import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.item.ItemMeta;
 import dinglydell.tftechness.item.TFTMeta;
+import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.util.ItemUtil;
 
-public class MultiblockElectrolyser implements IMultiblock {
+public class MultiblockElectrolyser implements IMultiblock, IMultiblockTFT {
 
 	public static MultiblockElectrolyser instance = new MultiblockElectrolyser();
 	static ItemStack[][][] structure = new ItemStack[][][] { { {
@@ -176,9 +180,52 @@ public class MultiblockElectrolyser implements IMultiblock {
 			EntityPlayer player) {
 		EnumFacing facing = EnumFacing.values()[side];
 		if (isValidStructure(world, x, y, z, facing)) {
+			TFTechness2.logger.info("YE");
+			for (int hs = 0; hs < structure.length; hs++) {
+				ItemStack[][] hPlane = structure[hs];
+				int h = hs - 1;
+				for (int ws = 0; ws < hPlane.length; ws++) {
+					int w = ws - 2;
+					ItemStack[] hwLine = hPlane[ws];
+					for (int ds = 0; ds < hwLine.length; ds++) {
+						//ItemStack stack = hwLine[ds];
+						int d = ds;
+						int blockX = getX(x, h, w, d, facing);
+						int blockY = getY(y, h);
+						int blockZ = getZ(z, h, w, d, facing);
+						world.setBlock(blockX,
+								blockY,
+								blockZ,
+								TFTBlocks.machine,
+								TFTMachines.electrolyser.ordinal(),
+								2);
+
+						TileTFTElectrolyser tile = (TileTFTElectrolyser) world
+								.getTileEntity(blockX, blockY, blockZ);
+						tile.setMasterCoords(x, y, z);
+						if (blockZ == x && blockY == y && blockZ == z) {
+							tile.setIsMaster(true);
+						}
+					}
+				}
+			}
 			return true;
 		}
 		return false;
+	}
+
+	private int getX(int x, int h, int w, int d, EnumFacing facing) {
+		return x + Math.abs(facing.getFrontOffsetZ()) * w
+				- facing.getFrontOffsetX() * d;
+	}
+
+	private int getY(int y, int h) {
+		return y + h;
+	}
+
+	private int getZ(int z, int h, int w, int d, EnumFacing facing) {
+		return z + Math.abs(facing.getFrontOffsetX()) * w
+				- facing.getFrontOffsetZ() * d;
 	}
 
 	private boolean isValidStructure(World world, int x, int y, int z,
@@ -192,11 +239,9 @@ public class MultiblockElectrolyser implements IMultiblock {
 				for (int ds = 0; ds < hwLine.length; ds++) {
 					ItemStack stack = hwLine[ds];
 					int d = ds;
-					int blockX = x + Math.abs(facing.getFrontOffsetZ()) * w
-							- facing.getFrontOffsetX() * d;
+					int blockX = getX(x, h, w, d, facing);
 					int blockY = y + h;
-					int blockZ = z + Math.abs(facing.getFrontOffsetX()) * w
-							- facing.getFrontOffsetZ() * d;
+					int blockZ = getZ(z, h, w, d, facing);
 
 					Block block = world.getBlock(blockX, blockY, blockZ);
 					int meta = world.getBlockMetadata(blockX, blockY, blockZ);
@@ -255,6 +300,33 @@ public class MultiblockElectrolyser implements IMultiblock {
 	@SideOnly(Side.CLIENT)
 	public void renderFormedStructure() {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void restore(World world, int x, int y, int z, EnumFacing facing) {
+		for (int hs = 0; hs < structure.length; hs++) {
+			ItemStack[][] hPlane = structure[hs];
+			int h = hs - 1;
+			for (int ws = 0; ws < hPlane.length; ws++) {
+				int w = ws - 2;
+				ItemStack[] hwLine = hPlane[ws];
+				for (int ds = 0; ds < hwLine.length; ds++) {
+					ItemStack stack = hwLine[ds];
+					int d = ds;
+					int blockX = getX(x, h, w, d, facing);
+					int blockY = getY(y, h);
+					int blockZ = getZ(z, h, w, d, facing);
+					world.setBlock(blockX,
+							blockY,
+							blockZ,
+							((ItemBlock) stack.getItem()).field_150939_a,
+							stack.getItemDamage(),
+							2);
+
+				}
+			}
+		}
 
 	}
 

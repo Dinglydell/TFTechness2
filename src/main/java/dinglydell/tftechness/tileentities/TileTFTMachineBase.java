@@ -1,13 +1,23 @@
 package dinglydell.tftechness.tileentities;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import dinglydell.tftechness.multiblock.IMultiblockTFT;
+import dinglydell.tftechness.util.ItemUtil;
 
-public abstract class TileTFTMachineBase extends TileEntity {
-	private boolean hasMaster, isMaster;
+public abstract class TileTFTMachineBase extends TileEntity implements
+		IInventory {
+	private boolean isMaster;
 	private int masterX, masterY, masterZ;
+	private EnumFacing facing;
+
+	protected ItemStack[] inventory;
 
 	@Override
 	public void updateEntity() {
@@ -19,16 +29,47 @@ public abstract class TileTFTMachineBase extends TileEntity {
 		data.setInteger("masterX", masterX);
 		data.setInteger("masterY", masterY);
 		data.setInteger("masterZ", masterZ);
-		data.setBoolean("hasMaster", hasMaster);
 		data.setBoolean("isMaster", isMaster);
-		if (hasMaster() && isMaster()) {
+		if (isMaster()) {
 			writeToMasterNBT(data);
 		}
 	}
 
-	protected abstract void writeToMasterNBT(NBTTagCompound data);
+	protected void writeToMasterNBT(NBTTagCompound data) {
+		data.setInteger("facing", facing.ordinal());
 
-	protected abstract void readFromMasterNBT(NBTTagCompound data);
+		//inventory
+		NBTTagList invTag = new NBTTagList();
+
+		for (int i = 0; i < inventory.length; ++i) {
+			if (inventory[i] != null) {
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", (byte) i);
+				inventory[i].writeToNBT(itemTag);
+				invTag.appendTag(itemTag);
+			}
+		}
+
+		data.setTag("Items", invTag);
+	}
+
+	protected void readFromMasterNBT(NBTTagCompound data) {
+		facing = EnumFacing.values()[data.getInteger("facing")];
+
+		//inventory
+		NBTTagList invTag = data.getTagList("Items", 10);
+
+		for (int i = 0; i < invTag.tagCount(); ++i) {
+			NBTTagCompound itemTag = invTag.getCompoundTagAt(i);
+			byte b0 = itemTag.getByte("Slot");
+
+			if (b0 >= 0 && b0 < inventory.length) {
+				inventory[b0] = ItemStack.loadItemStackFromNBT(
+
+				itemTag);
+			}
+		}
+	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound data) {
@@ -36,15 +77,40 @@ public abstract class TileTFTMachineBase extends TileEntity {
 		masterX = data.getInteger("masterX");
 		masterY = data.getInteger("masterY");
 		masterZ = data.getInteger("masterZ");
-		hasMaster = data.getBoolean("hasMaster");
 		isMaster = data.getBoolean("isMaster");
-		if (hasMaster() && isMaster()) {
+		if (isMaster()) {
 			readFromMasterNBT(data);
 		}
 	}
 
-	public boolean hasMaster() {
-		return hasMaster;
+	@Override
+	public int getSizeInventory() {
+		return inventory.length;
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int slot) {
+		return inventory[slot];
+	}
+
+	@Override
+	public ItemStack decrStackSize(int slot, int amt) {
+		if (inventory[slot] == null) {
+			return null;
+		}
+		if (inventory[slot].stackSize <= amt) {
+			ItemStack stack = inventory[slot];
+			inventory[slot] = null;
+			return stack;
+		}
+		inventory[slot].stackSize -= amt;
+		return ItemUtil.clone(inventory[slot], amt);
+	}
+
+	@Override
+	public void setInventorySlotContents(int slot, ItemStack stack) {
+		inventory[slot] = stack;
+
 	}
 
 	public boolean isMaster() {
@@ -63,10 +129,6 @@ public abstract class TileTFTMachineBase extends TileEntity {
 		return masterZ;
 	}
 
-	public void setHasMaster(boolean bool) {
-		hasMaster = bool;
-	}
-
 	public void setIsMaster(boolean bool) {
 		isMaster = bool;
 	}
@@ -78,5 +140,11 @@ public abstract class TileTFTMachineBase extends TileEntity {
 	}
 
 	public abstract boolean openGui(World world, EntityPlayer player);
+
+	public abstract IMultiblockTFT getMultiblock();
+
+	public EnumFacing getFacing() {
+		return facing;
+	}
 
 }

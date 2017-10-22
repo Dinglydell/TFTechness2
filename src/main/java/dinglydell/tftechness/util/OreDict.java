@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class OreDict {
-	
+
 	public static boolean oresMatch(ItemStack itemA, ItemStack itemB) {
 		if (OreDictionary.itemMatches(itemA, itemB, true)) {
 			return true;
@@ -20,5 +20,16 @@ public class OreDict {
 		}
 		return false;
 	}
-	
+
+	public static boolean itemMatches(ItemStack item, String oreName) {
+		int[] ids = OreDictionary.getOreIDs(item);
+		int targetId = OreDictionary.getOreID(oreName);
+		for (int id : ids) {
+			if (id == targetId) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
