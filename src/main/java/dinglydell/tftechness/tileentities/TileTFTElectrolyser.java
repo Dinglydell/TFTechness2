@@ -3,6 +3,7 @@ package dinglydell.tftechness.tileentities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.api.TFCItems;
@@ -10,17 +11,35 @@ import com.bioxx.tfc.api.TFCItems;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.item.TFTItems;
+import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.util.OreDict;
 
 public class TileTFTElectrolyser extends TileTFTMachineBase {
+	public enum Slots {
+		electrodeA, electrodeB, alumina, redstone, mold
+	}
 
-	private static final int ELECTRODE_SLOT_A = 0;
-	private static final int ELECTRODE_SLOT_B = 1;
-	private static final int ALUMINA_SLOT = 2;
-	private static final int REDSTONE_SLOT = 3;
-	private static final int MOLD_SLOT = 4;
+	//very simplified since air has a varying SH
+	protected static final int SH_AIR = 1376;
+	//also simplified
+	protected static final float DENSITY_AIR = 1.2f;
+
+	protected static final int MR_ALUMINA = 102;
+	/** Maximum capacity of molten redstone (B) */
+	protected static final int MAX_REDSTONE_CAPACITY = 30;
+	private static final int SH_REDSTONE = 1136;
+	private static final int SH_ALUMINA = 451;
+
+	protected float thermalEnergy = 14365440;
+	protected float targetTemperature;
+
+	//private static final int ELECTRODE_SLOT_A = 0;
+	//private static final int ELECTRODE_SLOT_B = 1;
+	//private static final int ALUMINA_SLOT = 2;
+	//private static final int REDSTONE_SLOT = 3;
+	//private static final int MOLD_SLOT = 4;
 
 	public TileTFTElectrolyser() {
 		inventory = new ItemStack[5];
@@ -81,16 +100,17 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack item) {
-		if (slot == ELECTRODE_SLOT_A || slot == ELECTRODE_SLOT_B) {
+		if (slot == Slots.electrodeA.ordinal()
+				|| slot == Slots.electrodeB.ordinal()) {
 			return item.getItem() == IEContent.itemGraphiteElectrode;
 		}
-		if (slot == ALUMINA_SLOT) {
+		if (slot == Slots.alumina.ordinal()) {
 			return item.getItem() == TFTItems.alumina;
 		}
-		if (slot == REDSTONE_SLOT) {
+		if (slot == Slots.redstone.ordinal()) {
 			return OreDict.itemMatches(item, "dustRedstone");
 		}
-		if (slot == MOLD_SLOT) {
+		if (slot == Slots.mold.ordinal()) {
 			return item.getItem() == TFCItems.ceramicMold
 					|| item.getItem() == TFTItems.unshaped.get("Aluminium");
 		}
@@ -100,6 +120,68 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 	@Override
 	public IMultiblockTFT getMultiblock() {
 		return MultiblockElectrolyser.instance;
+	}
+
+	public float getTargetTemperature() {
+		return this.targetTemperature;
+	}
+
+	public void setTargetTemperature(float target) {
+		this.targetTemperature = target;
+	}
+
+	public float getTemperature() {
+		//TODO: proper calculation
+		return this.thermalEnergy / getNetSHMass() - 273;
+	}
+
+	/** Returns average specific heat * mass */
+	private float getNetSHMass() {
+		int volRed = getRedstoneAmt();
+		int volAir = MAX_REDSTONE_CAPACITY - getRedstoneAmt();
+		int amtAlumina = getAluminaAmt();
+		float massAir = volAir * DENSITY_AIR;
+		int massRed = volRed;
+		int massAlumina = amtAlumina * MR_ALUMINA / 1000;
+		int volAluminium = getAluminiumAmt();
+		MetalStat Al = TFTechness2.statMap.get("Aluminium");
+		int massAluminium = volAluminium * Al.ingotMass * 10;
+		return massAir * SH_AIR + massRed * SH_REDSTONE + massAlumina
+				* SH_ALUMINA + massAluminium * Al.heat.specificHeat;
+	}
+
+	/** Unit: buckets (m^3) */
+	private int getAluminiumAmt() {
+
+		return 0;
+	}
+
+	/** Unit: moles */
+	private int getAluminaAmt() {
+
+		return 0;
+	}
+
+	/** Unit: buckets (m^3) */
+	private int getRedstoneAmt() {
+		return 0;
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection direction) {
+		return 20000;
+	}
+
+	@Override
+	protected int getMaxRfRate() {
+
+		return 4096;
+	}
+
+	@Override
+	protected int spendRf(int amt) {
+
+		return 0;
 	}
 
 }

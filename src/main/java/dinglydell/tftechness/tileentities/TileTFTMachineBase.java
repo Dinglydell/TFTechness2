@@ -8,20 +8,32 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+import cofh.api.energy.IEnergyReceiver;
 import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.util.ItemUtil;
 
 public abstract class TileTFTMachineBase extends TileEntity implements
-		IInventory {
+		IInventory, IEnergyReceiver {
 	private boolean isMaster;
 	private int masterX, masterY, masterZ;
 	private EnumFacing facing;
+	protected int rf;
 
 	protected ItemStack[] inventory;
 
+	//public TileTFTMachineBase(World world){
+
+	//}
+
 	@Override
 	public void updateEntity() {
+		rf -= spendRf(Math.min(getMaxRfRate(), rf));
 	}
+
+	protected abstract int getMaxRfRate();
+
+	protected abstract int spendRf(int amt);
 
 	@Override
 	public void writeToNBT(NBTTagCompound data) {
@@ -37,6 +49,7 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 
 	protected void writeToMasterNBT(NBTTagCompound data) {
 		data.setInteger("facing", facing.ordinal());
+		data.setInteger("RF", rf);
 
 		//inventory
 		NBTTagList invTag = new NBTTagList();
@@ -55,7 +68,7 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 
 	protected void readFromMasterNBT(NBTTagCompound data) {
 		facing = EnumFacing.values()[data.getInteger("facing")];
-
+		rf = data.getInteger("rf");
 		//inventory
 		NBTTagList invTag = data.getTagList("Items", 10);
 
@@ -145,6 +158,39 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 
 	public EnumFacing getFacing() {
 		return facing;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection direction) {
+		return rf;
+	}
+
+	@Override
+	public int receiveEnergy(ForgeDirection direction, int amt,
+			boolean simulated) {
+		if (isMaster()) {
+			int oldRf = rf;
+			int newRf = Math.min(rf + amt, getMaxEnergyStored(direction));
+			if (!simulated) {
+				rf = newRf;
+			}
+			return newRf - oldRf;
+		}
+
+		return getMaster().receiveEnergy(direction, amt, simulated);
+
+	}
+
+	private TileTFTMachineBase getMaster() {
+		return (TileTFTMachineBase) worldObj.getTileEntity(masterX,
+				masterY,
+				masterZ);
+	}
+
+	@Override
+	public boolean canConnectEnergy(ForgeDirection direction) {
+		//TODO: restrict this?
+		return true;
 	}
 
 }

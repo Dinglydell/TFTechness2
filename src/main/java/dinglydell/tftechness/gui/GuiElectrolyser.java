@@ -1,26 +1,42 @@
 package dinglydell.tftechness.gui;
 
-import net.minecraft.client.gui.GuiScreen;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.gui.component.GuiTemperature;
+import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
-public class GuiElectrolyser extends GuiScreen {
+public class GuiElectrolyser extends GuiContainer {
+
 	public static final ResourceLocation TEXTURE = new ResourceLocation(
 			TFTechness2.MODID + ":textures/gui/machine/electrolyser.png");
-	private static final int TEX_WIDTH = 256;
-	private static final int TEX_HEIGHT = 256;
+	private static final int TEX_WIDTH = 175;
+	private static final int TEX_HEIGHT = 165;
 
-	public GuiElectrolyser() {
+	private GuiTemperature tempControl;
+	private TileTFTElectrolyser tile;
+	private int offsetLeft;
+	private int offsetTop;
 
+	public GuiElectrolyser(InventoryPlayer player, TileTFTElectrolyser tile) {
+		super(new ContainerElectrolyser(player, tile));
+		this.tile = tile;
 	}
 
 	@Override
 	public void initGui() {
-
+		offsetLeft = (width - TEX_WIDTH) / 2;
+		offsetTop = (height - TEX_HEIGHT) / 2;
+		buttonList.add(new GuiTemperature(0, offsetLeft + 15, offsetTop + 9, 7,
+				49, tile, true));
+		buttonList.add(new GuiTemperature(0, offsetLeft + 28, offsetTop + 9, 7,
+				49, tile, false));
 		super.initGui();
+
 	}
 
 	@Override
@@ -29,18 +45,44 @@ public class GuiElectrolyser extends GuiScreen {
 	}
 
 	@Override
-	public void drawScreen(int p_73863_1_, int p_73863_2_, float p_73863_3_) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	public void drawScreen(int x, int y, float p_73863_3_) {
+		super.drawScreen(x, y, p_73863_3_);
+		List<String> tooltip = new ArrayList<String>();
+		for (Object b : buttonList) {
+			GuiTemperature ob = ((GuiTemperature) b);
+			if (ob.isHovering(x, y)) {
+				ob.addTooltip(tooltip);
+			}
+		}
+		this.drawHoveringText(tooltip, x, y, fontRendererObj);
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float p_146976_1_,
+			int p_146976_2_, int p_146976_3_) {
 
 		mc.getTextureManager().bindTexture(TEXTURE);
 
-		int offsetFromScreenLeft = (width - TEX_WIDTH) / 2;
-		drawTexturedModalRect(offsetFromScreenLeft,
-				2,
+		drawTexturedModalRect(offsetLeft,
+				offsetTop,
 				0,
 				0,
 				TEX_WIDTH,
 				TEX_HEIGHT);
-		super.drawScreen(p_73863_1_, p_73863_2_, p_73863_3_);
 	}
+
+	@Override
+	public void handleMouseInput() {
+
+		super.handleMouseInput();
+
+	}
+
+	@Override
+	protected void mouseClicked(int x, int y, int type) {
+
+		super.mouseClicked(x, y, type);
+		//if(tempControl.xPosition < x && tempControl.)
+	}
+
 }

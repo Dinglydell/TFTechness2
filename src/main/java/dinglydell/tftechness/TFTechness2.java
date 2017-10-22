@@ -68,6 +68,8 @@ import dinglydell.tftechness.util.ItemUtil;
 public class TFTechness2 {
 	public static final String MODID = "TFTechness";
 	public static final String VERSION = "0.2";
+	/** The degree symbol */
+	public static final String degrees = "\u00b0";
 	public static Map<String, MetalStat> statMap = new HashMap();
 
 	public static org.apache.logging.log4j.Logger logger = LogManager

@@ -53,10 +53,14 @@ public class BlockTFTMachine extends BlockContainer {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
-		TileTFTMachineBase te = (TileTFTMachineBase) world.getTileEntity(x,
-				y,
-				z);
-		return te.openGui(world, player);
+		if (!world.isRemote) {
+			TileTFTMachineBase te = (TileTFTMachineBase) world.getTileEntity(x,
+					y,
+					z);
+			te.openGui(world, player);
+		}
+
+		return true;
 
 	}
 
