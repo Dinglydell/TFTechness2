@@ -45,7 +45,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.TFTBlocks;
@@ -58,6 +60,8 @@ import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
+import dinglydell.tftechness.network.PacketTFTMachine;
+import dinglydell.tftechness.network.TFTMachinePacketHandler;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
@@ -77,12 +81,15 @@ public class TFTechness2 {
 	public static Material[] materials;
 	public static TFTechness2 instance;
 
+	public static SimpleNetworkWrapper snw;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		instance = this;
 		replaceWater();
 		editIEMetalRelations();
 		initStatMap();
+		registerPacketHandlers();
 		addOres();
 	}
 
@@ -97,6 +104,14 @@ public class TFTechness2 {
 		IEApi.prefixToIngotMap.put("plate", new Integer[] { 2, 1 });
 		IEApi.prefixToIngotMap.put("block", new Integer[] { 10, 1 });
 
+	}
+
+	private void registerPacketHandlers() {
+		snw = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
+		snw.registerMessage(TFTMachinePacketHandler.class,
+				PacketTFTMachine.class,
+				0,
+				Side.SERVER);
 	}
 
 	private void initStatMap() {

@@ -2,10 +2,12 @@ package dinglydell.tftechness.tileentities;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import blusunrize.immersiveengineering.common.IEContent;
 
+import com.bioxx.tfc.Core.TFC_Climate;
 import com.bioxx.tfc.api.TFCItems;
 
 import dinglydell.tftechness.TFTechness2;
@@ -31,9 +33,10 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 	protected static final int MAX_REDSTONE_CAPACITY = 30;
 	private static final int SH_REDSTONE = 1136;
 	private static final int SH_ALUMINA = 451;
+	private static final float COOLING_COEF = 1;
 
-	protected float thermalEnergy = 14365440;
-	protected float targetTemperature;
+	protected int thermalEnergy = 14365440;
+	protected int targetTemperature;
 
 	//private static final int ELECTRODE_SLOT_A = 0;
 	//private static final int ELECTRODE_SLOT_B = 1;
@@ -126,12 +129,16 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 		return this.targetTemperature;
 	}
 
-	public void setTargetTemperature(float target) {
+	public void setTargetTemperature(int target) {
 		this.targetTemperature = target;
+		this.markDirty();
+		if (worldObj.isRemote) {
+			this.sendClientToServerMessage();
+		}
+
 	}
 
 	public float getTemperature() {
-		//TODO: proper calculation
 		return this.thermalEnergy / getNetSHMass() - 273;
 	}
 
@@ -180,8 +187,51 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 
 	@Override
 	protected int spendRf(int amt) {
+		int oldThermalEnergy = this.thermalEnergy;
+		this.thermalEnergy += Math.min(amt,
+				Math.max(0, (targetTemperature + 273) * getNetSHMass()
+						- this.thermalEnergy));
 
-		return 0;
+		return this.thermalEnergy - oldThermalEnergy;
+	}
+
+	@Override
+	protected void writeToMasterNBT(NBTTagCompound data) {
+		super.writeToMasterNBT(data);
+		data.setInteger("ThermalEnergy", thermalEnergy);
+		data.setInteger("TargetTemperature", targetTemperature);
+	}
+
+	@Override
+	protected void readFromMasterNBT(NBTTagCompound data) {
+		super.readFromMasterNBT(data);
+		this.thermalEnergy = data.getInteger("ThermalEnergy");
+		this.targetTemperature = data.getInteger("TargetTemperature");
+	}
+
+	@Override
+	public void updateEntity() {
+		if (!worldObj.isRemote) {
+			float externalTemp = TFC_Climate.getHeightAdjustedTemp(worldObj,
+					xCoord,
+					yCoord,
+					zCoord);
+			this.thermalEnergy -= (this.getTemperature() - externalTemp)
+					* COOLING_COEF;
+		}
+		super.updateEntity();
+	}
+
+	@Override
+	public void readClientToServerMessage(NBTTagCompound nbt) {
+		targetTemperature = nbt.getInteger("TargetTemperature");
+
+	}
+
+	@Override
+	public void writeClientToServerMessage(NBTTagCompound nbt) {
+		nbt.setInteger("TargetTemperature", targetTemperature);
+
 	}
 
 }

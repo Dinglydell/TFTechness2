@@ -203,9 +203,6 @@ public class MultiblockElectrolyser implements IMultiblock, IMultiblockTFT {
 						TileTFTElectrolyser tile = (TileTFTElectrolyser) world
 								.getTileEntity(blockX, blockY, blockZ);
 						tile.setMasterCoords(x, y, z);
-						if (blockZ == x && blockY == y && blockZ == z) {
-							tile.setIsMaster(true);
-						}
 					}
 				}
 			}

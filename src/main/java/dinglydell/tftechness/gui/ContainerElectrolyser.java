@@ -34,12 +34,12 @@ public class ContainerElectrolyser extends Container {
 		for (int y = 0; y < 3; ++y) {
 			for (int x = 0; x < 9; ++x) {
 				this.addSlotToContainer(new Slot(player, x + y * 9 + 9,
-						8 + x * 18, 84 + y * 18));
+						9 + x * 18, 84 + y * 18));
 			}
 		}
 		//player hotbar
 		for (int x = 0; x < 9; ++x) {
-			this.addSlotToContainer(new Slot(player, x, 8 + x * 18, 142));
+			this.addSlotToContainer(new Slot(player, x, 9 + x * 18, 142));
 		}
 
 	}
