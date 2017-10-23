@@ -7,7 +7,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.gui.component.GuiRF;
 import dinglydell.tftechness.gui.component.GuiTemperature;
+import dinglydell.tftechness.gui.component.ITFTComponent;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class GuiElectrolyser extends GuiContainer {
@@ -22,6 +24,8 @@ public class GuiElectrolyser extends GuiContainer {
 	private int offsetLeft;
 	private int offsetTop;
 
+	protected List<ITFTComponent> components = new ArrayList<ITFTComponent>();
+
 	public GuiElectrolyser(InventoryPlayer player, TileTFTElectrolyser tile) {
 		super(new ContainerElectrolyser(player, tile));
 		this.tile = tile;
@@ -35,6 +39,10 @@ public class GuiElectrolyser extends GuiContainer {
 				49, tile, true));
 		buttonList.add(new GuiTemperature(0, offsetLeft + 28, offsetTop + 9, 7,
 				49, tile, false));
+
+		components.clear();
+		components.add(new GuiRF(offsetLeft + 7, offsetTop + 9, 3, 50, tile));
+
 		super.initGui();
 
 	}
@@ -52,6 +60,12 @@ public class GuiElectrolyser extends GuiContainer {
 			GuiTemperature ob = ((GuiTemperature) b);
 			if (ob.isHovering(x, y)) {
 				ob.addTooltip(tooltip);
+			}
+		}
+		for (ITFTComponent c : components) {
+			c.draw();
+			if (c.isHovering(x, y)) {
+				c.addTooltip(tooltip);
 			}
 		}
 		this.drawHoveringText(tooltip, x, y, fontRendererObj);
