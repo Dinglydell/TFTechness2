@@ -54,6 +54,7 @@ import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
+import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
@@ -95,8 +96,14 @@ public class TFTechness2 {
 		replaceWater();
 		editIEMetalRelations();
 		initStatMap();
+		registerEventHandlers();
 		registerPacketHandlers();
 		addOres();
+	}
+
+	private void registerEventHandlers() {
+		MinecraftForge.EVENT_BUS.register(new TFTEventHandler());
+
 	}
 
 	private void addOres() {
