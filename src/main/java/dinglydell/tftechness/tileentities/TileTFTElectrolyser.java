@@ -27,6 +27,7 @@ import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
+import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.util.OreDict;
 
 public class TileTFTElectrolyser extends TileTFTMachineBase implements
@@ -68,6 +69,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	public TileTFTElectrolyser() {
 		inventory = new ItemStack[5];
+		cryoliteTank.setCondition(SolutionRecipe.electrodes);
 		//thermalEnergy = (int) (TFC_Climate.getHeightAdjustedTemp(worldObj,
 		//		xCoord,
 		//		yCoord,
@@ -387,12 +389,14 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 		super.writeServerToClientMessage(nbt);
 		nbt.setInteger("ThermalEnergy", thermalEnergy);
+		nbt.setTag("CryoliteTank", cryoliteTank.writeToNBT());
 	}
 
 	@Override
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 		super.readServerToClientMessage(nbt);
 		thermalEnergy = nbt.getInteger("ThermalEnergy");
+		cryoliteTank.readFromNBT(nbt.getCompoundTag("CryoliteTank"));
 	}
 
 	@Override

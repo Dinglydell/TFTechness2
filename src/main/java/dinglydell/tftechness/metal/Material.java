@@ -89,18 +89,27 @@ public class Material {
 	private void registerItemProps() {
 		TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot),
 				TFTechness2.statMap.get(this.name).density);
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot2x),
-				TFTechness2.statMap.get(this.name).density * 2);
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet),
-				TFTechness2.statMap.get(this.name).density * 2);
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet2x),
-				TFTechness2.statMap.get(this.name).density * 4);
+		if (ingot2x != null) {
+			TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot2x),
+					TFTechness2.statMap.get(this.name).density * 2);
+		}
+		if (sheet != null) {
+			TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet),
+					TFTechness2.statMap.get(this.name).density * 2);
+		}
+		if (sheet2x != null) {
+			TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet2x),
+					TFTechness2.statMap.get(this.name).density * 4);
+		}
+
 		TFTItemPropertyRegistry.registerDensity(new ItemStack(rod),
 				TFTechness2.statMap.get(this.name).density * 0.5f);
 		TFTItemPropertyRegistry.registerDensity(new ItemStack(nugget),
 				TFTechness2.statMap.get(this.name).density * 0.1f);
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(unshaped),
-				TFTechness2.statMap.get(this.name).density);
+		if (unshaped != null) {
+			TFTItemPropertyRegistry.registerDensity(new ItemStack(unshaped),
+					TFTechness2.statMap.get(this.name).density);
+		}
 
 	}
 

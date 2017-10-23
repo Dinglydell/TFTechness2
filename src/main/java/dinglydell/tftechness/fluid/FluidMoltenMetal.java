@@ -34,6 +34,10 @@ public class FluidMoltenMetal extends Fluid {
 
 	@Override
 	public int getTemperature(FluidStack stack) {
+		if (stack.tag == null) {
+			//TODO: proper default
+			setTemperature(1000, stack);
+		}
 		return stack.tag.getInteger("Temperature");
 	}
 

@@ -8,6 +8,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
 
+import com.bioxx.tfc.api.TFC_ItemHeat;
+
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
@@ -99,6 +101,7 @@ public class GuiTemperature extends GuiButton {
 			temp = tile.getTemperature();
 		}
 		tooltip.add((Math.round(temp)) + TFTechness2.degrees + "C");
+		tooltip.add(TFC_ItemHeat.getHeatColor(temp, Float.MAX_VALUE));
 
 	}
 

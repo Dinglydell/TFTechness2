@@ -222,6 +222,8 @@ public class TFTechness2 {
 			FluidMoltenMetal f = new FluidMoltenMetal(m.name);
 			TFTFluids.moltenMetal.put(m.name, f);
 			FluidRegistry.registerFluid(f);
+
+			TFTItemPropertyRegistry.registerMolten(new ItemStack(m.ingot), f);
 		}
 
 		//TODO: make this less of an awkward special case

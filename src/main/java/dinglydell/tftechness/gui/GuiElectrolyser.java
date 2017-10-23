@@ -45,7 +45,7 @@ public class GuiElectrolyser extends GuiContainer {
 		components.clear();
 		components.add(new GuiRF(offsetLeft + 7, offsetTop + 9, 3, 50, tile));
 		components.add(new GuiSolutionTank(offsetLeft + 48, offsetTop + 9, 16,
-				30, "Solvent", tile.getCryoliteTank()));
+				30, "Solution", tile.getCryoliteTank()));
 		components.add(new GuiTank(offsetLeft + 113, offsetTop + 9, 16, 30,
 				"Product", tile.getAluminiumTank()));
 		super.initGui();

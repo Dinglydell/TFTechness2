@@ -41,6 +41,7 @@ public class SolutionTank {
 	public SolutionTank(int capacity) {
 		fluids = new HashMap<Fluid, FluidStack>();
 		solids = new HashMap<ItemMeta, ItemStack>();
+		solutes = new HashMap<ItemMeta, Integer>();
 		this.capacity = capacity;
 	}
 
@@ -88,7 +89,7 @@ public class SolutionTank {
 
 	public float getSHMass() {
 
-		float SHMass = getAir() * SH_AIR * DENSITY_AIR;
+		float SHMass = getAir() * 0.001f * SH_AIR * DENSITY_AIR;
 		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
 			if (fluid.getKey() instanceof FluidMoltenMetal) {
 				FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
@@ -178,6 +179,9 @@ public class SolutionTank {
 		//do a reaction
 		//TODO: improve performance on this check
 		SolutionRecipe recipe = SolutionRecipe.findRecipe(this);
+		if (recipe == null) {
+			return;
+		}
 		boolean hasEnough = false;
 		switch (recipe.inputState) {
 		case gas:
@@ -217,7 +221,7 @@ public class SolutionTank {
 			//if(hi.meltTemp > temperature){
 			FluidMoltenMetal output = TFTItemPropertyRegistry
 					.getMolten(recipe.output);
-			fill(new FluidStack(output, recipe.outputQuantity), true);
+			fill(output.createStack(recipe.outputQuantity, temperature), true);
 			//}
 		}
 
@@ -230,8 +234,8 @@ public class SolutionTank {
 		}
 		int amt = getContentAmount();
 		float volDens = TFTItemPropertyRegistry.getVolumeDensity(stack);
-		int toFill = Math
-				.min(stack.stackSize, (capacity - amt) / (int) volDens);
+		int toFill = Math.min(stack.stackSize,
+				(int) ((capacity - amt) / volDens));
 		if (doFill) {
 			ItemMeta im = new ItemMeta(stack);
 			if (!solids.containsKey(im)) {
@@ -283,19 +287,20 @@ public class SolutionTank {
 		float fluidAmt = getFluidAmount(); // 1000f;
 
 		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
-			infoList.add(fluid.getValue().getLocalizedName() + "(l) - "
+			infoList.add(fluid.getValue().getLocalizedName() + " (l) - "
 					+ fluid.getValue().amount + "mB");
 		}
 		for (Entry<ItemMeta, Integer> solute : solutes.entrySet()) {
 			ItemStack is = new ItemStack(solute.getKey().item, 1,
 					solute.getKey().meta);
-			infoList.add(StatCollector.translateToLocal(is.getUnlocalizedName())
-					+ "(solute) - " + solute.getValue() / fluidAmt + "mol/mB");
+			infoList.add(StatCollector.translateToLocal(is.getUnlocalizedName()
+					+ ".name")
+					+ " (solute) - " + solute.getValue() / fluidAmt + "mol/mB");
 		}
 		for (Entry<ItemMeta, ItemStack> solid : solids.entrySet()) {
 			infoList.add(StatCollector.translateToLocal(solid.getValue()
-					.getUnlocalizedName())
-					+ "(s) - "
+					.getUnlocalizedName() + ".name")
+					+ " (s) - "
 					+ (solid.getValue().stackSize * TFTItemPropertyRegistry
 							.getDensity(solid.getValue())) + "kg");
 		}
@@ -359,6 +364,8 @@ public class SolutionTank {
 					(short) Item.getIdFromItem(solute.getKey().item));
 			soluteTag.setShort("meta", (short) solute.getKey().meta);
 			soluteTag.setInteger("amt", solute.getValue());
+
+			soluteTags.appendTag(soluteTag);
 
 		}
 		tag.setTag("Solutes", soluteTags);
