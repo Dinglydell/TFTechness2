@@ -24,7 +24,9 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 		IInventory, IEnergyReceiver {
 	private int masterX, masterY, masterZ;
 	private EnumFacing facing;
-	protected int rf;
+	private int rf;
+	/** Calculated rate of consumption */
+	private int rfRate;
 
 	protected ItemStack[] inventory;
 
@@ -35,7 +37,8 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	@Override
 	public void updateEntity() {
 		if (isMaster() && !worldObj.isRemote && rf > 0) {
-			rf -= spendRf(Math.min(getMaxRfRate(), rf));
+			rfRate = spendRf(Math.min(getMaxRfRate(), rf));
+			rf -= rfRate;
 			this.sendServerToClientMessage();
 		}
 	}
@@ -164,6 +167,10 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 		return facing;
 	}
 
+	public int getEnergyConsumptionRate() {
+		return rfRate;
+	}
+
 	@Override
 	public int getEnergyStored(ForgeDirection direction) {
 		if (isMaster()) {
@@ -264,11 +271,12 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	 */
 	public void writeServerToClientMessage(NBTTagCompound nbt) {
 		nbt.setInteger("rf", rf);
+		nbt.setInteger("rfRate", rfRate);
 	}
 
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 		rf = nbt.getInteger("rf");
-
+		rfRate = nbt.getInteger("rfRate");
 	}
 
 	private void sendServerToClientMessage() {
