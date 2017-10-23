@@ -122,51 +122,54 @@ public class TFTechness2 {
 
 		// Stock TFC
 		// For multiple metals with the same stat entry
-		MetalStat blackSteel = new MetalStat(0.35, 1485, 998);
-		MetalStat blueSteel = new MetalStat(0.35, 1540, 975);
-		MetalStat copper = new MetalStat(0.35, 1080, 996);
-		MetalStat redSteel = new MetalStat(0.35, 1540, 1093);
-		MetalStat steel = new MetalStat(0.35, 1540, 844);
+		MetalStat blackSteel = new MetalStat(0.35, 1485, 8982);
+		MetalStat blueSteel = new MetalStat(0.35, 1540, 8775);
+		MetalStat copper = new MetalStat(0.35, 1080, 8960);
+		MetalStat redSteel = new MetalStat(0.35, 1540, 9837);
+		MetalStat steel = new MetalStat(0.35, 1540, 8000);
 
-		statMap.put("Bismuth", new MetalStat(0.14, 270, 1087));
+		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000));
 		statMap.put("BismuthBronze", new MetalStat(0.35, 985, 963));
-		statMap.put("BlackBronze", new MetalStat(0.35, 1070, 1313));
+		statMap.put("BlackBronze", new MetalStat(0.35, 1070, 8626));
 		statMap.put("BlackSteel", blackSteel);
 		statMap.put("BlueSteel", blueSteel);
-		statMap.put("Brass", new MetalStat(0.35, 930, 976));
-		statMap.put("Bronze", new MetalStat(0.35, 950, 947));
+		statMap.put("Brass", new MetalStat(0.35, 930, 8500));
+		statMap.put("Bronze", new MetalStat(0.35, 950, 8523));
 		statMap.put("Copper", copper);
-		statMap.put("Gold", new MetalStat(0.6, 1060, 2147));
+		statMap.put("Gold", new MetalStat(0.6, 1060, 18000));
 		statMap.put("HCBlackSteel", blackSteel);
 		statMap.put("HCBlueSteel", blueSteel);
 		statMap.put("HCRedSteel", redSteel);
-		statMap.put("Lead", new MetalStat(0.22, 328, 1260));
-		statMap.put("Nickel", new MetalStat(0.48, 1453, 989));
-		statMap.put("PigIron", new MetalStat(0.35, 1500, 900));
-		statMap.put("Platinum", new MetalStat(0.35, 1730, 2383));
+		statMap.put("Lead", new MetalStat(0.22, 328, 11000));
+		statMap.put("Nickel", new MetalStat(0.48, 1453, 8200));
+		statMap.put("PigIron", new MetalStat(0.35, 1500, 8100));
+		statMap.put("Platinum", new MetalStat(0.35, 1730, 20000));
 		statMap.put("RedSteel", redSteel);
-		statMap.put("RoseGold", new MetalStat(0.35, 960, 1859));
-		statMap.put("Silver", new MetalStat(0.48, 961, 1111));
+		statMap.put("RoseGold", new MetalStat(0.35, 960, 16731));
+		statMap.put("Silver", new MetalStat(0.48, 961, 10000));
 		statMap.put("Steel", steel);
-		statMap.put("SterlingSilver", new MetalStat(0.35, 900, 1082));
-		statMap.put("Tin", new MetalStat(0.14, 230, 811));
+		statMap.put("SterlingSilver", new MetalStat(0.35, 900, 9738));
+		statMap.put("Tin", new MetalStat(0.14, 230, 7000));
 		// TFC uses copper heat properties for all unknown ingots
 		statMap.put("Unknown", copper);
 		statMap.put("WeakRedSteel", redSteel);
 		statMap.put("WeakBlueSteel", blueSteel);
 		statMap.put("WeakSteel", steel);
-		statMap.put("WroughtIron", new MetalStat(0.35, 1535, 889));
-		statMap.put("Zinc", new MetalStat(0.21, 420, 792));
+		statMap.put("WroughtIron", new MetalStat(0.35, 1535, 7500));
+		statMap.put("Zinc", new MetalStat(0.21, 420, 7000));
 
 		// IE
-		statMap.put("Constantan", new MetalStat(0.39, 1210, 987));
-		statMap.put("Electrum", new MetalStat(0.181, 650, 1446));
-		statMap.put("Aluminium", new MetalStat(0.91, 660, 270));
+		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870));
+		statMap.put("Electrum", new MetalStat(0.181, 650, 14460));
+		statMap.put("Aluminium", new MetalStat(0.91, 660, 2700));
 
 		// TFT
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
-		statMap.put("Uranium", new MetalStat(0.12, 1132, 1910));
+		statMap.put("Uranium", new MetalStat(0.12, 1132, 19100));
 
+		//non-metals
+		statMap.put("Redstone", new MetalStat(1.136, 1000, 3000));
+		statMap.put("Alumina", new MetalStat(0.451, 2072, 3900));
 	}
 
 	@EventHandler
@@ -309,6 +312,13 @@ public class TFTechness2 {
 		manager.addIndex(new HeatIndex(
 				new ItemStack(TFTItems.crushedBauxite, 1), 1, 1100,
 				new ItemStack(TFTItems.alumina, 1)));
+
+		//Alumina
+		manager.addIndex(new HeatIndex(new ItemStack(TFTItems.alumina, 1),
+				TFTechness2.statMap.get("Alumina").heat));
+		//Redstone
+		manager.addIndex(new HeatIndex(new ItemStack(Items.redstone, 1),
+				TFTechness2.statMap.get("Redstone").heat));
 	}
 
 	private void tfcKilnRecipes() {

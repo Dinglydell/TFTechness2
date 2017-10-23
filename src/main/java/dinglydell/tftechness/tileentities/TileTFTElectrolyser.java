@@ -85,7 +85,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 	@Override
 	public int getInventoryStackLimit() {
 
-		return 2;
+		return 64;
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 		int massAlumina = amtAlumina * MR_ALUMINA / 1000;
 		int volAluminium = getAluminiumAmt();
 		MetalStat Al = TFTechness2.statMap.get("Aluminium");
-		int massAluminium = volAluminium * Al.ingotMass * 10;
+		int massAluminium = volAluminium * Al.density;
 		return massAir * SH_AIR + massRed * SH_REDSTONE + massAlumina
 				* SH_ALUMINA + massAluminium * Al.heat.specificHeat;
 	}
