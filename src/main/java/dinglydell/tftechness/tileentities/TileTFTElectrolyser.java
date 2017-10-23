@@ -36,6 +36,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 	private static final float COOLING_COEF = 1;
 
 	protected int thermalEnergy = 14365440;
+	protected int oldTemp = 0;
 	protected int targetTemperature;
 
 	//private static final int ELECTRODE_SLOT_A = 0;
@@ -46,6 +47,10 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 
 	public TileTFTElectrolyser() {
 		inventory = new ItemStack[5];
+		//thermalEnergy = (int) (TFC_Climate.getHeightAdjustedTemp(worldObj,
+		//		xCoord,
+		//		yCoord,
+		//		zCoord) * getNetSHMass());
 	}
 
 	@Override
@@ -218,8 +223,12 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 					zCoord);
 			this.thermalEnergy -= (this.getTemperature() - externalTemp)
 					* COOLING_COEF;
+			if (oldTemp != this.getTemperature()) {
+				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			}
 		}
 		super.updateEntity();
+
 	}
 
 	@Override

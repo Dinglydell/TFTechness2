@@ -32,8 +32,9 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 
 	@Override
 	public void updateEntity() {
-		if (!worldObj.isRemote && rf > 0) {
+		if (isMaster() && !worldObj.isRemote && rf > 0) {
 			rf -= spendRf(Math.min(getMaxRfRate(), rf));
+
 		}
 	}
 
@@ -180,8 +181,11 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 			}
 			return newRf - oldRf;
 		}
-
-		return getMaster().receiveEnergy(direction, amt, simulated);
+		TileTFTMachineBase master = getMaster();
+		if (master == null) {
+			return 0;
+		}
+		return master.receiveEnergy(direction, amt, simulated);
 
 	}
 
@@ -195,6 +199,9 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	}
 
 	protected void writePacketNBT(NBTTagCompound nbt) {
+		nbt.setInteger("masterX", masterX);
+		nbt.setInteger("masterY", masterY);
+		nbt.setInteger("masterZ", masterZ);
 		if (isMaster()) {
 			writeToMasterNBT(nbt);
 		}
@@ -216,6 +223,9 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	}
 
 	protected void readPacketNBT(NBTTagCompound nbt) {
+		masterX = nbt.getInteger("masterX");
+		masterY = nbt.getInteger("masterY");
+		masterZ = nbt.getInteger("masterZ");
 		if (isMaster()) {
 			readFromMasterNBT(nbt);
 		}
