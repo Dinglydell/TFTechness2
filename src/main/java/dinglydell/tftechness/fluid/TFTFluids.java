@@ -1,9 +1,8 @@
-package dinglydell.tftechness.recipe;
+package dinglydell.tftechness.fluid;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import dinglydell.tftechness.fluid.FluidMoltenMetal;
 
 public class TFTFluids {
 	public static Map<String, FluidMoltenMetal> moltenMetal = new HashMap<String, FluidMoltenMetal>();

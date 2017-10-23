@@ -8,6 +8,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.gui.component.GuiRF;
+import dinglydell.tftechness.gui.component.GuiTank;
 import dinglydell.tftechness.gui.component.GuiTemperature;
 import dinglydell.tftechness.gui.component.ITFTComponent;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
@@ -42,7 +43,10 @@ public class GuiElectrolyser extends GuiContainer {
 
 		components.clear();
 		components.add(new GuiRF(offsetLeft + 7, offsetTop + 9, 3, 50, tile));
-
+		components.add(new GuiTank(offsetLeft + 48, offsetTop + 9, 16, 30,
+				"Solvent", tile.getCryoliteTank()));
+		components.add(new GuiTank(offsetLeft + 113, offsetTop + 9, 16, 30,
+				"Product", tile.getAluminiumTank()));
 		super.initGui();
 
 	}

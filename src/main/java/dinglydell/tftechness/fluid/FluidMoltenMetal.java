@@ -4,6 +4,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import dinglydell.tftechness.TFTechness2;
 
 public class FluidMoltenMetal extends Fluid {
 	protected String metalName;
@@ -26,7 +27,8 @@ public class FluidMoltenMetal extends Fluid {
 	@Override
 	public String getLocalizedName(FluidStack stack) {
 		return StatCollector.translateToLocal(getUnlocalizedName()) + " "
-				+ StatCollector.translateToLocal("metal." + metalName);
+				+ StatCollector.translateToLocal("metal." + metalName) + " - "
+				+ getTemperature(stack) + TFTechness2.degrees + "C";
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public class FluidMoltenMetal extends Fluid {
 		return stack.tag.getInteger("Temperature");
 	}
 
-	public void setTemperature(int temperature, FluidStack stack) {
+	public void setTemperature(float temperature, FluidStack stack) {
 
 		NBTTagCompound nbt = stack.tag;
 		if (nbt == null) {

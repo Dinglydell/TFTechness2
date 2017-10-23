@@ -5,12 +5,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.TFC_Climate;
 import com.bioxx.tfc.api.TFCItems;
 
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.fluid.FluidTankMetal;
+import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.metal.MetalStat;
@@ -18,7 +24,8 @@ import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.util.OreDict;
 
-public class TileTFTElectrolyser extends TileTFTMachineBase {
+public class TileTFTElectrolyser extends TileTFTMachineBase implements
+		IFluidHandler {
 	public enum Slots {
 		electrodeA, electrodeB, alumina, redstone, mold
 	}
@@ -38,6 +45,11 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 	protected int thermalEnergy = 14365440;
 	protected int oldTemp = 0;
 	protected int targetTemperature;
+
+	protected FluidTankMetal cryoliteTank = new FluidTankMetal(
+			MAX_REDSTONE_CAPACITY * 1000, TFTFluids.moltenMetal.get("Redstone"));
+	protected FluidTankMetal aluminiumTank = new FluidTankMetal(
+			MAX_REDSTONE_CAPACITY * 1000, TFTFluids.moltenMetal.get("Aluminum"));
 
 	//private static final int ELECTRODE_SLOT_A = 0;
 	//private static final int ELECTRODE_SLOT_B = 1;
@@ -209,6 +221,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 		super.writeToMasterNBT(data);
 		data.setInteger("ThermalEnergy", thermalEnergy);
 		data.setInteger("TargetTemperature", targetTemperature);
+		data.setTag("CryoliteTank", cryoliteTank.writeToNBT());
+		data.setTag("AluminiumTank", aluminiumTank.writeToNBT());
 	}
 
 	@Override
@@ -216,6 +230,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 		super.readFromMasterNBT(data);
 		this.thermalEnergy = data.getInteger("ThermalEnergy");
 		this.targetTemperature = data.getInteger("TargetTemperature");
+		this.cryoliteTank.readFromNBT(data.getCompoundTag("CryoliteTank"));
+		this.aluminiumTank.readFromNBT(data.getCompoundTag("AluminiumTank"));
 	}
 
 	@Override
@@ -256,4 +272,46 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 		super.readServerToClientMessage(nbt);
 		thermalEnergy = nbt.getInteger("ThermalEnergy");
 	}
+
+	@Override
+	public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
+		return cryoliteTank.fill(stack, doFill);
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, FluidStack stack,
+			boolean doDrain) {
+		return drain(from, stack.amount, doDrain);
+	}
+
+	@Override
+	public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		return aluminiumTank.drain(maxDrain, doDrain);
+	}
+
+	@Override
+	public boolean canFill(ForgeDirection from, Fluid fluid) {
+		return cryoliteTank.fill(new FluidStack(fluid, 1), false) != 0;
+	}
+
+	@Override
+	public boolean canDrain(ForgeDirection from, Fluid fluid) {
+		return aluminiumTank.getLockedFluid() == fluid
+				&& aluminiumTank.getFluidAmount() > 0;
+	}
+
+	@Override
+	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
+		return new FluidTankInfo[] { cryoliteTank.getInfo(),
+				aluminiumTank.getInfo() };
+	}
+
+	public FluidTankMetal getCryoliteTank() {
+		return cryoliteTank;
+	}
+
+	public FluidTankMetal getAluminiumTank() {
+		return aluminiumTank;
+	}
+
 }
