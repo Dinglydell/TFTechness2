@@ -44,6 +44,7 @@ public class Material {
 	public ItemStack oldNugget;
 	public Item nugget;
 	public Block block;
+	public int blockMeta;
 
 	public HeatRaw heatRaw;
 	public int tier;
@@ -218,8 +219,9 @@ public class Material {
 		return this;
 	}
 
-	public Material setBlock(Block block) {
+	public Material setBlock(Block block, int meta) {
 		this.block = block;
+		this.blockMeta = meta;
 		return this;
 	}
 

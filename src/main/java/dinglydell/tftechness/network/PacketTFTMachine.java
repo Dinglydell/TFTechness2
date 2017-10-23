@@ -41,6 +41,9 @@ public class PacketTFTMachine implements IMessage {
 	}
 
 	public TileTFTMachineBase getTE(World world) {
+		if (world == null) {
+			return null;
+		}
 		return (TileTFTMachineBase) world.getTileEntity(nbt
 				.getInteger("xCoord"), nbt.getShort("yCoord"), nbt
 				.getInteger("zCoord"));

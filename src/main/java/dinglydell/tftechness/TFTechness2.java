@@ -48,11 +48,13 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import dinglydell.tftechness.block.BlockMoltenMetal;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
+import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.gui.TFTGuiHandler;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
@@ -64,7 +66,9 @@ import dinglydell.tftechness.network.PacketTFTMachine;
 import dinglydell.tftechness.network.TFTMachinePacketHandler;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
+import dinglydell.tftechness.recipe.TFTFluids;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
+import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.util.ItemUtil;
 
@@ -80,6 +84,8 @@ public class TFTechness2 {
 			.getLogger("TFTechness");
 	public static Material[] materials;
 	public static TFTechness2 instance;
+
+	public static final int ingotsPerBlock = 10;
 
 	public static SimpleNetworkWrapper snw;
 
@@ -161,7 +167,8 @@ public class TFTechness2 {
 		// IE
 		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870));
 		statMap.put("Electrum", new MetalStat(0.181, 650, 14460));
-		statMap.put("Aluminium", new MetalStat(0.91, 660, 2700));
+		//the world shudders in silence as a thousand dictionaries crumble in despair
+		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700));
 
 		// TFT
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
@@ -175,10 +182,24 @@ public class TFTechness2 {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		registerItems();
+		registerFluids();
 		registerBlocks();
 		registerGui();
 		registerIEMultiblocks();
 		registerTileEntities();
+	}
+
+	private void registerFluids() {
+		for (Material m : materials) {
+			FluidMoltenMetal f = new FluidMoltenMetal(m.name);
+			TFTFluids.moltenMetal.put(m.name, f);
+			FluidRegistry.registerFluid(f);
+		}
+
+		//TODO: make this less of an awkward special case
+		FluidMoltenMetal redstone = new FluidMoltenMetal("Redstone");
+		TFTFluids.moltenMetal.put("Redstone", redstone);
+		FluidRegistry.registerFluid(redstone);
 	}
 
 	private void registerGui() {
@@ -197,6 +218,8 @@ public class TFTechness2 {
 		GameRegistry.registerTileEntity(TileTFTElectrolyser.class,
 				"TFTElectrolyser");
 
+		GameRegistry.registerTileEntity(TileMoltenMetal.class, "MoltenMetal");
+
 	}
 
 	private void registerBlocks() {
@@ -210,6 +233,20 @@ public class TFTechness2 {
 
 		GameRegistry.registerBlock(TFTBlocks.machine, "Machine");
 
+		for (Material m : materials) {
+			BlockMoltenMetal moltenMetal = new BlockMoltenMetal(
+					TFTFluids.moltenMetal.get(m.name));
+			TFTBlocks.moltenMetal.put(m.name, moltenMetal);
+
+			GameRegistry.registerBlock(moltenMetal,
+					moltenMetal.getUnlocalizedName());
+		}
+		BlockMoltenMetal moltenRedstone = new BlockMoltenMetal(
+				TFTFluids.moltenMetal.get("Redstone"));
+		TFTBlocks.moltenMetal.put("Redstone", moltenRedstone);
+		GameRegistry.registerBlock(moltenRedstone,
+				moltenRedstone.getUnlocalizedName());
+
 		TFTOreRegistry.registerAllOreBlocks();
 	}
 
@@ -218,13 +255,15 @@ public class TFTechness2 {
 				Alloy.EnumTier.TierIV, false)
 				.setNugget(TFTMeta.ieConstantanNugget)
 				.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred("Copper",
-						50, 60), new AlloyIngred("Nickel", 40, 50) }),
+						50, 60), new AlloyIngred("Nickel", 40, 50) })
+				.setBlock(IEContent.blockStorage, 0),
 				new Material("Electrum", 5, Alloy.EnumTier.TierIV, false)
 						.setNugget(TFTMeta.ieElectrumNugget)
 						.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
 								"Gold", 50, 60),
 								new AlloyIngred("Silver", 40, 50) }),
-				new Material("Aluminium", 3, Alloy.EnumTier.TierIII, false)
+				//my eyes honestly hurt
+				new Material("Aluminum", 3, Alloy.EnumTier.TierIII, false)
 						.setNugget(TFTMeta.ieAluminiumNugget)
 						.setOreName("Aluminum"),
 
@@ -240,7 +279,8 @@ public class TFTechness2 {
 						.setNugget(TFTMeta.ieLeadNugget),
 				new Material("Steel", 4, true).setIngot(TFCItems.steelIngot)
 						.setNugget(TFTMeta.ieSteelNugget)
-						.setUnshaped(TFCItems.steelUnshaped),
+						.setUnshaped(TFCItems.steelUnshaped)
+						.setBlock(IEContent.blockStorage, 7),
 				new Material("Copper", 1, true).setIngot(TFCItems.copperIngot)
 						.setNugget(TFTMeta.ieCopperNugget)
 						.setUnshaped(TFCItems.copperUnshaped),

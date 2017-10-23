@@ -153,13 +153,17 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 		int volAir = MAX_REDSTONE_CAPACITY - getRedstoneAmt();
 		int amtAlumina = getAluminaAmt();
 		float massAir = volAir * DENSITY_AIR;
-		int massRed = volRed;
+		MetalStat red = TFTechness2.statMap.get("Redstone");
+		int massRed = volRed * red.density;
+		MetalStat alumina = TFTechness2.statMap.get("Alumina");
 		int massAlumina = amtAlumina * MR_ALUMINA / 1000;
 		int volAluminium = getAluminiumAmt();
-		MetalStat Al = TFTechness2.statMap.get("Aluminium");
+		//my eyes are burning
+		MetalStat Al = TFTechness2.statMap.get("Aluminum");
 		int massAluminium = volAluminium * Al.density;
-		return massAir * SH_AIR + massRed * SH_REDSTONE + massAlumina
-				* SH_ALUMINA + massAluminium * Al.heat.specificHeat;
+		return massAir * SH_AIR + massRed * red.getSISpecificHeat()
+				+ massAlumina * alumina.getSISpecificHeat() + massAluminium
+				* Al.getSISpecificHeat();
 	}
 
 	/** Unit: buckets (m^3) */
