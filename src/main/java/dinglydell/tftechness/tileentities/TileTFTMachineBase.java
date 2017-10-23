@@ -13,6 +13,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyReceiver;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.network.PacketTFTMachine;
@@ -34,7 +36,7 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	public void updateEntity() {
 		if (isMaster() && !worldObj.isRemote && rf > 0) {
 			rf -= spendRf(Math.min(getMaxRfRate(), rf));
-
+			this.sendServerToClientMessage();
 		}
 	}
 
@@ -243,7 +245,7 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	 * something in a GUI
 	 */
 	public void sendClientToServerMessage() {
-		TFTechness2.snw.sendToServer(new PacketTFTMachine(this));
+		TFTechness2.snw.sendToServer(new PacketTFTMachine(this, Side.CLIENT));
 	}
 
 	/**
@@ -255,5 +257,26 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 	}
 
 	public abstract void writeClientToServerMessage(NBTTagCompound nbt);
+
+	/**
+	 * Message to send to client for small, regular updates (such as amount of
+	 * RF)
+	 */
+	public void writeServerToClientMessage(NBTTagCompound nbt) {
+		nbt.setInteger("rf", rf);
+	}
+
+	public void readServerToClientMessage(NBTTagCompound nbt) {
+		rf = nbt.getInteger("rf");
+
+	}
+
+	private void sendServerToClientMessage() {
+		TFTechness2.snw
+				.sendToAllAround(new PacketTFTMachine(this, Side.SERVER),
+						new TargetPoint(worldObj.provider.dimensionId, xCoord,
+								yCoord, zCoord, 64));
+
+	}
 
 }

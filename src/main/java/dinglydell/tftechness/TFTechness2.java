@@ -112,6 +112,10 @@ public class TFTechness2 {
 				PacketTFTMachine.class,
 				0,
 				Side.SERVER);
+		snw.registerMessage(TFTMachinePacketHandler.class,
+				PacketTFTMachine.class,
+				1,
+				Side.CLIENT);
 	}
 
 	private void initStatMap() {

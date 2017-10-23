@@ -223,9 +223,6 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 					zCoord);
 			this.thermalEnergy -= (this.getTemperature() - externalTemp)
 					* COOLING_COEF;
-			if (oldTemp != this.getTemperature()) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			}
 		}
 		super.updateEntity();
 
@@ -243,4 +240,16 @@ public class TileTFTElectrolyser extends TileTFTMachineBase {
 
 	}
 
+	@Override
+	public void writeServerToClientMessage(NBTTagCompound nbt) {
+
+		super.writeServerToClientMessage(nbt);
+		nbt.setInteger("ThermalEnergy", thermalEnergy);
+	}
+
+	@Override
+	public void readServerToClientMessage(NBTTagCompound nbt) {
+		super.readServerToClientMessage(nbt);
+		thermalEnergy = nbt.getInteger("ThermalEnergy");
+	}
 }

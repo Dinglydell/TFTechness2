@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.tileentities.TileTFTMachineBase;
 
 public class PacketTFTMachine implements IMessage {
@@ -14,9 +15,13 @@ public class PacketTFTMachine implements IMessage {
 
 	}
 
-	public PacketTFTMachine(TileTFTMachineBase tile) {
+	public PacketTFTMachine(TileTFTMachineBase tile, Side side) {
 		nbt = new NBTTagCompound();
-		tile.writeClientToServerMessage(nbt);
+		if (side == Side.CLIENT) {
+			tile.writeClientToServerMessage(nbt);
+		} else {
+			tile.writeServerToClientMessage(nbt);
+		}
 		nbt.setInteger("xCoord", tile.xCoord);
 		nbt.setShort("yCoord", (short) tile.yCoord);
 		nbt.setInteger("zCoord", tile.zCoord);
