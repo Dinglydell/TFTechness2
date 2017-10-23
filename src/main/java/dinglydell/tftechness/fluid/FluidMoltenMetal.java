@@ -26,9 +26,10 @@ public class FluidMoltenMetal extends Fluid {
 
 	@Override
 	public String getLocalizedName(FluidStack stack) {
-		return StatCollector.translateToLocal(getUnlocalizedName()) + " "
-				+ StatCollector.translateToLocal("metal." + metalName) + " - "
-				+ getTemperature(stack) + TFTechness2.degrees + "C";
+		return StatCollector.translateToLocal("fluid.moltenMetal.name")
+				+ StatCollector
+						.translateToLocal("metal." + metalName + ".name")
+				+ " - " + getTemperature(stack) + TFTechness2.degrees + "C";
 	}
 
 	@Override

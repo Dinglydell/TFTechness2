@@ -26,6 +26,6 @@ public class MetalStat {
 	 * TFC uses kj/(kg K) by default
 	 * */
 	public float getSISpecificHeat() {
-		return heat.specificHeat * 1000;
+		return heat.specificHeat / 1000;
 	}
 }

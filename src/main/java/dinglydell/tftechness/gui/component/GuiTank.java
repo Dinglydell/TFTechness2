@@ -25,10 +25,12 @@ public class GuiTank extends Gui implements ITFTComponent {
 
 	@Override
 	public void addTooltip(List<String> tooltip) {
-		String fluidName = name
-				+ (tank.getFluid() == null ? "" : ("("
-						+ tank.getFluid().getLocalizedName() + ")"));
-		tooltip.add(fluidName);
+		String fluidName = (tank.getFluid() == null ? null : ("("
+				+ tank.getFluid().getLocalizedName() + ")"));
+		tooltip.add(name);
+		if (fluidName != null) {
+			tooltip.add(fluidName);
+		}
 		tooltip.add(tank.getFluidAmount() + "/" + tank.getCapacity() + "mB");
 
 	}

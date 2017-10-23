@@ -58,6 +58,7 @@ import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
+import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.metal.AlloyIngred;
@@ -67,6 +68,8 @@ import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.network.PacketTFTMachine;
 import dinglydell.tftechness.network.TFTMachinePacketHandler;
 import dinglydell.tftechness.recipe.RemoveBatch;
+import dinglydell.tftechness.recipe.SolutionRecipe;
+import dinglydell.tftechness.recipe.SolutionRecipe.EnumState;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
@@ -189,11 +192,29 @@ public class TFTechness2 {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		registerItems();
+
 		registerFluids();
+		registerItemProps();
 		registerBlocks();
 		registerGui();
 		registerIEMultiblocks();
 		registerTileEntities();
+	}
+
+	private void registerItemProps() {
+		ItemStack redstone = new ItemStack(Items.redstone);
+		TFTItemPropertyRegistry.registerPowder(redstone);
+		ItemStack alumina = new ItemStack(TFTItems.alumina);
+		TFTItemPropertyRegistry.registerPowder(alumina);
+		FluidMoltenMetal moltRed = TFTFluids.moltenMetal.get("Redstone");
+		TFTItemPropertyRegistry.registerSolute(alumina, moltRed, 250);
+
+		TFTItemPropertyRegistry.registerMolten(redstone, moltRed);
+		TFTItemPropertyRegistry.registerMolten(alumina,
+				TFTFluids.moltenMetal.get("Alumina"));
+		TFTItemPropertyRegistry.registerNumMoles(alumina, 250);
+		TFTItemPropertyRegistry.registerDensity(alumina, 255);
+		TFTItemPropertyRegistry.registerVolume(alumina, 0.085f);
 	}
 
 	private void registerFluids() {
@@ -207,6 +228,10 @@ public class TFTechness2 {
 		FluidMoltenMetal redstone = new FluidMoltenMetal("Redstone");
 		TFTFluids.moltenMetal.put("Redstone", redstone);
 		FluidRegistry.registerFluid(redstone);
+
+		FluidMoltenMetal alumina = new FluidMoltenMetal("Alumina");
+		TFTFluids.moltenMetal.put("Alumina", alumina);
+		FluidRegistry.registerFluid(alumina);
 	}
 
 	private void registerGui() {
@@ -342,6 +367,7 @@ public class TFTechness2 {
 		removeRecipes();
 		addIEMachineRecipes();
 		addIERecipes();
+		addTFTRecipes();
 		tfcAlloyRecipes();
 		tfcClayRecipes();
 		tfcHeatRecipes();
@@ -351,6 +377,20 @@ public class TFTechness2 {
 			m.addMoldRecipes();
 		}
 		logger.info(IEApi.modPreference);
+	}
+
+	private void addTFTRecipes() {
+		// Alumina (solute) -> Aluminium (l)
+		SolutionRecipe.addRecipe(new SolutionRecipe(new ItemStack(
+				TFTItems.ingots.get("Aluminum")), 20, EnumState.solute,
+				new ItemStack(TFTItems.alumina), 1, SolutionRecipe.electrodes));
+
+		//Alumina (l) -> Aluminium (l)
+		SolutionRecipe
+				.addRecipe(new SolutionRecipe(new ItemStack(TFTItems.ingots
+						.get("Aluminum")), 1, EnumState.liquid, new ItemStack(
+						TFTItems.alumina), 17, SolutionRecipe.electrodes));
+
 	}
 
 	private void tfcHeatRecipes() {

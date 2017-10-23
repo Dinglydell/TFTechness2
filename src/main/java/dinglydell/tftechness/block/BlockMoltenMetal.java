@@ -2,11 +2,14 @@ package dinglydell.tftechness.block;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.FluidStack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.metal.MetalStat;
@@ -46,6 +49,13 @@ public class BlockMoltenMetal extends BlockFluidClassic implements
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileMoltenMetal(stack);
 
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister register) {
+		this.blockIcon = register.registerIcon(stack.getUnlocalizedName());
+		stack.getFluid().setIcons(this.blockIcon);
 	}
 
 	@Override

@@ -26,6 +26,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.item.ItemMetal;
 import dinglydell.tftechness.item.ItemTFTMetalSheet;
+import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
@@ -82,6 +83,25 @@ public class Material {
 		addMolds();
 		addNuggets();
 		addRod();
+		registerItemProps();
+	}
+
+	private void registerItemProps() {
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot),
+				TFTechness2.statMap.get(this.name).density);
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot2x),
+				TFTechness2.statMap.get(this.name).density * 2);
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet),
+				TFTechness2.statMap.get(this.name).density * 2);
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet2x),
+				TFTechness2.statMap.get(this.name).density * 4);
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(rod),
+				TFTechness2.statMap.get(this.name).density * 0.5f);
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(nugget),
+				TFTechness2.statMap.get(this.name).density * 0.1f);
+		TFTItemPropertyRegistry.registerDensity(new ItemStack(unshaped),
+				TFTechness2.statMap.get(this.name).density);
+
 	}
 
 	private void addNuggets() {

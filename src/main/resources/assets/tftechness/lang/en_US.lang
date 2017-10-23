@@ -34,6 +34,8 @@ item.alumina.name=Alumina
 item.metalRod.name=Rod
 item.nugget.name=Nugget
 
+fluid.moltenMetal.name=Molten Metal: 
+
 metal.Aluminium.name=Aluminum
 metal.Electrum.name=Electrum
 metal.Constantan.name=Constantan
@@ -41,3 +43,4 @@ metal.Lead.name=Lead
 metal.Wrought Iron.name=Wrought Iron
 metal.Steel.name=Steel
 metal.Copper.name=Copper
+metal.Redstone.name=Redstone
