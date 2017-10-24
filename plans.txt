@@ -13,8 +13,15 @@ Mid-term:
 
 -Advanced rocketry
 
+-RF forge (multiblock)
+
+-Allow swappable parts in multiblocks - such as an upgradable casing that determines
+ how good of an insulator it is
+
 
 
 Longer term (low priority, distant future):
 
 -infa-red googles - allowing you to see exact temperature of items
+
+-advanced machine multiblocks that have a functionality dependent on the types of components used?

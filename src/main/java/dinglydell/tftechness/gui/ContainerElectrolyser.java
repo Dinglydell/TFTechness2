@@ -40,8 +40,8 @@ public class ContainerElectrolyser extends Container {
 		//player inventory
 		for (int y = 0; y < 3; ++y) {
 			for (int x = 0; x < 9; ++x) {
-				this.addSlotToContainer(new Slot(player, x + y * 9 + 8,
-						9 + x * 18, 83 + y * 18));
+				this.addSlotToContainer(new Slot(player, x + y * 9 + 9,
+						8 + x * 18, 83 + y * 18));
 			}
 		}
 		//player hotbar

@@ -23,8 +23,6 @@ public class GuiElectrolyser extends GuiContainer {
 
 	private GuiTemperature tempControl;
 	private TileTFTElectrolyser tile;
-	private int offsetLeft;
-	private int offsetTop;
 
 	protected List<ITFTComponent> components = new ArrayList<ITFTComponent>();
 
@@ -35,20 +33,20 @@ public class GuiElectrolyser extends GuiContainer {
 
 	@Override
 	public void initGui() {
+		super.initGui();
 		guiLeft = (width - TEX_WIDTH) / 2;
 		guiTop = (height - TEX_HEIGHT) / 2;
-		buttonList.add(new GuiTemperature(0, guiLeft + 14, guiTop + 9, 7, 49,
+		buttonList.add(new GuiTemperature(0, guiLeft + 15, guiTop + 8, 7, 49,
 				tile, true));
-		buttonList.add(new GuiTemperature(0, guiLeft + 27, guiTop + 9, 7, 49,
+		buttonList.add(new GuiTemperature(0, guiLeft + 28, guiTop + 8, 7, 49,
 				tile, false));
 
 		components.clear();
-		components.add(new GuiRF(guiLeft + 6, guiTop + 9, 3, 50, tile));
-		components.add(new GuiSolutionTank(guiLeft + 69, guiTop + 9, 34, 47,
+		components.add(new GuiRF(guiLeft + 7, guiTop + 8, 3, 50, tile));
+		components.add(new GuiSolutionTank(guiLeft + 69, guiTop + 8, 34, 47,
 				"Solution", tile.getCryoliteTank()));
-		components.add(new GuiTank(guiLeft + 112, guiTop + 9, 16, 47,
+		components.add(new GuiTank(guiLeft + 112, guiTop + 8, 16, 47,
 				"Product", tile.getAluminiumTank()));
-		super.initGui();
 
 	}
 
