@@ -45,9 +45,13 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	private static final float COOLING_COEF = 1;
 	//private static final float ITEM_HEAT_COEFFICIENT = 1;
 
-	protected int thermalEnergy = 14365440;
+	/** RF is multiplied by this before being used to heat up the machine */
+	private static final int HEAT_COEFFICIENT = 1;
+
+	/** internal temperature (degrees C) */
+	protected float temperature = 20f;
 	protected int oldTemp = 0;
-	protected int targetTemperature;
+	protected int targetTemperature = (int) temperature;
 
 	protected SolutionTank cryoliteTank = new SolutionTank(
 			MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));
@@ -163,7 +167,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	}
 
 	public float getTemperature() {
-		return this.thermalEnergy / getNetSHMass() - 273;
+		return this.temperature;
+		//return this.temperature / getNetSHMass() - 273;
 	}
 
 	/** Returns average specific heat * mass */
@@ -223,18 +228,20 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	@Override
 	protected int spendRf(int amt) {
-		int oldThermalEnergy = this.thermalEnergy;
-		this.thermalEnergy += Math.min(100 * amt,
-				Math.max(0, (targetTemperature + 273) * getNetSHMass()
-						- this.thermalEnergy));
+		float oldThermalEnergy = this.temperature * getNetSHMass();
+		float SHMass = getNetSHMass();
+		int energy = (int) (this.temperature * getNetSHMass());
+		energy += Math.min(HEAT_COEFFICIENT * amt, Math.max(0,
+				(targetTemperature + 273) * getNetSHMass() - energy));
+		this.temperature = energy / getNetSHMass();
 
-		return (this.thermalEnergy - oldThermalEnergy) / 100;
+		return (int) ((this.temperature - oldThermalEnergy) / HEAT_COEFFICIENT);
 	}
 
 	@Override
 	protected void writeToMasterNBT(NBTTagCompound data) {
 		super.writeToMasterNBT(data);
-		data.setInteger("ThermalEnergy", thermalEnergy);
+		data.setFloat("Temperature", temperature);
 		data.setInteger("TargetTemperature", targetTemperature);
 		data.setTag("CryoliteTank", cryoliteTank.writeToNBT());
 		data.setTag("AluminiumTank", aluminiumTank.writeToNBT());
@@ -243,7 +250,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	@Override
 	protected void readFromMasterNBT(NBTTagCompound data) {
 		super.readFromMasterNBT(data);
-		this.thermalEnergy = data.getInteger("ThermalEnergy");
+		this.temperature = data.getFloat("Temperature");
 		this.targetTemperature = data.getInteger("TargetTemperature");
 		this.cryoliteTank.readFromNBT(data.getCompoundTag("CryoliteTank"));
 		this.aluminiumTank.readFromNBT(data.getCompoundTag("AluminiumTank"));
@@ -256,7 +263,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 					xCoord,
 					yCoord,
 					zCoord);
-			this.thermalEnergy -= (this.getTemperature() - externalTemp)
+			this.temperature -= (this.getTemperature() - externalTemp)
 					* COOLING_COEF;
 			ItemStack red = inventory[Slots.INPUT.ordinal()];
 			if (red != null) {
@@ -420,7 +427,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	public void writeServerToClientMessage(NBTTagCompound nbt) {
 
 		super.writeServerToClientMessage(nbt);
-		nbt.setInteger("ThermalEnergy", thermalEnergy);
+		nbt.setFloat("Temperature", temperature);
 		nbt.setTag("CryoliteTank", cryoliteTank.writeToNBT());
 		nbt.setTag("AluminiumTank", aluminiumTank.writeToNBT());
 	}
@@ -428,7 +435,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	@Override
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 		super.readServerToClientMessage(nbt);
-		thermalEnergy = nbt.getInteger("ThermalEnergy");
+		temperature = nbt.getFloat("Temperature");
 		cryoliteTank.readFromNBT(nbt.getCompoundTag("CryoliteTank"));
 		aluminiumTank.readFromNBT(nbt.getCompoundTag("AluminiumTank"));
 	}
