@@ -35,18 +35,18 @@ public class GuiElectrolyser extends GuiContainer {
 
 	@Override
 	public void initGui() {
-		offsetLeft = (width - TEX_WIDTH) / 2;
-		offsetTop = (height - TEX_HEIGHT) / 2;
-		buttonList.add(new GuiTemperature(0, offsetLeft + 15, offsetTop + 9, 7,
-				49, tile, true));
-		buttonList.add(new GuiTemperature(0, offsetLeft + 28, offsetTop + 9, 7,
-				49, tile, false));
+		guiLeft = (width - TEX_WIDTH) / 2;
+		guiTop = (height - TEX_HEIGHT) / 2;
+		buttonList.add(new GuiTemperature(0, guiLeft + 14, guiTop + 9, 7, 49,
+				tile, true));
+		buttonList.add(new GuiTemperature(0, guiLeft + 27, guiTop + 9, 7, 49,
+				tile, false));
 
 		components.clear();
-		components.add(new GuiRF(offsetLeft + 7, offsetTop + 9, 3, 50, tile));
-		components.add(new GuiSolutionTank(offsetLeft + 69, offsetTop + 9, 34,
-				47, "Solution", tile.getCryoliteTank()));
-		components.add(new GuiTank(offsetLeft + 112, offsetTop + 9, 16, 47,
+		components.add(new GuiRF(guiLeft + 6, guiTop + 9, 3, 50, tile));
+		components.add(new GuiSolutionTank(guiLeft + 69, guiTop + 9, 34, 47,
+				"Solution", tile.getCryoliteTank()));
+		components.add(new GuiTank(guiLeft + 112, guiTop + 9, 16, 47,
 				"Product", tile.getAluminiumTank()));
 		super.initGui();
 
@@ -82,12 +82,7 @@ public class GuiElectrolyser extends GuiContainer {
 
 		mc.getTextureManager().bindTexture(TEXTURE);
 
-		drawTexturedModalRect(offsetLeft,
-				offsetTop,
-				0,
-				0,
-				TEX_WIDTH,
-				TEX_HEIGHT);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, TEX_WIDTH, TEX_HEIGHT);
 		for (ITFTComponent c : components) {
 			c.draw();
 			//if (c.isHovering(x, y)) {

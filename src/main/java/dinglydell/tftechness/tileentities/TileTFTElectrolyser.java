@@ -319,7 +319,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	private void handleMoldOutput(int slot) {
 		ItemStack mold = inventory[slot];
-		if (mold == null) {
+		if (mold == null || aluminiumTank.getFluidAmount() == 0) {
 			return;
 		}
 		FluidMoltenMetal f = aluminiumTank.getLockedFluid();

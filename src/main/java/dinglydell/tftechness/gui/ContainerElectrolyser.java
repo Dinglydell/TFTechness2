@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 
 import com.bioxx.tfc.Containers.Slots.SlotMoldTool2;
 
+import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class ContainerElectrolyser extends Container {
@@ -20,32 +21,32 @@ public class ContainerElectrolyser extends Container {
 		this.tile = tile;
 		//electrode slots
 		addSlotToContainer(new IESlot.ArcElectrode(this, tile,
-				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 155, 9));
+				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 154, 8));
 
 		addSlotToContainer(new IESlot.ArcElectrode(this, tile,
-				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 155, 43));
+				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 154, 42));
 
 		//input
 		addSlotToContainer(new SlotPowder(tile,
-				TileTFTElectrolyser.Slots.INPUT.ordinal(), 46, 24));
+				TileTFTElectrolyser.Slots.INPUT.ordinal(), 46, 23));
 
 		////alumina
 		//addSlotToContainer(new Slot(tile,
 		//		TileTFTElectrolyser.Slots.alumina.ordinal(), 71, 43));
 		//mold
 		addSlotToContainer(new SlotMoldTool2(tile,
-				TileTFTElectrolyser.Slots.MOLD.ordinal(), 134, 43));
+				TileTFTElectrolyser.Slots.MOLD.ordinal(), 134, 42));
 
 		//player inventory
 		for (int y = 0; y < 3; ++y) {
 			for (int x = 0; x < 9; ++x) {
-				this.addSlotToContainer(new Slot(player, x + y * 9 + 9,
-						9 + x * 18, 84 + y * 18));
+				this.addSlotToContainer(new Slot(player, x + y * 9 + 8,
+						9 + x * 18, 83 + y * 18));
 			}
 		}
 		//player hotbar
 		for (int x = 0; x < 9; ++x) {
-			this.addSlotToContainer(new Slot(player, x, 9 + x * 18, 142));
+			this.addSlotToContainer(new Slot(player, x, 8 + x * 18, 141));
 		}
 
 	}
@@ -63,12 +64,21 @@ public class ContainerElectrolyser extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack stack = slot.getStack();
 			prev = stack.copy();
-			for (int i = 0; i < tile.getSizeInventory(); i++) {
-				if (tile.isItemValidForSlot(i, stack)
-						&& tile.getStackInSlot(i) == null) {
-					tile.setInventorySlotContents(i, slot.decrStackSize(1));
-					if (!slot.getHasStack()) {
-						break;
+			TFTechness2.logger.info(fromSlot);
+			if (slot.inventory == tile) {
+				mergeItemStack(stack,
+						tile.getSizeInventory(),
+						this.inventorySlots.size() - 1,
+						true);
+			} else {
+
+				for (int i = 0; i < tile.getSizeInventory(); i++) {
+					if (tile.isItemValidForSlot(i, stack)
+							&& tile.getStackInSlot(i) == null) {
+						tile.setInventorySlotContents(i, slot.decrStackSize(1));
+						if (!slot.getHasStack()) {
+							break;
+						}
 					}
 				}
 			}
