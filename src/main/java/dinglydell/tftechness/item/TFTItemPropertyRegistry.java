@@ -37,7 +37,7 @@ public class TFTItemPropertyRegistry {
 
 	private static final float DEFAULT_VOLUME_TINY = 0.0001f;
 
-	private static final float DEFAULT_VOLUME = 1f;
+	private static final float DEFAULT_VOLUME = 0.1f;
 
 	protected static Map<ItemMeta, Boolean> powders = new HashMap<ItemMeta, Boolean>();
 
@@ -53,6 +53,8 @@ public class TFTItemPropertyRegistry {
 	protected static Map<ItemMeta, Float> volumeMap = new HashMap<ItemMeta, Float>();
 
 	private static Map<ItemMeta, FluidMoltenMetal> moltenMap = new HashMap<ItemMeta, FluidMoltenMetal>();
+
+	private static Map<FluidMoltenMetal, ItemStack> solidMap = new HashMap<FluidMoltenMetal, ItemStack>();
 
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
@@ -84,6 +86,9 @@ public class TFTItemPropertyRegistry {
 
 	public static void registerMolten(ItemStack stack, FluidMoltenMetal molten) {
 		moltenMap.put(new ItemMeta(stack), molten);
+		if (!solidMap.containsKey(molten)) {
+			solidMap.put(molten, stack);
+		}
 	}
 
 	public static boolean isPowder(ItemStack stack) {
@@ -178,6 +183,14 @@ public class TFTItemPropertyRegistry {
 			return moltenMap.get(im);
 		}
 		return null;
+	}
+
+	public static ItemStack getSolid(FluidMoltenMetal f) {
+		if (solidMap.containsKey(f)) {
+			return solidMap.get(f);
+		}
+		return null;
+
 	}
 
 }

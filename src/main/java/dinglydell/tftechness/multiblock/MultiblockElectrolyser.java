@@ -19,6 +19,7 @@ import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.item.ItemMeta;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
+import dinglydell.tftechness.tileentities.TileTFTMachineBase;
 import dinglydell.tftechness.util.ItemUtil;
 
 public class MultiblockElectrolyser implements IMultiblock, IMultiblockTFT {
@@ -202,6 +203,7 @@ public class MultiblockElectrolyser implements IMultiblock, IMultiblockTFT {
 
 						TileTFTElectrolyser tile = (TileTFTElectrolyser) world
 								.getTileEntity(blockX, blockY, blockZ);
+						tile.setFacing(facing);
 						tile.setMasterCoords(x, y, z);
 					}
 				}
@@ -314,12 +316,24 @@ public class MultiblockElectrolyser implements IMultiblock, IMultiblockTFT {
 					int blockX = getX(x, h, w, d, facing);
 					int blockY = getY(y, h);
 					int blockZ = getZ(z, h, w, d, facing);
-					world.setBlock(blockX,
-							blockY,
-							blockZ,
-							((ItemBlock) stack.getItem()).field_150939_a,
-							stack.getItemDamage(),
-							2);
+					//	TileEntity til = world
+					//		.getTileEntity(blockX, blockY, blockZ);
+					//if (til != null && til instanceof TileTFTMachineBase) {
+					TileTFTMachineBase tile = (TileTFTMachineBase) world
+							.getTileEntity(blockX, blockY, blockZ);
+					tile.isRestoring = true;
+
+					//}
+					Block block;
+					int meta;
+					if (stack == null) {
+						block = Blocks.air;
+						meta = 0;
+					} else {
+						block = ((ItemBlock) stack.getItem()).field_150939_a;
+						meta = stack.getItemDamage();
+					}
+					world.setBlock(blockX, blockY, blockZ, block, meta, 2);
 
 				}
 			}

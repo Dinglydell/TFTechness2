@@ -6,14 +6,17 @@ import net.minecraft.item.ItemStack;
 public class ItemMeta {
 	public Item item;
 	public int meta;
+	public ItemStack stack;
 
 	public ItemMeta(Item item, int meta) {
-		this.item = item;
-		this.meta = meta;
+		this(new ItemStack(item, 1, meta));
+
 	}
 
 	public ItemMeta(ItemStack stack) {
-		this(stack.getItem(), stack.getItemDamage());
+		this.item = stack.getItem();
+		this.meta = stack.getItemDamage();
+		this.stack = stack;
 	}
 
 	@Override

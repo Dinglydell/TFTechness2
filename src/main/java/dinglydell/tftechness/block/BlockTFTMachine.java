@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.tileentities.TileTFTMachineBase;
@@ -43,11 +44,37 @@ public class BlockTFTMachine extends BlockContainer {
 	}
 
 	@Override
+	public void onBlockDestroyedByPlayer(World world, int x, int y, int z,
+			int meta) {
+		super.onBlockDestroyedByPlayer(world, x, y, z, meta);
+		//restoreMultiblock(world, x, y, z);
+
+	}
+
+	@Override
+	public void onBlockDestroyedByExplosion(World world, int x, int y, int z,
+			Explosion explosion) {
+
+		//restoreMultiblock(world, x, y, z);
+	}
+
+	private void restoreMultiblock(World world, int x, int y, int z) {
+		TileTFTMachineBase tile = (TileTFTMachineBase) world.getTileEntity(x,
+				y,
+				z);
+		if (!tile.isRestoring) {
+			tile.getMultiblock().restore(world,
+					tile.getMasterX(),
+					tile.getMasterY(),
+					tile.getMasterZ(),
+					tile.getMaster().getFacing());
+		}
+
+	}
+
+	@Override
 	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
-		//TileTFTMachineBase tile = (TileTFTMachineBase) world.getTileEntity(x,
-		//	y,
-		//z);
-		//tile.getMultiblock().restore(world, tile.getMasterX(), tile.getMasterY(), tile.getMasterZ(), tile.getFacing());
+		restoreMultiblock(world, x, y, z);
 	}
 
 	@Override

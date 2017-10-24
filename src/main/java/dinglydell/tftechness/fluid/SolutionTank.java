@@ -25,7 +25,6 @@ import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.Condition;
-import dinglydell.tftechness.util.ItemUtil;
 
 public class SolutionTank {
 	//very simplified since air has a varying SH
@@ -33,15 +32,17 @@ public class SolutionTank {
 	//also simplified
 	protected static final float DENSITY_AIR = 1.2f;
 	protected Map<Fluid, FluidStack> fluids;
-	protected Map<ItemMeta, ItemStack> solids;
-	protected Map<ItemMeta, Integer> solutes;
+	/** stored by mass kg */
+	protected Map<ItemMeta, Float> solids;
+	/** stored by moles */
+	protected Map<ItemMeta, Float> solutes;
 	protected final int capacity;
 	private Condition condition;
 
 	public SolutionTank(int capacity) {
 		fluids = new HashMap<Fluid, FluidStack>();
-		solids = new HashMap<ItemMeta, ItemStack>();
-		solutes = new HashMap<ItemMeta, Integer>();
+		solids = new HashMap<ItemMeta, Float>();
+		solutes = new HashMap<ItemMeta, Float>();
 		this.capacity = capacity;
 	}
 
@@ -64,11 +65,12 @@ public class SolutionTank {
 
 	public int getSolidAmount() {
 		int amt = 0;
-		for (Entry<ItemMeta, ItemStack> solid : solids.entrySet()) {
-			amt += 1000
-					* solid.getValue().stackSize
-					* TFTItemPropertyRegistry
-							.getVolumeDensity(solid.getValue());
+		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
+			ItemStack is = new ItemStack(solid.getKey().item, 1,
+					solid.getKey().meta);
+			amt += 1000 * solid.getValue()
+					/ TFTItemPropertyRegistry.getDensity(is)
+					* TFTItemPropertyRegistry.getVolumeDensity(is);
 		}
 		return amt;
 	}
@@ -98,7 +100,7 @@ public class SolutionTank {
 						* stat.getSISpecificHeat();
 			}
 		}
-		for (Entry<ItemMeta, Integer> solute : solutes.entrySet()) {
+		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
 
 			ItemStack is = new ItemStack(solute.getKey().item, 1,
 					solute.getKey().meta);
@@ -112,14 +114,13 @@ public class SolutionTank {
 			SHMass += mass * hi.specificHeat * 1000;
 
 		}
-		for (Entry<ItemMeta, ItemStack> solid : solids.entrySet()) {
+		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
 			HeatIndex hi = HeatRegistry.getInstance()
-					.findMatchingIndex(solid.getValue());
+					.findMatchingIndex(solid.getKey().stack);
 			if (hi == null) {
 				continue;
 			}
-			SHMass += hi.specificHeat * 1000 * solid.getValue().stackSize
-					* TFTItemPropertyRegistry.getDensity(solid.getValue());
+			SHMass += hi.specificHeat * 1000 * solid.getValue();
 		}
 
 		return SHMass;
@@ -127,28 +128,35 @@ public class SolutionTank {
 
 	public void updateTank(float temperature) {
 		List<ItemMeta> delete = new ArrayList<ItemMeta>();
-		for (Entry<ItemMeta, ItemStack> solid : solids.entrySet()) {
+		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
 			//dissolve soluble solids
 			float totalSol = 0;
 			for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
 				totalSol += TFTItemPropertyRegistry.getSolubilityIn(solid
-						.getValue(), fluid.getKey())
+						.getKey().stack, fluid.getKey())
 						* fluid.getValue().amount;
 
 			}
 			if (totalSol != 0) {
 				if (!solutes.containsKey(solid.getKey())) {
-					solutes.put(solid.getKey(), 0);
+					solutes.put(solid.getKey(), 0f);
 				}
-				//if another item dissolves, will it have reached its capacity
-				int newAmt = solutes.get(solid.getKey())
-						+ TFTItemPropertyRegistry.getMoles(solid.getValue());
+				//how much (kg) to reach capacity
+				int molPerItem = TFTItemPropertyRegistry.getMoles(solid
+						.getKey().stack);
+				float kgPerItem = TFTItemPropertyRegistry.getDensity(solid
+						.getKey().stack);
+				float maxAmt = kgPerItem
+						* (totalSol - solutes.get(solid.getKey())) / molPerItem;
 
-				if (newAmt <= totalSol) {
+				if (maxAmt > 0) {
 					//if not, dissolve it
-					solutes.put(solid.getKey(), newAmt);
-					solid.getValue().stackSize--;
-					if (solid.getValue().stackSize == 0) {
+					float massChange = maxAmt * 0.1f;
+					float molChange = molPerItem * massChange / kgPerItem;
+					solutes.put(solid.getKey(), solutes.get(solid.getKey())
+							+ molChange);
+					solid.setValue(solid.getValue() - massChange);
+					if (solid.getValue() <= 0) {
 						delete.add(solid.getKey());
 						continue;
 					}
@@ -157,16 +165,19 @@ public class SolutionTank {
 			}
 			//melt solids
 			HeatIndex hi = HeatRegistry.getInstance()
-					.findMatchingIndex(solid.getValue());
+					.findMatchingIndex(solid.getKey().stack);
 			if (hi != null && temperature > hi.meltTemp) {
-				int stack = solid.getValue().stackSize;
-				solid.getValue().stackSize = 0;
+				float mass = solid.getValue();
+				solid.setValue(0f);
 				delete.add(solid.getKey());
 				FluidMoltenMetal molten = TFTItemPropertyRegistry
-						.getMolten(solid.getValue());
-				fill(molten.createStack((int) (TFTItemPropertyRegistry
-						.getVolumeDensity(solid.getValue()) * 1000),
-						temperature), true);
+						.getMolten(solid.getKey().stack);
+				fill(molten.createStack((int) (mass
+						/ TFTItemPropertyRegistry.getDensity(solid.getKey().stack)
+						* TFTItemPropertyRegistry.getVolumeDensity(solid
+								.getKey().stack) * 1000),
+						temperature),
+						true);
 				continue;
 			}
 		}
@@ -176,13 +187,39 @@ public class SolutionTank {
 			solids.remove(m);
 		}
 
+		// fluids solidifying and stuff
+		List<Fluid> fluidDelete = new ArrayList<Fluid>();
+		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
+			if (fluid.getKey() instanceof FluidMoltenMetal) {
+				FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
+				f.setTemperature(temperature, fluid.getValue());
+				ItemStack solid = TFTItemPropertyRegistry.getSolid(f);
+				HeatIndex hi = HeatRegistry.getInstance()
+						.findMatchingIndex(solid);
+				if (temperature < hi.meltTemp) {
+					int amt = fluid.getValue().amount;
+					fluid.getValue().amount = 0;
+					fluidDelete.add(f);
+					fill(solid,
+							TFTItemPropertyRegistry.getDensity(solid)
+									* amt
+									/ TFTItemPropertyRegistry
+											.getVolumeDensity(solid),
+							true);
+				}
+			}
+		}
+		for (Fluid f : fluidDelete) {
+			fluids.remove(f);
+		}
+
 		//do a reaction
 		//TODO: improve performance on this check
 		SolutionRecipe recipe = SolutionRecipe.findRecipe(this);
 		if (recipe == null) {
 			return;
 		}
-		boolean hasEnough = false;
+		float rate = 0;
 		switch (recipe.inputState) {
 		case gas:
 			break;
@@ -191,37 +228,41 @@ public class SolutionTank {
 					.getMolten(recipe.input);
 			FluidStack fs = fluids.get(fluid);
 			if (fs.amount >= recipe.inputQuantity) {
-				fs.amount -= recipe.inputQuantity;
+				rate = (fs.amount / recipe.inputQuantity) / 10;
+				fs.amount -= recipe.inputQuantity * rate;
+
 				if (fs.amount == 0) {
 					fluids.remove(fluid);
 				}
-				hasEnough = true;
+
 			}
 		case solid:
 			//TODO
 			break;
 		case solute:
 			ItemMeta im = new ItemMeta(recipe.input);
-			int amt = solutes.get(im);
+			float amt = solutes.get(im);
 			if (amt >= recipe.inputQuantity) {
-				solutes.put(im, amt - recipe.inputQuantity);
+				rate = (amt / recipe.inputQuantity) / 10;
+				solutes.put(im, amt - recipe.inputQuantity * rate);
 				if (solutes.get(im) == 0) {
 					solutes.remove(im);
 				}
-				hasEnough = true;
+
 			}
 			break;
 		default:
 			break;
 
 		}
-		if (hasEnough) {
+		if (rate != 0) {
 			//HeatIndex hi = HeatRegistry.getInstance()
 			//		.findMatchingIndex(recipe.output);
 			//if(hi.meltTemp > temperature){
 			FluidMoltenMetal output = TFTItemPropertyRegistry
 					.getMolten(recipe.output);
-			fill(output.createStack(recipe.outputQuantity, temperature), true);
+			fill(output.createStack((int) (recipe.outputQuantity * rate),
+					temperature), true);
 			//}
 		}
 
@@ -229,19 +270,29 @@ public class SolutionTank {
 
 	/** Fill the tank with a powdered item */
 	public int fill(ItemStack stack, boolean doFill) {
+		float dens = TFTItemPropertyRegistry.getDensity(stack);
+		int amt = (int) (fill(stack, stack.stackSize * dens, false) / dens);
+		if (doFill) {
+			fill(stack, amt, true);
+		}
+		return amt;
+	}
+
+	/** Fill with a certain mass of an item */
+	public float fill(ItemStack stack, float amt, boolean doFill) {
 		if (!TFTItemPropertyRegistry.isPowder(stack)) {
 			return 0;
 		}
-		int amt = getContentAmount();
+		int totalAmt = getContentAmount();
 		float volDens = TFTItemPropertyRegistry.getVolumeDensity(stack);
-		int toFill = Math.min(stack.stackSize,
-				(int) ((capacity - amt) / volDens));
+		float dens = TFTItemPropertyRegistry.getDensity(stack);
+		float toFill = Math.min(amt, dens * capacity / volDens - amt);
 		if (doFill) {
 			ItemMeta im = new ItemMeta(stack);
 			if (!solids.containsKey(im)) {
-				solids.put(im, ItemUtil.clone(stack, 0));
+				solids.put(im, 0f);
 			}
-			solids.get(im).stackSize += toFill;
+			solids.put(im, solids.get(im) + toFill);
 		}
 		return toFill;
 	}
@@ -290,19 +341,23 @@ public class SolutionTank {
 			infoList.add(fluid.getValue().getLocalizedName() + " (l) - "
 					+ fluid.getValue().amount + "mB");
 		}
-		for (Entry<ItemMeta, Integer> solute : solutes.entrySet()) {
+		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
 			ItemStack is = new ItemStack(solute.getKey().item, 1,
 					solute.getKey().meta);
 			infoList.add(StatCollector.translateToLocal(is.getUnlocalizedName()
 					+ ".name")
-					+ " (solute) - " + solute.getValue() / fluidAmt + "mol/mB");
+					+ " (solute) - "
+					+ Math.round(1000 * solute.getValue() / fluidAmt)
+					/ 1000f
+					+ "mol/mB");
 		}
-		for (Entry<ItemMeta, ItemStack> solid : solids.entrySet()) {
-			infoList.add(StatCollector.translateToLocal(solid.getValue()
+		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
+			infoList.add(StatCollector.translateToLocal(solid.getKey().stack
 					.getUnlocalizedName() + ".name")
 					+ " (s) - "
-					+ (solid.getValue().stackSize * TFTItemPropertyRegistry
-							.getDensity(solid.getValue())) + "kg");
+					+ Math.round(1000 * solid.getValue())
+					/ 1000f
+					+ "kg");
 		}
 	}
 
@@ -329,10 +384,10 @@ public class SolutionTank {
 				Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < solidTags.tagCount(); i++) {
 			NBTTagCompound solid = solidTags.getCompoundTagAt(i);
-			ItemStack is = ItemStack.loadItemStackFromNBT(solid);
-			if (is != null) {
-				solids.put(new ItemMeta(is), is);
-			}
+			ItemMeta im = new ItemMeta(Item.getItemById(solid.getShort("ID")),
+					solid.getShort("meta"));
+			solids.put(im, solid.getFloat("amt"));
+
 		}
 		NBTTagList soluteTags = tag.getTagList("Solutes",
 				Constants.NBT.TAG_COMPOUND);
@@ -340,7 +395,7 @@ public class SolutionTank {
 			NBTTagCompound solute = soluteTags.getCompoundTagAt(i);
 			ItemMeta im = new ItemMeta(Item.getItemById(solute.getShort("ID")),
 					solute.getShort("meta"));
-			solutes.put(im, solute.getInteger("amt"));
+			solutes.put(im, solute.getFloat("amt"));
 
 		}
 	}
@@ -353,30 +408,34 @@ public class SolutionTank {
 		}
 		tag.setTag("Fluids", fluidTags);
 		NBTTagList itemTags = new NBTTagList();
-		for (ItemStack is : solids.values()) {
-			itemTags.appendTag(is.writeToNBT(new NBTTagCompound()));
+		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
+
+			itemTags.appendTag(getTag(solid));
 		}
 		tag.setTag("Solids", itemTags);
 		NBTTagList soluteTags = new NBTTagList();
-		for (Entry<ItemMeta, Integer> solute : solutes.entrySet()) {
-			NBTTagCompound soluteTag = new NBTTagCompound();
-			soluteTag.setShort("ID",
-					(short) Item.getIdFromItem(solute.getKey().item));
-			soluteTag.setShort("meta", (short) solute.getKey().meta);
-			soluteTag.setInteger("amt", solute.getValue());
-
-			soluteTags.appendTag(soluteTag);
+		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
+			soluteTags.appendTag(getTag(solute));
 
 		}
 		tag.setTag("Solutes", soluteTags);
 		return tag;
 	}
 
-	public int getSolute(Item alumina) {
-		return getSolute(new ItemMeta(alumina, 0));
+	private NBTTagCompound getTag(Entry<ItemMeta, Float> entry) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setShort("ID", (short) Item.getIdFromItem(entry.getKey().item));
+		tag.setShort("meta", (short) entry.getKey().meta);
+		tag.setFloat("amt", entry.getValue());
+		return tag;
+
 	}
 
-	public int getSolute(ItemMeta itemMeta) {
+	public float getSolute(Item item) {
+		return getSolute(new ItemMeta(item, 0));
+	}
+
+	public float getSolute(ItemMeta itemMeta) {
 		if (solutes.containsKey(itemMeta)) {
 			return solutes.get(itemMeta);
 		}
@@ -399,5 +458,12 @@ public class SolutionTank {
 
 	public boolean hasCondition(Condition condition) {
 		return condition == null || this.condition == condition;
+	}
+
+	public int getFluidAmount(Fluid fluid) {
+		if (fluids.containsKey(fluid)) {
+			return fluids.get(fluid).amount;
+		}
+		return 0;
 	}
 }

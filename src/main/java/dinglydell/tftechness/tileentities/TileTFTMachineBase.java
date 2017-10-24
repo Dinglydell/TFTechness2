@@ -23,7 +23,11 @@ import dinglydell.tftechness.util.ItemUtil;
 public abstract class TileTFTMachineBase extends TileEntity implements
 		IInventory, IEnergyReceiver {
 	private int masterX, masterY, masterZ;
-	private EnumFacing facing;
+	private EnumFacing facing = EnumFacing.EAST;
+	/**
+	 * are we in the process of restoring the multiblock to its component parts?
+	 */
+	public boolean isRestoring;
 	private int rf;
 	/** Calculated rate of consumption */
 	private int rfRate;
@@ -105,6 +109,7 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 		if (isMaster()) {
 			readFromMasterNBT(data);
 		}
+		facing = EnumFacing.EAST;
 	}
 
 	@Override
@@ -141,6 +146,10 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 		return xCoord == masterX && yCoord == masterY && zCoord == masterZ;
 	}
 
+	public boolean hasMaster() {
+		return worldObj.getTileEntity(masterX, masterY, masterZ) instanceof TileTFTMachineBase;
+	}
+
 	public int getMasterX() {
 		return masterX;
 	}
@@ -157,6 +166,10 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 		masterX = x;
 		masterY = y;
 		masterZ = z;
+	}
+
+	public void setFacing(EnumFacing facing) {
+		this.facing = facing;
 	}
 
 	public abstract boolean openGui(World world, EntityPlayer player);
@@ -217,7 +230,7 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 
 	}
 
-	private TileTFTMachineBase getMaster() {
+	public TileTFTMachineBase getMaster() {
 		return (TileTFTMachineBase) worldObj.getTileEntity(masterX,
 				masterY,
 				masterZ);

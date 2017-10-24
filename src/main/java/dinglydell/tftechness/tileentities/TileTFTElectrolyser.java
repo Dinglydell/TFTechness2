@@ -78,6 +78,9 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	@Override
 	public boolean openGui(World world, EntityPlayer player) {
+		if (!hasMaster()) {
+			return false;
+		}
 		player.openGui(TFTechness2.instance,
 				TFTGuis.Electrolyser.ordinal(),
 				world,
@@ -284,6 +287,10 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 			cryoliteTank.updateTank(getTemperature());
 			//proccessReaction();
+			aluminiumTank.fill(cryoliteTank.drain(new FluidStack(aluminiumTank
+					.getLockedFluid(), cryoliteTank
+					.getFluidAmount(aluminiumTank.getLockedFluid()) / 10),
+					true), true);
 			updateFluidTemperature(aluminiumTank);
 			//heatSlot(Slots.alumina.ordinal());
 		}
@@ -390,6 +397,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		super.writeServerToClientMessage(nbt);
 		nbt.setInteger("ThermalEnergy", thermalEnergy);
 		nbt.setTag("CryoliteTank", cryoliteTank.writeToNBT());
+		nbt.setTag("AluminiumTank", aluminiumTank.writeToNBT());
 	}
 
 	@Override
@@ -397,6 +405,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		super.readServerToClientMessage(nbt);
 		thermalEnergy = nbt.getInteger("ThermalEnergy");
 		cryoliteTank.readFromNBT(nbt.getCompoundTag("CryoliteTank"));
+		aluminiumTank.readFromNBT(nbt.getCompoundTag("AluminiumTank"));
 	}
 
 	@Override

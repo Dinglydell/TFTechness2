@@ -27,8 +27,9 @@ public class FluidTankMetal implements IFluidTank {
 	 */
 	@Override
 	public int fill(FluidStack stack, boolean doFill) {
-		if (!(stack.getFluid() instanceof FluidMoltenMetal) || lockedTo != null
-				&& lockedTo != stack.getFluid()) {
+		if (stack == null
+				|| (!(stack.getFluid() instanceof FluidMoltenMetal) || lockedTo != null
+						&& lockedTo != stack.getFluid())) {
 			return 0;
 		}
 		if (contents == null) {
