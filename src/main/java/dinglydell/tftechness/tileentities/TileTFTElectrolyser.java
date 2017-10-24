@@ -42,7 +42,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	/** Maximum capacity of molten redstone (B) */
 	protected static final int MAX_REDSTONE_CAPACITY = 30;
 
-	private static final float COOLING_COEF = 1;
+	private static final float COOLING_COEF = 0.001f;
 	//private static final float ITEM_HEAT_COEFFICIENT = 1;
 
 	/** RF is multiplied by this before being used to heat up the machine */
@@ -229,14 +229,18 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	@Override
 	protected int spendRf(int amt) {
 		float SHMass = getNetSHMass();
-		float oldThermalEnergy = (this.temperature + 273) * SHMass;
 
-		float energy = oldThermalEnergy;
-		energy += Math.min(HEAT_COEFFICIENT * amt, Math.max(0,
-				(targetTemperature + 273) * getNetSHMass() - energy));
-		this.temperature = (energy / getNetSHMass()) - 273;
+		float dT = HEAT_COEFFICIENT * amt / SHMass;
+		float oldTemp = temperature;
+		this.temperature = Math.min(this.temperature + dT,
+				this.targetTemperature);
+		dT = this.temperature - oldTemp;
+		//float energy = oldThermalEnergy;
+		//energy += Math.min(HEAT_COEFFICIENT * amt, Math.max(0,
+		//	(targetTemperature + 273) *SHMass - energy));
+		//this.temperature = (energy / SHMass) - 273;
 
-		return (int) ((energy - oldThermalEnergy) / HEAT_COEFFICIENT);
+		return (int) (dT * SHMass / HEAT_COEFFICIENT);
 	}
 
 	@Override
