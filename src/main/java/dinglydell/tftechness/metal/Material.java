@@ -214,11 +214,15 @@ public class Material {
 
 	}
 
-	private void addHeatIndex(Item metal, int quantity, int meta) {
+	private void addHeatIndex(Item item, int quantity, int meta) {
+		addHeatIndex(new ItemStack(item, 1), quantity, meta);
+
+	}
+
+	private void addHeatIndex(ItemStack stack, int quantity, int meta) {
 		HeatRegistry manager = HeatRegistry.getInstance();
-		manager.addIndex(new HeatIndex(new ItemStack(metal, 1),
-				TFTechness2.statMap.get(this.name).heat, new ItemStack(
-						unshaped, quantity, meta)));
+		manager.addIndex(new HeatIndex(stack, TFTechness2.statMap
+				.get(this.name).heat, new ItemStack(unshaped, quantity, meta)));
 
 	}
 
@@ -339,9 +343,13 @@ public class Material {
 		//TODO: better way of obtaining metal blocks
 		List<ItemStack> ores = OreDictionary.getOres("block" + oreName);
 		if (ores.size() != 0) {
-			GameRegistry.addRecipe(new ShapedOreRecipe(ores.get(0), "iii",
+			ItemStack metalBlock = ores.get(0);
+			GameRegistry.addRecipe(new ShapedOreRecipe(metalBlock, "iii",
 					"iii", "iii", 'i', "ingot" + oreName));
+
+			addHeatIndex(metalBlock, 9, 0);
 		}
+
 	}
 
 	public void addMachineRecipes() {
