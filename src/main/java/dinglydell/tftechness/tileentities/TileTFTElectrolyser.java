@@ -58,7 +58,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	public TileTFTElectrolyser() {
 		inventory = new ItemStack[5];
-		cryoliteTank.setCondition(SolutionRecipe.electrodes);
+
 		//thermalEnergy = (int) (TFC_Climate.getHeightAdjustedTemp(worldObj,
 		//		xCoord,
 		//		yCoord,
@@ -273,7 +273,14 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 			//		}
 			//	}
 			//}
-
+			if (inventory[Slots.electrodeA.ordinal()] != null
+					&& inventory[Slots.electrodeA.ordinal()]
+							.isItemEqual(inventory[Slots.electrodeB.ordinal()])
+					&& inventory[Slots.electrodeA.ordinal()].getItem() == IEContent.itemGraphiteElectrode) {
+				cryoliteTank.setCondition(SolutionRecipe.electrodes);
+			} else {
+				cryoliteTank.setCondition(null);
+			}
 			cryoliteTank.updateTank(getTemperature());
 			//proccessReaction();
 			aluminiumTank.fill(cryoliteTank.drain(new FluidStack(aluminiumTank
@@ -281,6 +288,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 					.getFluidAmount(aluminiumTank.getLockedFluid()) / 10),
 					true), true);
 			updateFluidTemperature(aluminiumTank);
+			//handleMoldOutput();
 			//heatSlot(Slots.alumina.ordinal());
 		}
 		super.updateEntity();
