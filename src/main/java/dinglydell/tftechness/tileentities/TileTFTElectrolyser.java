@@ -46,7 +46,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	//private static final float ITEM_HEAT_COEFFICIENT = 1;
 
 	/** RF is multiplied by this before being used to heat up the machine */
-	private static final int HEAT_COEFFICIENT = 1;
+	private static final int HEAT_COEFFICIENT = 10;
 
 	/** internal temperature (degrees C) */
 	protected float temperature = 20f;
@@ -228,14 +228,15 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	@Override
 	protected int spendRf(int amt) {
-		float oldThermalEnergy = this.temperature * getNetSHMass();
 		float SHMass = getNetSHMass();
-		int energy = (int) (this.temperature * getNetSHMass());
+		float oldThermalEnergy = (this.temperature + 273) * SHMass;
+
+		float energy = oldThermalEnergy;
 		energy += Math.min(HEAT_COEFFICIENT * amt, Math.max(0,
 				(targetTemperature + 273) * getNetSHMass() - energy));
-		this.temperature = energy / getNetSHMass();
+		this.temperature = (energy / getNetSHMass()) - 273;
 
-		return (int) ((this.temperature - oldThermalEnergy) / HEAT_COEFFICIENT);
+		return (int) ((energy - oldThermalEnergy) / HEAT_COEFFICIENT);
 	}
 
 	@Override
