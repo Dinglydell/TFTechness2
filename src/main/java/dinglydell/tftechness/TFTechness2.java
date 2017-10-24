@@ -504,7 +504,7 @@ public class TFTechness2 {
 		MetalPressRecipe.removeRecipes(TFTMeta.ieAluminiumPlate);
 
 		DieselHandler.addSqueezerRecipe(ItemUtil.clone(TFTMeta.graphite, 4),
-				19200,
+				180,
 				null,
 				TFTMeta.hopGraphite);
 

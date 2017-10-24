@@ -15,20 +15,20 @@ public class ContainerElectrolyser extends Container {
 		this.tile = tile;
 		//electrode slots
 		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.electrodeA.ordinal(), 155, 9));
+				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 155, 9));
 		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.electrodeB.ordinal(), 155, 43));
+				TileTFTElectrolyser.Slots.ELECTRODE_B.ordinal(), 155, 43));
 
-		//redstone
+		//input
 		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.redstone.ordinal(), 49, 43));
+				TileTFTElectrolyser.Slots.INPUT.ordinal(), 49, 43));
 
-		//alumina
-		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.alumina.ordinal(), 71, 43));
+		////alumina
+		//addSlotToContainer(new Slot(tile,
+		//		TileTFTElectrolyser.Slots.alumina.ordinal(), 71, 43));
 		//mold
 		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.mold.ordinal(), 114, 43));
+				TileTFTElectrolyser.Slots.MOLD.ordinal(), 114, 43));
 
 		//player inventory
 		for (int y = 0; y < 3; ++y) {

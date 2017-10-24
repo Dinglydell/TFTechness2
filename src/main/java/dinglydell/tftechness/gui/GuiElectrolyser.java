@@ -45,8 +45,8 @@ public class GuiElectrolyser extends GuiContainer {
 		components.clear();
 		components.add(new GuiRF(offsetLeft + 7, offsetTop + 9, 3, 50, tile));
 		components.add(new GuiSolutionTank(offsetLeft + 48, offsetTop + 9, 16,
-				30, "Solution", tile.getCryoliteTank()));
-		components.add(new GuiTank(offsetLeft + 113, offsetTop + 9, 16, 30,
+				31, "Solution", tile.getCryoliteTank()));
+		components.add(new GuiTank(offsetLeft + 113, offsetTop + 9, 16, 31,
 				"Product", tile.getAluminiumTank()));
 		super.initGui();
 
@@ -68,7 +68,7 @@ public class GuiElectrolyser extends GuiContainer {
 			}
 		}
 		for (ITFTComponent c : components) {
-			c.draw();
+			//c.draw();
 			if (c.isHovering(x, y)) {
 				c.addTooltip(tooltip);
 			}
@@ -88,6 +88,12 @@ public class GuiElectrolyser extends GuiContainer {
 				0,
 				TEX_WIDTH,
 				TEX_HEIGHT);
+		for (ITFTComponent c : components) {
+			c.draw();
+			//if (c.isHovering(x, y)) {
+			//c.addTooltip(tooltip);
+			//}
+		}
 	}
 
 	@Override

@@ -146,8 +146,11 @@ public class SolutionTank {
 						.getKey().stack);
 				float kgPerItem = TFTItemPropertyRegistry.getDensity(solid
 						.getKey().stack);
-				float maxAmt = kgPerItem
-						* (totalSol - solutes.get(solid.getKey())) / molPerItem;
+				float maxAmt = Math
+						.min(solid.getValue(),
+								kgPerItem
+										* (totalSol - solutes.get(solid
+												.getKey())) / molPerItem);
 
 				if (maxAmt > 0) {
 					//if not, dissolve it
@@ -156,7 +159,7 @@ public class SolutionTank {
 					solutes.put(solid.getKey(), solutes.get(solid.getKey())
 							+ molChange);
 					solid.setValue(solid.getValue() - massChange);
-					if (solid.getValue() <= 0) {
+					if (solid.getValue() <= Float.MIN_VALUE * 10) {
 						delete.add(solid.getKey());
 						continue;
 					}
@@ -273,7 +276,7 @@ public class SolutionTank {
 		float dens = TFTItemPropertyRegistry.getDensity(stack);
 		int amt = (int) (fill(stack, stack.stackSize * dens, false) / dens);
 		if (doFill) {
-			fill(stack, amt, true);
+			fill(stack, amt * dens, true);
 		}
 		return amt;
 	}

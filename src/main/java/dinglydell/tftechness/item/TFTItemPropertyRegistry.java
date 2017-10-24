@@ -171,8 +171,8 @@ public class TFTItemPropertyRegistry {
 	/** mol/item */
 	public static int getMoles(ItemStack stack) {
 		ItemMeta im = new ItemMeta(stack);
-		if (molesMap.containsKey(stack)) {
-			return molesMap.get(stack);
+		if (molesMap.containsKey(im)) {
+			return molesMap.get(im);
 		}
 		return DEFAULT_MOLES;
 	}

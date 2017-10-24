@@ -12,6 +12,10 @@ import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.TFC_Climate;
+import com.bioxx.tfc.Core.Metal.MetalRegistry;
+import com.bioxx.tfc.api.HeatIndex;
+import com.bioxx.tfc.api.HeatRegistry;
+import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.TFCItems;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 
@@ -31,7 +35,7 @@ import dinglydell.tftechness.util.OreDict;
 public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		IFluidHandler {
 	public enum Slots {
-		electrodeA, electrodeB, alumina, redstone, mold
+		ELECTRODE_A, ELECTRODE_B, INPUT, MOLD
 	}
 
 	//	protected static final int MR_ALUMINA = 102;
@@ -57,7 +61,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	//private static final int MOLD_SLOT = 4;
 
 	public TileTFTElectrolyser() {
-		inventory = new ItemStack[5];
+		inventory = new ItemStack[4];
 
 		//thermalEnergy = (int) (TFC_Climate.getHeightAdjustedTemp(worldObj,
 		//		xCoord,
@@ -123,17 +127,17 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack item) {
-		if (slot == Slots.electrodeA.ordinal()
-				|| slot == Slots.electrodeB.ordinal()) {
+		if (slot == Slots.ELECTRODE_A.ordinal()
+				|| slot == Slots.ELECTRODE_B.ordinal()) {
 			return item.getItem() == IEContent.itemGraphiteElectrode;
 		}
-		if (slot == Slots.alumina.ordinal()) {
-			return item.getItem() == TFTItems.alumina;
-		}
-		if (slot == Slots.redstone.ordinal()) {
+		//if (slot == Slots.alumina.ordinal()) {
+		//	return item.getItem() == TFTItems.alumina;
+		//}
+		if (slot == Slots.INPUT.ordinal()) {
 			return OreDict.itemMatches(item, "dustRedstone");
 		}
-		if (slot == Slots.mold.ordinal()) {
+		if (slot == Slots.MOLD.ordinal()) {
 			return item.getItem() == TFCItems.ceramicMold
 					|| item.getItem() == TFTItems.unshaped.get("Aluminium");
 		}
@@ -220,11 +224,11 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	@Override
 	protected int spendRf(int amt) {
 		int oldThermalEnergy = this.thermalEnergy;
-		this.thermalEnergy += Math.min(amt,
+		this.thermalEnergy += Math.min(100 * amt,
 				Math.max(0, (targetTemperature + 273) * getNetSHMass()
 						- this.thermalEnergy));
 
-		return this.thermalEnergy - oldThermalEnergy;
+		return (this.thermalEnergy - oldThermalEnergy) / 100;
 	}
 
 	@Override
@@ -254,11 +258,11 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 					zCoord);
 			this.thermalEnergy -= (this.getTemperature() - externalTemp)
 					* COOLING_COEF;
-			ItemStack red = inventory[Slots.redstone.ordinal()];
+			ItemStack red = inventory[Slots.INPUT.ordinal()];
 			if (red != null) {
 				red.stackSize -= cryoliteTank.fill(red, true);
 				if (red.stackSize == 0) {
-					inventory[Slots.redstone.ordinal()] = null;
+					inventory[Slots.INPUT.ordinal()] = null;
 				}
 			}
 			//heatSlot(Slots.redstone.ordinal());
@@ -273,25 +277,67 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 			//		}
 			//	}
 			//}
-			if (inventory[Slots.electrodeA.ordinal()] != null
-					&& inventory[Slots.electrodeA.ordinal()]
-							.isItemEqual(inventory[Slots.electrodeB.ordinal()])
-					&& inventory[Slots.electrodeA.ordinal()].getItem() == IEContent.itemGraphiteElectrode) {
+			if (inventory[Slots.ELECTRODE_A.ordinal()] != null
+					&& inventory[Slots.ELECTRODE_B.ordinal()] != null
+					&& inventory[Slots.ELECTRODE_A.ordinal()]
+							.isItemEqual(inventory[Slots.ELECTRODE_B.ordinal()])
+					&& inventory[Slots.ELECTRODE_A.ordinal()].getItem() == IEContent.itemGraphiteElectrode) {
 				cryoliteTank.setCondition(SolutionRecipe.electrodes);
 			} else {
 				cryoliteTank.setCondition(null);
 			}
 			cryoliteTank.updateTank(getTemperature());
 			//proccessReaction();
-			aluminiumTank.fill(cryoliteTank.drain(new FluidStack(aluminiumTank
-					.getLockedFluid(), cryoliteTank
-					.getFluidAmount(aluminiumTank.getLockedFluid()) / 10),
-					true), true);
+			FluidStack cryoDrain = cryoliteTank
+					.drain(new FluidStack(aluminiumTank.getLockedFluid(),
+							cryoliteTank.getFluidAmount(aluminiumTank
+									.getLockedFluid()) / 10),
+							false);
+			int al = aluminiumTank.fill(cryoDrain, false);
+			if (al == cryoDrain.amount) {
+				aluminiumTank.fill(cryoliteTank.drain(new FluidStack(
+						aluminiumTank.getLockedFluid(),
+						cryoliteTank.getFluidAmount(aluminiumTank
+								.getLockedFluid()) / 10),
+						true), false);
+			}
 			updateFluidTemperature(aluminiumTank);
-			//handleMoldOutput();
+			handleMoldOutput(Slots.MOLD.ordinal());
 			//heatSlot(Slots.alumina.ordinal());
 		}
 		super.updateEntity();
+
+	}
+
+	private void handleMoldOutput(int slot) {
+		ItemStack mold = inventory[slot];
+		if (mold == null) {
+			return;
+		}
+		FluidMoltenMetal f = aluminiumTank.getLockedFluid();
+		Metal m = MetalRegistry.instance.getMetalFromString(f.getMetalName());
+		HeatIndex hi = HeatRegistry.getInstance()
+				.findMatchingIndex(new ItemStack(m.ingot));
+		float temperature = f.getTemperature(aluminiumTank.getFluid());
+		if (hi.meltTemp >= temperature) {
+			return;
+		}
+		int drainAmt = 1;
+		if (mold.getItem() == TFCItems.ceramicMold) {
+			inventory[slot] = new ItemStack(m.meltedItem, 1, 99);
+			TFC_ItemHeat.setTemp(inventory[slot], temperature);
+			aluminiumTank.drain(1, true);
+		} else if (mold.getItem() == m.meltedItem && mold.getItemDamage() > 0) {
+			float temp = TFC_ItemHeat.getTemp(mold);
+			if (temp >= hi.meltTemp) {
+				// fraction of the mold this drop will make up - used to calc new temperature
+				float dropFrac = 1 / (100 - mold.getItemDamage());
+				float newTemp = temp * (1 - dropFrac) + temperature * dropFrac;
+				mold.setItemDamage(mold.getItemDamage() - 1);
+				TFC_ItemHeat.setTemp(inventory[slot], newTemp);
+				aluminiumTank.drain(1, true);
+			}
+		}
 
 	}
 
