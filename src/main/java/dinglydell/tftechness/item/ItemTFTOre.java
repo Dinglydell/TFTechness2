@@ -18,11 +18,16 @@ public class ItemTFTOre extends ItemOre {
 		this.metals = metals;
 		this.amounts = amounts;
 		this.tiers = tiers;
+
+	}
+
+	public void registerOreDict() {
 		for (int i = 0; i < metaNames.length; i++) {
 			String name = metaNames[i];
 			OreDictionary.registerOre("ore" + name.replaceAll("\\s+", ""),
 					new ItemStack(this, 1, i));
 		}
+
 	}
 
 	@Override
