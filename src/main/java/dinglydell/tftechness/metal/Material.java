@@ -26,6 +26,7 @@ import com.bioxx.tfc.api.Enums.EnumSize;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.item.ItemMetal;
+import dinglydell.tftechness.item.ItemMetalMold;
 import dinglydell.tftechness.item.ItemTFTMetalSheet;
 import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
@@ -129,9 +130,10 @@ public class Material {
 
 	private void addMolds() {
 
-		nuggetMold = new ItemMetal(metal.name, 100, "nuggetMold")
+		nuggetMold = new ItemMetalMold(metal.name, 100, "nuggetMold")
+				.setContainerItem(new ItemStack(TFTItems.nuggetMold, 1, 1))
 				.setUnlocalizedName(metal.name + "NuggetMold");
-		nuggetMold.setContainerItem(TFTItems.nuggetMold);
+		//		nuggetMold.setContainerItem(TFTItems.nuggetMold);
 		GameRegistry.registerItem(nuggetMold, metal.name + "NuggetMold");
 
 	}

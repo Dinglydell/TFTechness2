@@ -23,7 +23,8 @@ item.nuggetMold.Clay Nugget Mold.name=Clay Nugget Mold
 item.nuggetMold.name=Nugget Mold
 
 gui.metal.Electrum=Electrum
-gui.metal.constantan=Constantan
+gui.metal.Constantan=Constantan
+gui.metal.Aluminum=Aluminium
 
 item.ore.Bauxite.name=Bauxite
 item.ore.Rich Bauxite.name=Rich Bauxite

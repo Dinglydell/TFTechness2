@@ -13,10 +13,18 @@ Mid-term:
 
 -Advanced rocketry
 
+-big reactors?
+
 -RF forge (multiblock)
+
+-Automated anvil - either metal press or its own machine(s)
 
 -Allow swappable parts in multiblocks - such as an upgradable casing that determines
  how good of an insulator it is
+ 
+ -Reintroduction of the cryothermic chamber (known to some as a "fridge")
+ 
+ -RF Crucible (could be the same as a forge but with some special parts in the multiblock
 
 
 
