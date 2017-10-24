@@ -21,14 +21,14 @@ public class ContainerElectrolyser extends Container {
 
 		//input
 		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.INPUT.ordinal(), 49, 43));
+				TileTFTElectrolyser.Slots.INPUT.ordinal(), 46, 24));
 
 		////alumina
 		//addSlotToContainer(new Slot(tile,
 		//		TileTFTElectrolyser.Slots.alumina.ordinal(), 71, 43));
 		//mold
 		addSlotToContainer(new Slot(tile,
-				TileTFTElectrolyser.Slots.MOLD.ordinal(), 114, 43));
+				TileTFTElectrolyser.Slots.MOLD.ordinal(), 134, 43));
 
 		//player inventory
 		for (int y = 0; y < 3; ++y) {
