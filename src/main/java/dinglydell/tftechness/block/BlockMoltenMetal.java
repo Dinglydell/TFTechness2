@@ -54,7 +54,11 @@ public class BlockMoltenMetal extends BlockFluidClassic implements
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register) {
-		this.blockIcon = register.registerIcon(stack.getUnlocalizedName());
+		String fluidName = stack.getUnlocalizedName();
+		this.blockIcon = register.registerIcon(TFTechness2.MODID
+				+ ":fluid/"
+				+ fluidName.substring(fluidName.indexOf('.') + 1,
+						fluidName.length()));
 		stack.getFluid().setIcons(this.blockIcon);
 	}
 
