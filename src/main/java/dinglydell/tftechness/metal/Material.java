@@ -303,7 +303,7 @@ public class Material {
 			//ingot -> unshaped
 			GameRegistry.addShapelessRecipe(new ItemStack(unshaped),
 					ingot,
-					TFCItems.ceramicMold);
+					new ItemStack(TFCItems.ceramicMold, 0, 1));
 		}
 	}
 
