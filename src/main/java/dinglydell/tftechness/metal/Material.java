@@ -1,9 +1,13 @@
 package dinglydell.tftechness.metal;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 
 import com.bioxx.tfc.Core.Recipes;
@@ -23,7 +27,9 @@ import com.bioxx.tfc.api.Crafting.AnvilReq;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
 import com.bioxx.tfc.api.Enums.EnumSize;
 
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.item.ItemMetal;
 import dinglydell.tftechness.item.ItemMetalMold;
@@ -277,13 +283,31 @@ public class Material {
 		if (this.oldNugget != null) {
 			batch.addCrafting(this.oldNugget);
 		}
-		if (this.block != null) {
-			batch.addCrafting(new ItemStack(this.block));
+		batchRemoveOreDict(batch, "ingot");
+		batchRemoveOreDict(batch, "block");
+		//if (this.block != null) {
+		//	batch.addCrafting(new ItemStack(this.block));
+		//}
+
+	}
+
+	private void batchRemoveOreDict(RemoveBatch batch, String orePrefix) {
+		List<ItemStack> ores = OreDictionary.getOres(orePrefix + oreName);
+		for (ItemStack ore : ores) {
+			//TODO: find a non-deprecated workaround for this?
+			String rl = GameData.getItemRegistry().getNameForObject(ore);
+			UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor(ore
+					.getItem());
+
+			if (ui != null && ui.modId != TFTechness2.MODID
+					&& ui.modId != "terrafirmacraft") {
+				batch.addCrafting(ore);
+			}
 		}
 
 	}
 
-	public void addMoldRecipes() {
+	public void addCraftingRecipes() {
 		CraftingManagerTFC.getInstance()
 				.addRecipe(new ItemStack(nuggetMold, 1),
 						new Object[] { "12",
@@ -306,6 +330,17 @@ public class Material {
 			GameRegistry.addShapelessRecipe(new ItemStack(unshaped),
 					ingot,
 					new ItemStack(TFCItems.ceramicMold, 0, 1));
+		}
+
+		//block
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ingot, 9),
+				"block" + oreName));
+
+		//TODO: better way of obtaining metal blocks
+		List<ItemStack> ores = OreDictionary.getOres("block" + oreName);
+		if (ores.size() != 0) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(ores.get(0), "iii",
+					"iii", "iii", 'i', "ingot" + oreName));
 		}
 	}
 

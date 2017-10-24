@@ -379,7 +379,7 @@ public class TFTechness2 {
 		tfcKilnRecipes();
 		for (Material m : materials) {
 			m.addMachineRecipes();
-			m.addMoldRecipes();
+			m.addCraftingRecipes();
 		}
 		logger.info(IEApi.modPreference);
 	}
@@ -488,6 +488,8 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
 				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
 				"ingotSteel", 's', TFTMeta.ieTreatedStick));
+
+		//block -> ingot
 
 	}
 
