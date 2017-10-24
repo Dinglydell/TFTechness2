@@ -1,5 +1,6 @@
 package dinglydell.tftechness.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.BlockContainer;
@@ -63,11 +64,31 @@ public class BlockTFTMachine extends BlockContainer {
 				y,
 				z);
 		if (!tile.isRestoring) {
+			//drop contents
+			ItemStack block = tile.getMultiblock().getDropAt(x,
+					y,
+					z,
+					tile.getMasterX(),
+					tile.getMasterY(),
+					tile.getMasterZ(),
+					tile.getMaster().getFacing());
+			if (block != null) {
+				dropBlockAsItem(world, x, y, z, block);
+			}
+
+			for (int i = 0; i < tile.getMaster().getSizeInventory(); i++) {
+				ItemStack stack = tile.getMaster().getStackInSlot(i);
+				if (stack != null) {
+					dropBlockAsItem(world, x, y, z, stack);
+				}
+			}
+			//restore
 			tile.getMultiblock().restore(world,
 					tile.getMasterX(),
 					tile.getMasterY(),
 					tile.getMasterZ(),
 					tile.getMaster().getFacing());
+
 		}
 
 	}
@@ -75,6 +96,14 @@ public class BlockTFTMachine extends BlockContainer {
 	@Override
 	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
 		restoreMultiblock(world, x, y, z);
+
+	}
+
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z,
+			int metadata, int fortune) {
+
+		return new ArrayList<ItemStack>();
 	}
 
 	@Override

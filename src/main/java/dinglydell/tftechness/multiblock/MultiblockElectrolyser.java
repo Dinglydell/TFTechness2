@@ -341,4 +341,23 @@ public class MultiblockElectrolyser implements IMultiblock, IMultiblockTFT {
 
 	}
 
+	@Override
+	public ItemStack getDropAt(int x, int y, int z, int masterX, int masterY,
+			int masterZ, EnumFacing facing) {
+		int w;
+		int d;
+		int h = y - masterY;
+		if (facing.getFrontOffsetX() == 0) {
+			w = x - masterX;
+			d = Math.abs(masterZ - z);
+		} else {
+			d = Math.abs(masterX - x);
+			w = z - masterZ;
+		}
+		int ws = w + 2;
+		int hs = h + 1;
+		int ds = d;
+		return structure[hs][ws][ds];
+	}
+
 }
