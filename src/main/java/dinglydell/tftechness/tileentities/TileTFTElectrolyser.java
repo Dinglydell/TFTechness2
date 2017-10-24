@@ -12,8 +12,6 @@ import net.minecraftforge.fluids.IFluidHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.TFC_Climate;
-import com.bioxx.tfc.api.HeatIndex;
-import com.bioxx.tfc.api.HeatRegistry;
 import com.bioxx.tfc.api.TFCItems;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 
@@ -36,19 +34,12 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		electrodeA, electrodeB, alumina, redstone, mold
 	}
 
-	protected static final int MR_ALUMINA = 102;
+	//	protected static final int MR_ALUMINA = 102;
 	/** Maximum capacity of molten redstone (B) */
 	protected static final int MAX_REDSTONE_CAPACITY = 30;
-	private static final int SH_REDSTONE = 1136;
-	private static final int SH_ALUMINA = 451;
+
 	private static final float COOLING_COEF = 1;
-	private static final float ITEM_HEAT_COEFFICIENT = 1;
-	/** number of moles of alumina in 1 item */
-	private static final int MOLES_ALUMINA = 250;
-	/** number of moles of alumina that can dissolve in 1 bucket of redstone */
-	private static final int MOLES_ALUMINA_PER_B_REDSTONE = 250;
-	/** moles alumina -> mb aluminium */
-	private static final int ALUMINA_TO_ALUMINIUM = 20;
+	//private static final float ITEM_HEAT_COEFFICIENT = 1;
 
 	protected int thermalEnergy = 14365440;
 	protected int oldTemp = 0;
@@ -58,8 +49,6 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 			MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));
 	protected FluidTankMetal aluminiumTank = new FluidTankMetal(
 			MAX_REDSTONE_CAPACITY * 1000, TFTFluids.moltenMetal.get("Aluminum"));
-
-	protected int molAlumina = 0;
 
 	//private static final int ELECTRODE_SLOT_A = 0;
 	//private static final int ELECTRODE_SLOT_B = 1;
@@ -201,16 +190,16 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		return aluminiumTank.getFluidAmount() / 1000;
 	}
 
-	/** Unit: moles */
-	private int getAluminaAmt() {
+	///** Unit: moles */
+	//private float getAluminaAmt() {
+	//
+	//	return cryoliteTank.getSolute(TFTItems.alumina);
+	//}
 
-		return molAlumina;
-	}
+	//private int getAluminaCapacity() {
+	//return cryoliteTank.getFluidAmount() * TFTItemPropertyRegistry.getSolubilityIn(stack, TFTFluid);
 
-	private int getAluminaCapacity() {
-		return (int) (cryoliteTank.getFluidAmount() / 1000f * MOLES_ALUMINA_PER_B_REDSTONE);
-
-	}
+	//}
 
 	/** Unit: buckets (m^3) */
 	private float getRedstoneAmt() {
@@ -298,24 +287,6 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	}
 
-	private void proccessReaction() {
-		if (cryoliteTank.getSolute(TFTItems.alumina) > 0) {
-
-			int amt = aluminiumTank
-					.fill(aluminiumTank
-							.getLockedFluid()
-							.createStack(ALUMINA_TO_ALUMINIUM, getTemperature()),
-							false);
-			if (amt == ALUMINA_TO_ALUMINIUM) {
-
-				aluminiumTank.fill(aluminiumTank.getLockedFluid()
-						.createStack(ALUMINA_TO_ALUMINIUM, getTemperature()),
-						true);
-			}
-		}
-
-	}
-
 	private void updateFluidTemperature(FluidTankMetal tank) {
 		if (tank.getFluidAmount() != 0) {
 			((FluidMoltenMetal) tank.getFluid().getFluid())
@@ -324,53 +295,53 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	}
 
-	private void heatSlot(int slot) {
-		if (inventory[slot] == null) {
-			return;
-		}
-		HeatIndex hi = HeatRegistry.getInstance()
-				.findMatchingIndex(inventory[slot]);
-		int mass = 100;
-		//TODO: make this less of a hack
-		if (slot == Slots.alumina.ordinal()) {
-			mass = TFTechness2.statMap.get("Alumina").density
-					/ TFTechness2.ingotsPerBlock;
-		} else if (slot == Slots.redstone.ordinal()) {
-			mass = TFTechness2.statMap.get("Redstone").density
-					/ TFTechness2.ingotsPerBlock;
-		}
-		float slotTemp = getSlotTemperature(slot);
-
-		float temp = getTemperature();
-		if (slotTemp > hi.meltTemp) {
-			//TODO: Make this less of a hack
-			if (OreDict.itemMatches(inventory[slot], "dustRedstone")) {
-				cryoliteTank.fill(TFTFluids.moltenMetal.get("Redstone")
-						.createStack(1000 / TFTechness2.ingotsPerBlock
-								* inventory[slot].stackSize,
-								temp),
-						true);
-			}
-			inventory[slot] = null;
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			return;
-		}
-		if (slotTemp == temp) {
-			return;
-		}
-		int dH = -(int) ((slotTemp - temp) * ITEM_HEAT_COEFFICIENT);
-		float newSlotTemp;
-		float SHM = hi.specificHeat * 1000 * mass;
-		if (slotTemp > temp) {
-			newSlotTemp = Math.max(temp, slotTemp + dH * SHM);
-		} else {
-			newSlotTemp = Math.min(temp, slotTemp + dH * SHM);
-		}
-		dH = (int) ((newSlotTemp - slotTemp) / SHM);
-		thermalEnergy -= dH;
-		TFC_ItemHeat.setTemp(inventory[slot], newSlotTemp);
-
-	}
+	//private void heatSlot(int slot) {
+	//	if (inventory[slot] == null) {
+	//		return;
+	//	}
+	//	HeatIndex hi = HeatRegistry.getInstance()
+	//			.findMatchingIndex(inventory[slot]);
+	//	int mass = 100;
+	//	//TODO: make this less of a hack
+	//	if (slot == Slots.alumina.ordinal()) {
+	//		mass = TFTechness2.statMap.get("Alumina").density
+	//				/ TFTechness2.ingotsPerBlock;
+	//	} else if (slot == Slots.redstone.ordinal()) {
+	//		mass = TFTechness2.statMap.get("Redstone").density
+	//				/ TFTechness2.ingotsPerBlock;
+	//	}
+	//	float slotTemp = getSlotTemperature(slot);
+	//
+	//	float temp = getTemperature();
+	//	if (slotTemp > hi.meltTemp) {
+	//		//TODO: Make this less of a hack
+	//		if (OreDict.itemMatches(inventory[slot], "dustRedstone")) {
+	//			cryoliteTank.fill(TFTFluids.moltenMetal.get("Redstone")
+	//					.createStack(1000 / TFTechness2.ingotsPerBlock
+	//							* inventory[slot].stackSize,
+	//							temp),
+	//					true);
+	//		}
+	//		inventory[slot] = null;
+	//		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+	//		return;
+	//	}
+	//	if (slotTemp == temp) {
+	//		return;
+	//	}
+	//	int dH = -(int) ((slotTemp - temp) * ITEM_HEAT_COEFFICIENT);
+	//	float newSlotTemp;
+	//	float SHM = hi.specificHeat * 1000 * mass;
+	//	if (slotTemp > temp) {
+	//		newSlotTemp = Math.max(temp, slotTemp + dH * SHM);
+	//	} else {
+	//		newSlotTemp = Math.min(temp, slotTemp + dH * SHM);
+	//	}
+	//	dH = (int) ((newSlotTemp - slotTemp) / SHM);
+	//	thermalEnergy -= dH;
+	//	TFC_ItemHeat.setTemp(inventory[slot], newSlotTemp);
+	//
+	//}
 
 	private float getSlotTemperature(int slot) {
 		float SH;
