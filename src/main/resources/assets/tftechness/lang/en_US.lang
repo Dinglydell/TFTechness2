@@ -37,6 +37,7 @@ item.nugget.name=Nugget
 
 fluid.moltenMetal.name=Molten 
 
+metal.Tin.name=Tin
 metal.Aluminum.name=Aluminum
 metal.Alumina.name=Alumina
 metal.Electrum.name=Electrum
