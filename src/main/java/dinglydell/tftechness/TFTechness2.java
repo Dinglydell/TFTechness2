@@ -498,7 +498,8 @@ public class TFTechness2 {
 				TFTMeta.bituminousCoal,
 				1800,
 				500);
-		CokeOvenRecipe.addRecipe(TFTMeta.charcoal, TFCItems.logs, 1800, 100);
+		CokeOvenRecipe.removeRecipes(new ItemStack(Items.coal, 1, 1));
+		CokeOvenRecipe.addRecipe(TFTMeta.charcoal, "logWood", 1800, 100);
 
 		MetalPressRecipe.removeRecipes(TFTMeta.ieIronPlate);
 		MetalPressRecipe.removeRecipes(TFTMeta.ieLeadPlate);
