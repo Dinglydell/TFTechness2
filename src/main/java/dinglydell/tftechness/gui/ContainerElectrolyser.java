@@ -24,7 +24,7 @@ public class ContainerElectrolyser extends Container {
 				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 154, 8));
 
 		addSlotToContainer(new IESlot.ArcElectrode(this, tile,
-				TileTFTElectrolyser.Slots.ELECTRODE_A.ordinal(), 154, 42));
+				TileTFTElectrolyser.Slots.ELECTRODE_B.ordinal(), 154, 42));
 
 		//input
 		addSlotToContainer(new SlotPowder(tile,
