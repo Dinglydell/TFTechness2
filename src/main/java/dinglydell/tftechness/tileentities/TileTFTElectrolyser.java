@@ -42,6 +42,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	/** Maximum capacity of molten redstone (B) */
 	protected static final int MAX_REDSTONE_CAPACITY = 30;
 
+	protected static final int MAX_ALUMINIUM_CAPACITY = 5;
+
 	private static final float COOLING_COEF = 0.001f;
 	//private static final float ITEM_HEAT_COEFFICIENT = 1;
 
@@ -56,7 +58,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	protected SolutionTank cryoliteTank = new SolutionTank(
 			MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));
 	protected FluidTankMetal aluminiumTank = new FluidTankMetal(
-			MAX_REDSTONE_CAPACITY * 1000, TFTFluids.moltenMetal.get("Aluminum"));
+			MAX_ALUMINIUM_CAPACITY * 1000,
+			TFTFluids.moltenMetal.get("Aluminum"));
 
 	//private static final int ELECTRODE_SLOT_A = 0;
 	//private static final int ELECTRODE_SLOT_B = 1;
