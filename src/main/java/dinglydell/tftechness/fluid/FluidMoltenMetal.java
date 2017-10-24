@@ -8,10 +8,12 @@ import dinglydell.tftechness.TFTechness2;
 
 public class FluidMoltenMetal extends Fluid {
 	protected String metalName;
+	protected float meltPoint;
 
-	public FluidMoltenMetal(String metalName) {
+	public FluidMoltenMetal(String metalName, float meltPoint) {
 		super("molten" + metalName);
 		this.metalName = metalName;
+		this.meltPoint = meltPoint;
 	}
 
 	public String getMetalName() {
@@ -26,7 +28,8 @@ public class FluidMoltenMetal extends Fluid {
 
 	@Override
 	public String getLocalizedName(FluidStack stack) {
-		return StatCollector.translateToLocal("fluid.moltenMetal.name")
+		return (getTemperature(stack) < meltPoint ? "" : StatCollector
+				.translateToLocal("fluid.moltenMetal.name"))
 				+ StatCollector
 						.translateToLocal("metal." + metalName + ".name")
 				+ " - " + getTemperature(stack) + TFTechness2.degrees + "C";

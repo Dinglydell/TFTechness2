@@ -219,7 +219,8 @@ public class TFTechness2 {
 
 	private void registerFluids() {
 		for (Material m : materials) {
-			FluidMoltenMetal f = new FluidMoltenMetal(m.name);
+			FluidMoltenMetal f = new FluidMoltenMetal(m.name,
+					m.heatRaw.meltTemp);
 			TFTFluids.moltenMetal.put(m.name, f);
 			FluidRegistry.registerFluid(f);
 
@@ -227,11 +228,13 @@ public class TFTechness2 {
 		}
 
 		//TODO: make this less of an awkward special case
-		FluidMoltenMetal redstone = new FluidMoltenMetal("Redstone");
+		FluidMoltenMetal redstone = new FluidMoltenMetal("Redstone",
+				statMap.get("Redstone").heat.meltTemp);
 		TFTFluids.moltenMetal.put("Redstone", redstone);
 		FluidRegistry.registerFluid(redstone);
 
-		FluidMoltenMetal alumina = new FluidMoltenMetal("Alumina");
+		FluidMoltenMetal alumina = new FluidMoltenMetal("Alumina",
+				statMap.get("Alumina").heat.meltTemp);
 		TFTFluids.moltenMetal.put("Alumina", alumina);
 		FluidRegistry.registerFluid(alumina);
 	}

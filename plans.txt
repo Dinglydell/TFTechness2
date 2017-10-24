@@ -5,3 +5,16 @@
 -iron/steel components as anvil recipes?
 
 -change light engineering blocks to steel, heavy engineering to black steel?
+
+
+Mid-term:
+
+-Railcraft
+
+-Advanced rocketry
+
+
+
+Longer term (low priority, distant future):
+
+-infa-red googles - allowing you to see exact temperature of items

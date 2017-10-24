@@ -16,6 +16,7 @@ import com.bioxx.tfc.api.HeatIndex;
 import com.bioxx.tfc.api.HeatRaw;
 import com.bioxx.tfc.api.HeatRegistry;
 import com.bioxx.tfc.api.Metal;
+import com.bioxx.tfc.api.TFCItems;
 import com.bioxx.tfc.api.Crafting.AnvilManager;
 import com.bioxx.tfc.api.Crafting.AnvilRecipe;
 import com.bioxx.tfc.api.Crafting.AnvilReq;
@@ -292,6 +293,18 @@ public class Material {
 
 		GameRegistry.addShapelessRecipe(new ItemStack(nugget, 10),
 				Recipes.getStackNoTemp(new ItemStack(nuggetMold, 1)));
+
+		if (!isTFC) {
+			//unshaped.setContainerItem(TFCItems.ceramicMold);
+			// unshaped -> ingot
+			GameRegistry.addShapelessRecipe(new ItemStack(ingot),
+					Recipes.getStackNoTemp(new ItemStack(unshaped)));
+
+			//ingot -> unshaped
+			GameRegistry.addShapelessRecipe(new ItemStack(unshaped),
+					ingot,
+					TFCItems.ceramicMold);
+		}
 	}
 
 	public void addMachineRecipes() {

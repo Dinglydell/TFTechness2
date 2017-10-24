@@ -205,7 +205,7 @@ public class SolutionTank {
 					fluidDelete.add(f);
 					fill(solid,
 							TFTItemPropertyRegistry.getDensity(solid)
-									* amt
+									* (amt / 1000f)
 									/ TFTItemPropertyRegistry
 											.getVolumeDensity(solid),
 							true);

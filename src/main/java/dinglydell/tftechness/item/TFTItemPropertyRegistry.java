@@ -138,8 +138,9 @@ public class TFTItemPropertyRegistry {
 	/** m^3/item */
 	public static float getVolumeDensity(ItemStack stack) {
 		ItemMeta im = new ItemMeta(stack);
-		if (volumeMap.containsKey(stack)) {
-			return volumeMap.get(stack);
+		if (volumeMap.containsKey(im)) {
+			return volumeMap.get(im);
+
 		}
 		// try TFC weight
 		if (stack.getItem() instanceof ItemTerra) {

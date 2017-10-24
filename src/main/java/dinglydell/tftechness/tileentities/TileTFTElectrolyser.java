@@ -294,12 +294,12 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 									.getLockedFluid()) / 10),
 							false);
 			int al = aluminiumTank.fill(cryoDrain, false);
-			if (al == cryoDrain.amount) {
+			if (cryoDrain != null && al == cryoDrain.amount) {
 				aluminiumTank.fill(cryoliteTank.drain(new FluidStack(
 						aluminiumTank.getLockedFluid(),
 						cryoliteTank.getFluidAmount(aluminiumTank
 								.getLockedFluid()) / 10),
-						true), false);
+						true), true);
 			}
 			updateFluidTemperature(aluminiumTank);
 			handleMoldOutput(Slots.MOLD.ordinal());
