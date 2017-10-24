@@ -72,6 +72,9 @@ public class ContainerElectrolyser extends Container {
 					}
 				}
 			}
+			if (stack.stackSize == prev.stackSize) {
+				return null;
+			}
 		}
 		return prev;
 	}

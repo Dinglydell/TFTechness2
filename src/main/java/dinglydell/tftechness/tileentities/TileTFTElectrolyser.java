@@ -25,12 +25,12 @@ import dinglydell.tftechness.fluid.FluidTankMetal;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
+import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.recipe.SolutionRecipe;
-import dinglydell.tftechness.util.OreDict;
 
 public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		IFluidHandler {
@@ -139,7 +139,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		//	return item.getItem() == TFTItems.alumina;
 		//}
 		if (slot == Slots.INPUT.ordinal()) {
-			return OreDict.itemMatches(item, "dustRedstone");
+			return TFTItemPropertyRegistry.isPowder(item);
 		}
 		if (slot == Slots.MOLD.ordinal()) {
 			return item.getItem() == TFCItems.ceramicMold
