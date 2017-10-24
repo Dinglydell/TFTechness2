@@ -5,13 +5,18 @@ import java.util.List;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.tileentities.TileTFTMachineBase;
 
@@ -19,6 +24,8 @@ public class BlockTFTMachine extends BlockContainer {
 	public enum TFTMachines {
 		electrolyser
 	}
+
+	private IIcon[] icons;
 
 	public BlockTFTMachine() {
 		super(Material.iron);
@@ -50,6 +57,23 @@ public class BlockTFTMachine extends BlockContainer {
 		super.onBlockDestroyedByPlayer(world, x, y, z, meta);
 		//restoreMultiblock(world, x, y, z);
 
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister register) {
+		icons = new IIcon[TFTMachines.values().length];
+		for (TFTMachines m : TFTMachines.values()) {
+			icons[m.ordinal()] = register.registerIcon(TFTechness2.MODID
+					+ ":machine/" + m.name().toLowerCase());
+		}
+
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) {
+		return icons[meta];
 	}
 
 	@Override
