@@ -1,11 +1,40 @@
 package dinglydell.tftechness.item;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.api.TFCItems;
 
+import dinglydell.tftechness.TFTechness2;
+
 public class TFTMeta {
+
+	/** List of all TFC-style seeds */
+	public static List<ItemStack> seeds = new ArrayList<ItemStack>();
+
+	static {
+		//yea, don't look
+		try {
+			Field[] declaredFields = TFCItems.class.getDeclaredFields();
+			for (Field field : declaredFields) {
+				if (Modifier.isStatic(field.getModifiers())
+						&& field.getName().startsWith("seeds")) {
+					Item item = (Item) field.get(null);
+					seeds.add(new ItemStack(item));
+				}
+			}
+		} catch (Exception ex) {
+			TFTechness2.logger.error("Failed to find TFC seeds");
+		}
+
+	}
+
 	public static ItemStack ieCokeBrick = new ItemStack(
 			IEContent.blockStoneDecoration, 1, 1);
 	public static ItemStack ieBlastBrick = new ItemStack(

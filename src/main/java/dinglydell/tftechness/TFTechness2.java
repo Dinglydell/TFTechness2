@@ -537,6 +537,11 @@ public class TFTechness2 {
 				null,
 				TFTMeta.hopGraphite);
 
+		for (ItemStack seed : TFTMeta.seeds) {
+			DieselHandler.addSqueezerRecipe(seed, 80, new FluidStack(
+					IEContent.fluidPlantoil, 80), null);
+		}
+
 		//Aluminium refinement - stage 1
 		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 5),
 				"oreBauxite",
