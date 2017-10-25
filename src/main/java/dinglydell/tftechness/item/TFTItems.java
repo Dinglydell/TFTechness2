@@ -13,6 +13,9 @@ public class TFTItems {
 	public static Item crushedBauxite;
 	public static Item alumina;
 
+	/** maps cropName -> seed item */
+	public static Map<String, Item> seed = new HashMap<String, Item>();
+
 	public static Map<String, Item> unshaped = new HashMap<String, Item>();
 	public static Map<String, Item> ingots = new HashMap<String, Item>();
 	public static Map<String, Item> ingots2x = new HashMap<String, Item>();

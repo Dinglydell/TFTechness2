@@ -52,12 +52,16 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
+import dinglydell.tftechness.config.TFTConfig;
+import dinglydell.tftechness.crop.CropIndexStack;
+import dinglydell.tftechness.crop.TFTCropManager;
 import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.TFTFluids;
@@ -97,15 +101,27 @@ public class TFTechness2 {
 
 	public static SimpleNetworkWrapper snw;
 
+	public TFTechness2() {
+		instance = this;
+	}
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		instance = this;
+		TFTConfig.loadConifg(event);
 		replaceWater();
 		editIEMetalRelations();
 		initStatMap();
 		registerEventHandlers();
 		registerPacketHandlers();
 		addOres();
+
+	}
+
+	private void addCrops() {
+		TFTCropManager.getInstance().registerCrop(new CropIndexStack(
+				TFTConfig.HEMP_ID, "hemp", 1, 40, 5, 1, -5, 0.25f, null,
+				new int[] { 0, 10, 10 }).setOutput1(TFTMeta.ieHempFibre, 2));
+
 	}
 
 	private void registerEventHandlers() {
@@ -196,7 +212,7 @@ public class TFTechness2 {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		registerItems();
-
+		addCrops();
 		registerFluids();
 		registerItemProps();
 		registerBlocks();
@@ -289,6 +305,11 @@ public class TFTechness2 {
 				moltenRedstone.getUnlocalizedName());
 
 		TFTOreRegistry.registerAllOreBlocks();
+
+		TFTBlocks.crops = new BlockCropTFT().setBlockName("crops");
+
+		GameRegistry.registerBlock(TFTBlocks.crops,
+				TFTBlocks.crops.getUnlocalizedName());
 	}
 
 	private void registerItems() {
@@ -366,6 +387,14 @@ public class TFTechness2 {
 		TFTItems.alumina = new ItemTerra().setSize(EnumSize.TINY)
 				.setWeight(EnumWeight.MEDIUM).setUnlocalizedName("alumina");
 		GameRegistry.registerItem(TFTItems.alumina, "alumina");
+
+		//TFTItems.seedHemp = new ItemCustomSeeds(TFTConfig.HEMP_ID)
+		//	.setUnlocalizedName("hempSeed");
+
+		//GameRegistry.registerItem(TFTItems.seedHemp,
+		//	TFTItems.seedHemp.getUnlocalizedName());
+
+		//OreDictionary.registerOre("seedHemp", TFTItems.seedHemp);
 
 	}
 
