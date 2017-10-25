@@ -395,15 +395,16 @@ public class TFTechness2 {
 		//treated wood
 		//there's probably a better way (barrels do not support ordict)
 		for (ItemStack plank : OreDictionary.getOres("plankWood")) {
-			manager.addRecipe(new BarrelRecipe(plank, new FluidStack(
+			manager.addRecipe(new BarrelRecipe(plank.copy(), new FluidStack(
 					IEContent.fluidCreosote, 100), new ItemStack(
-					IEContent.blockTreatedWood), null, 4));
+					IEContent.blockTreatedWood), new FluidStack(
+					IEContent.fluidCreosote, 100), 4));
 		}
 
 		for (ItemStack stick : OreDictionary.getOres("stickWood")) {
-			manager.addRecipe(new BarrelRecipe(stick, new FluidStack(
-					IEContent.fluidCreosote, 25), TFTMeta.ieTreatedStick, null,
-					1));
+			manager.addRecipe(new BarrelRecipe(stick.copy(), new FluidStack(
+					IEContent.fluidCreosote, 25), TFTMeta.ieTreatedStick,
+					new FluidStack(IEContent.fluidCreosote, 100), 1));
 		}
 
 	}
@@ -474,8 +475,6 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieBlastBrickAdv,
 				TFCBlocks.fireBrick, "plateSteel"));
 
-		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTMeta.ieBlastBrickAdv,
-				TFCBlocks.fireBrick));
 		GameRegistry.addRecipe(ItemUtil.clone(TFTMeta.ieCokeBrick, 2),
 				"PXP",
 				"X X",
