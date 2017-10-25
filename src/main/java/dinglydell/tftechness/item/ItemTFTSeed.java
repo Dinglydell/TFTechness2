@@ -35,7 +35,7 @@ public class ItemTFTSeed extends ItemCustomSeeds {
 				hitZ);
 
 		if (success) {
-			world.setBlock(x, y, z, TFTBlocks.crops);
+			world.setBlock(x, y + 1, z, TFTBlocks.crops, 0, 2);
 			TECrop te = (TECrop) world.getTileEntity(x, y + 1, z);
 			te.cropId = cropId;
 			world.markBlockForUpdate(te.xCoord, te.yCoord, te.zCoord);

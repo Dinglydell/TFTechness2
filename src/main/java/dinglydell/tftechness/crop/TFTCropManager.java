@@ -29,15 +29,13 @@ public class TFTCropManager {
 	}
 
 	public void registerCrop(CropIndex crop) {
-		crop.seedItem = new ItemTFTSeed(crop.cropId)
-				.setUnlocalizedName(crop.cropName);
+		String name = "seed" + StringUtil.capitaliseFirst(crop.cropName);
+		crop.seedItem = new ItemTFTSeed(crop.cropId).setUnlocalizedName(name);
 
 		GameRegistry.registerItem(crop.seedItem,
 				crop.seedItem.getUnlocalizedName());
 
-		OreDictionary.registerOre("seed"
-				+ StringUtil.capitaliseFirst(crop.cropName),
-				crop.seedItem);
+		OreDictionary.registerOre("seed" + name, crop.seedItem);
 
 		CropManager.getInstance().addIndex(crop);
 		crops.add(crop);

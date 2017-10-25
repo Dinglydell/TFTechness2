@@ -43,6 +43,7 @@ import com.bioxx.tfc.api.Crafting.KilnRecipe;
 import com.bioxx.tfc.api.Enums.EnumSize;
 import com.bioxx.tfc.api.Enums.EnumWeight;
 
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -79,6 +80,7 @@ import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.EnumState;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
+import dinglydell.tftechness.render.RenderBlockTFT;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
@@ -217,8 +219,17 @@ public class TFTechness2 {
 		registerItemProps();
 		registerBlocks();
 		registerGui();
+		registerRenderers();
 		registerIEMultiblocks();
 		registerTileEntities();
+	}
+
+	private void registerRenderers() {
+		RenderingRegistry
+				.registerBlockHandler(RenderBlockTFT.renderCrops = RenderingRegistry
+						.getNextAvailableRenderId(),
+						new RenderBlockTFT());
+
 	}
 
 	private void registerItemProps() {

@@ -47,3 +47,6 @@ metal.Wrought Iron.name=Wrought Iron
 metal.Steel.name=Steel
 metal.Copper.name=Copper
 metal.Redstone.name=Redstone
+
+
+tile.Machine.name=TFTMachine
