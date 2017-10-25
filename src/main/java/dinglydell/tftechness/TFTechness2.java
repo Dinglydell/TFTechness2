@@ -321,6 +321,10 @@ public class TFTechness2 {
 
 		GameRegistry.registerBlock(TFTBlocks.crops,
 				TFTBlocks.crops.getUnlocalizedName());
+
+		// pls don't tell
+		TFCBlocks.crops = TFTBlocks.crops;
+		//TODO: Fix this. this is bad. do not leave this here. find another way
 	}
 
 	private void registerItems() {

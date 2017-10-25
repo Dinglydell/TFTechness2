@@ -30,6 +30,7 @@ public class BlockCropTFT extends BlockCrop {
 
 	@Override
 	public void registerBlockIcons(IIconRegister register) {
+		super.registerBlockIcons(register);
 		List<CropIndex> crops = TFTCropManager.getInstance().crops;
 		icons = new HashMap<CropIndex, IIcon[]>();
 		for (CropIndex crop : crops) {
@@ -58,15 +59,9 @@ public class BlockCropTFT extends BlockCrop {
 		CropIndex crop = CropManager.getInstance().getCropFromId(te.cropId);
 		int stage = Math.min((int) te.growth, crop.numGrowthStages);
 		if (!icons.containsKey(crop)) {
-			return placeholder;
+			return super.getIcon(access, x, y, z, meta);
 		}
 		return icons.get(crop)[stage];
 	}
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
-		// TODO Auto-generated method stub
-		return super.getIcon(p_149691_1_, p_149691_2_);
-	}
 }

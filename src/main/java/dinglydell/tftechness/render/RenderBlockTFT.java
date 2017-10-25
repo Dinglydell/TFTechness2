@@ -5,7 +5,13 @@ import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.IBlockAccess;
+
+import com.bioxx.tfc.Food.CropManager;
+import com.bioxx.tfc.Render.Blocks.RenderCrop;
+import com.bioxx.tfc.TileEntities.TECrop;
+
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
+import dinglydell.tftechness.crop.TFTCropManager;
 
 public class RenderBlockTFT implements ISimpleBlockRenderingHandler {
 
@@ -24,6 +30,13 @@ public class RenderBlockTFT implements ISimpleBlockRenderingHandler {
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z,
 			Block block, int modelId, RenderBlocks renderer) {
 		if (modelId == renderCrops) {
+			TECrop tile = (TECrop) world.getTileEntity(x, y, z);
+			// if is TFC crop, do TFC render
+			if (!TFTCropManager.getInstance().crops.contains(CropManager
+					.getInstance().getCropFromId(tile.cropId))) {
+				return RenderCrop.render(block, x, y, z, renderer);
+			}
+
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.setBrightness(block.getMixedBrightnessForBlock(world,
 					x,
@@ -54,6 +67,7 @@ public class RenderBlockTFT implements ISimpleBlockRenderingHandler {
 					y,
 					z,
 					1f);
+			return true;
 		}
 		return false;
 	}
