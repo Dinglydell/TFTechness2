@@ -1,5 +1,6 @@
 /textures
-/eclipse
+eclipse/*
+!eclipse/config/
 
 # built application files
 *.apk
