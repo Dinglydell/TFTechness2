@@ -29,6 +29,12 @@ List of dependencies:
 * [TerraFirmaCraft](https://github.com/Deadrik/TFCraft)
 * [ImmersiveEngineering](https://github.com/BluSunrize/ImmersiveEngineering)
 
+Recommended complimentary mods: (eventually, I plan to make a formalised modpack which will probably include these)
+* [NotEnoughItems](https://github.com/Chicken-Bones/NotEnoughItems)
+* [TFC NEI Plugin](https://github.com/dries007/TFCraft-NEIplugin)
+* [Waila](https://bitbucket.org/ProfMobius/waila/)
+
+
 Planned dependencies:
 * [Railcraft](https://github.com/Railcraft/Railcraft)
 * [BigReactors](https://github.com/erogenousbeef/BigReactors) (maybe)
