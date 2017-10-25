@@ -1,6 +1,8 @@
 /textures
 eclipse/*
 !eclipse/config/
+eclipse/config/splash.properties
+eclipse/config/railcraft/version.prop
 
 # built application files
 *.apk

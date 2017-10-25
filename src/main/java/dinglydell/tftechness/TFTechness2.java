@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import mods.railcraft.common.fluids.Fluids;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -89,7 +90,7 @@ import dinglydell.tftechness.util.ItemUtil;
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
 public class TFTechness2 {
 	public static final String MODID = "TFTechness";
-	public static final String VERSION = "0.2";
+	public static final String VERSION = "0.1";
 	/** The degree symbol */
 	public static final String degrees = "\u00b0";
 	public static Map<String, MetalStat> statMap = new HashMap();
@@ -636,21 +637,17 @@ public class TFTechness2 {
 			finalField(water);
 			water.set(null, TFCFluids.FRESHWATER);
 
-			//Field tag = Fluids.class.getDeclaredField("tag");
-			//tag.setAccessible(true);
-			//finalField(tag);
-			//tag.set(Fluids.WATER, "freshwater");
+			Field tag = Fluids.class.getDeclaredField("tag");
+			tag.setAccessible(true);
+			finalField(tag);
+			tag.set(Fluids.WATER, "freshwater");
 
-			// FluidRegistry.WATER = TFCFluids.FRESHWATER;
-
-			// FluidContainerRegistry.isContainer(TFTMeta.salt);
-			// Field fluidsField =
-			// FluidRegistry.class.getDeclaredField("fluids");
-			// fluidsField.setAccessible(true);
-			// finalField(fluidsField);
-			// BiMap<String, Fluid> fluids = (BiMap<String, Fluid>) fluidsField
-			// .get(null);
-			// fluids.forcePut("water", TFCFluids.FRESHWATER);
+			//Field fluidsField = FluidRegistry.class.getDeclaredField("fluids");
+			//fluidsField.setAccessible(true);
+			//finalField(fluidsField);
+			//BiMap<String, Fluid> fluids = (BiMap<String, Fluid>) fluidsField
+			//		.get(null);
+			//fluids.forcePut("water", TFCFluids.FRESHWATER);
 
 		} catch (Exception e) {
 
