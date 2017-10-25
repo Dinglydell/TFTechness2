@@ -1,5 +1,3 @@
--treated wood as a barrel recipe
-
 -automated barrels
 
 -iron/steel components as anvil recipes?

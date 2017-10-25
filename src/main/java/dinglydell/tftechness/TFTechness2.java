@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -33,6 +35,8 @@ import com.bioxx.tfc.api.HeatRegistry;
 import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
+import com.bioxx.tfc.api.Crafting.BarrelManager;
+import com.bioxx.tfc.api.Crafting.BarrelRecipe;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
 import com.bioxx.tfc.api.Crafting.KilnCraftingManager;
 import com.bioxx.tfc.api.Crafting.KilnRecipe;
@@ -346,7 +350,7 @@ public class TFTechness2 {
 		}
 
 		TFTItems.woodenBucketCreosote = new ItemStack(new ItemCustomBucket(
-				Blocks.air).setUnlocalizedName("woodenBucketCreosote"), 0, 1);
+				Blocks.air).setUnlocalizedName("woodenBucketCreosote"), 1);
 		GameRegistry.registerItem(TFTItems.woodenBucketCreosote.getItem(),
 				"woodenBucketCreosote");
 
@@ -377,11 +381,31 @@ public class TFTechness2 {
 		tfcClayRecipes();
 		tfcHeatRecipes();
 		tfcKilnRecipes();
+		tfcBarrelRecipes();
 		for (Material m : materials) {
 			m.addMachineRecipes();
 			m.addCraftingRecipes();
 		}
 		logger.info(IEApi.modPreference);
+	}
+
+	private void tfcBarrelRecipes() {
+		BarrelManager manager = BarrelManager.getInstance();
+
+		//treated wood
+		//there's probably a better way (barrels do not support ordict)
+		for (ItemStack plank : OreDictionary.getOres("plankWood")) {
+			manager.addRecipe(new BarrelRecipe(plank, new FluidStack(
+					IEContent.fluidCreosote, 100), new ItemStack(
+					IEContent.blockTreatedWood), null, 4));
+		}
+
+		for (ItemStack stick : OreDictionary.getOres("stickWood")) {
+			manager.addRecipe(new BarrelRecipe(stick, new FluidStack(
+					IEContent.fluidCreosote, 25), TFTMeta.ieTreatedStick, null,
+					1));
+		}
+
 	}
 
 	private void addTFTRecipes() {
@@ -549,6 +573,9 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.ieHvWire);
 		batch.addCrafting(TFTMeta.ieHempWire);
 		batch.addCrafting(TFTMeta.ieSteelWire);
+
+		batch.addCrafting(new ItemStack(IEContent.blockTreatedWood));
+		batch.addCrafting(TFTMeta.ieTreatedStick);
 
 		batch.Execute();
 
