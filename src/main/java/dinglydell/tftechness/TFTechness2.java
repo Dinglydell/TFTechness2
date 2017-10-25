@@ -404,7 +404,7 @@ public class TFTechness2 {
 		for (ItemStack stick : OreDictionary.getOres("stickWood")) {
 			manager.addRecipe(new BarrelRecipe(stick.copy(), new FluidStack(
 					IEContent.fluidCreosote, 25), TFTMeta.ieTreatedStick,
-					new FluidStack(IEContent.fluidCreosote, 100), 1));
+					new FluidStack(IEContent.fluidCreosote, 25), 1));
 		}
 
 	}
