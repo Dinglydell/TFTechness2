@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mods.railcraft.common.fluids.Fluids;
+import mods.railcraft.common.items.RailcraftItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -421,6 +423,7 @@ public class TFTechness2 {
 		removeRecipes();
 		addIEMachineRecipes();
 		addIERecipes();
+		addRailcraftRecipes();
 		addTFTRecipes();
 		tfcAlloyRecipes();
 		tfcClayRecipes();
@@ -432,6 +435,19 @@ public class TFTechness2 {
 			m.addCraftingRecipes();
 		}
 		logger.info(IEApi.modPreference);
+	}
+
+	private void addRailcraftRecipes() {
+		for (FluidContainerData c : FluidContainerRegistry
+				.getRegisteredFluidContainerData()) {
+			if (FluidContainerRegistry.containsFluid(c.filledContainer,
+					new FluidStack(IEContent.fluidCreosote, 1000))) {
+				GameRegistry.addRecipe(new ShapedOreRecipe(RailcraftItem.tie
+						.getStack(), " c ", "www", 'c', c.filledContainer, 'w',
+						"woodLumber"));
+			}
+		}
+
 	}
 
 	private void tfcBarrelRecipes() {
