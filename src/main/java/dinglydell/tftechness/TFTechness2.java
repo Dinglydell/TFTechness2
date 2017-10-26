@@ -5,9 +5,12 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import mods.railcraft.common.blocks.machine.alpha.TileSteamTrap;
+import mods.railcraft.common.carts.EnumCart;
 import mods.railcraft.common.fluids.Fluids;
 import mods.railcraft.common.items.ItemCrowbar;
 import mods.railcraft.common.items.ItemCrowbarReinforced;
+import mods.railcraft.common.items.ItemPlate.EnumPlate;
 import mods.railcraft.common.items.RailcraftItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -92,6 +95,7 @@ import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.util.ItemUtil;
+import dinglydell.tftechness.util.StringUtil;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
 public class TFTechness2 {
@@ -118,6 +122,7 @@ public class TFTechness2 {
 	public void preInit(FMLPreInitializationEvent event) {
 		TFTConfig.loadConifg(event);
 		replaceWater();
+		fixDamage();
 		editIEMetalRelations();
 		initStatMap();
 		registerEventHandlers();
@@ -473,6 +478,10 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(ItemCrowbarReinforced
 				.getItem(), "stickSteel", "dyeRed"));
 
+		//cargo cart
+		GameRegistry.addRecipe(new ShapelessOreRecipe(EnumCart.CARGO
+				.getCartItem(), "chestWood", Items.minecart));
+
 	}
 
 	private void tfcBarrelRecipes() {
@@ -691,8 +700,27 @@ public class TFTechness2 {
 
 		batch.addCrafting(new ItemStack(Blocks.golden_rail),
 				new ItemStack[] { new ItemStack(TFCItems.goldIngot) });
-
+		for (EnumPlate plate : EnumPlate.values()) {
+			batch.addOreFix(new ItemStack(RailcraftItem.plate.item(), 1, plate
+					.ordinal()),
+					"plate"
+							+ StringUtil.capitaliseFirst((plate.name()
+									.toLowerCase())));
+		}
 		batch.Execute();
+
+	}
+
+	private void fixDamage() {
+		try {
+			Field dmg = TileSteamTrap.class.getDeclaredField("DAMAGE");
+			finalField(dmg);
+			dmg.setAccessible(true);
+			dmg.set(null, (byte) 160);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
 
 	}
 
