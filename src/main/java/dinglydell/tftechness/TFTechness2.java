@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mods.railcraft.common.fluids.Fluids;
+import mods.railcraft.common.items.ItemCrowbar;
+import mods.railcraft.common.items.ItemCrowbarReinforced;
 import mods.railcraft.common.items.RailcraftItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -23,6 +25,8 @@ import org.apache.logging.log4j.LogManager;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
+import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -424,6 +428,7 @@ public class TFTechness2 {
 		addIEMachineRecipes();
 		addIERecipes();
 		addRailcraftRecipes();
+		addRailcraftMachineRecipes();
 		addTFTRecipes();
 		tfcAlloyRecipes();
 		tfcClayRecipes();
@@ -437,7 +442,20 @@ public class TFTechness2 {
 		logger.info(IEApi.modPreference);
 	}
 
+	private void addRailcraftMachineRecipes() {
+		//RollingMachineCraftingManager.getInstance().addRecipe(new ItemStack(
+		//		RailcraftItem.rail.item(), 8),
+		//		true,
+		//		"i i",
+		//		"i i",
+		//		"i i",
+		//		'i',
+		//		"ingotIron");
+
+	}
+
 	private void addRailcraftRecipes() {
+		//wooden tie
 		for (FluidContainerData c : FluidContainerRegistry
 				.getRegisteredFluidContainerData()) {
 			if (FluidContainerRegistry.containsFluid(c.filledContainer,
@@ -447,6 +465,13 @@ public class TFTechness2 {
 						"woodLumber"));
 			}
 		}
+
+		//crowbar
+		GameRegistry.addRecipe(new ShapelessOreRecipe(ItemCrowbar.getItem(),
+				"stickIron", "dyeRed"));
+		//reinforced crowbar
+		GameRegistry.addRecipe(new ShapelessOreRecipe(ItemCrowbarReinforced
+				.getItem(), "stickSteel", "dyeRed"));
 
 	}
 
@@ -593,6 +618,22 @@ public class TFTechness2 {
 		MetalPressRecipe.removeRecipes(TFTMeta.ieSteelPlate);
 		MetalPressRecipe.removeRecipes(TFTMeta.ieAluminiumPlate);
 
+		// blast furnace
+		BlastFurnaceRecipe.removeRecipes(TFTMeta.ieSteelIngot);
+		BlastFurnaceRecipe.addRecipe(new ItemStack(TFCItems.pigIronIngot),
+				"ingotIron",
+				1200,
+				TFTMeta.ieSlag);
+
+		//arc furnace
+		ArcFurnaceRecipe.removeRecipes(TFTMeta.ieSteelIngot);
+		ArcFurnaceRecipe.addRecipe(new ItemStack(TFCItems.steelIngot),
+				"ingotIron",
+				TFTMeta.ieSlag,
+				400,
+				512,
+				"dustCoke");
+
 		DieselHandler.addSqueezerRecipe(ItemUtil.clone(TFTMeta.graphite, 4),
 				180,
 				null,
@@ -641,6 +682,15 @@ public class TFTechness2 {
 
 		batch.addCrafting(new ItemStack(IEContent.blockTreatedWood));
 		batch.addCrafting(TFTMeta.ieTreatedStick);
+
+		batch.addCrafting(ItemCrowbar.getItem());
+		batch.addCrafting(ItemCrowbarReinforced.getItem());
+
+		batch.addCrafting(new ItemStack(Blocks.rail),
+				new ItemStack[] { new ItemStack(TFCItems.wroughtIronIngot) });
+
+		batch.addCrafting(new ItemStack(Blocks.golden_rail),
+				new ItemStack[] { new ItemStack(TFCItems.goldIngot) });
 
 		batch.Execute();
 

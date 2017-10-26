@@ -40,11 +40,14 @@ public abstract class TileTFTMachineBase extends TileEntity implements
 
 	@Override
 	public void updateEntity() {
-		if (isMaster() && !worldObj.isRemote && rf > 0) {
-			rfRate = spendRf(Math.min(getMaxRfRate(), rf));
-			rf -= rfRate;
+		if (isMaster() && !worldObj.isRemote) {
+			if (rf > 0) {
+				rfRate = spendRf(Math.min(getMaxRfRate(), rf));
+				rf -= rfRate;
+			}
 			this.sendServerToClientMessage();
 		}
+
 	}
 
 	protected abstract int getMaxRfRate();
