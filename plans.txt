@@ -8,12 +8,16 @@
 
 -increase steam trap damage
 
+-allow external heater to be used to keep crops warm during winter?
+
 
 Mid-term:
 
 -Railcraft
-
+    -tunnel bore + support beams?
+    
 -Advanced rocketry
+    -gate things like force track emitter behind space
 
 -big reactors?
 

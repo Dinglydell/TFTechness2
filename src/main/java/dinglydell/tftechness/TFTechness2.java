@@ -12,6 +12,7 @@ import mods.railcraft.common.items.ItemCrowbar;
 import mods.railcraft.common.items.ItemCrowbarReinforced;
 import mods.railcraft.common.items.ItemPlate.EnumPlate;
 import mods.railcraft.common.items.RailcraftItem;
+import mods.railcraft.common.util.crafting.RollingMachineCraftingManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -448,14 +449,12 @@ public class TFTechness2 {
 	}
 
 	private void addRailcraftMachineRecipes() {
-		//RollingMachineCraftingManager.getInstance().addRecipe(new ItemStack(
-		//		RailcraftItem.rail.item(), 8),
-		//		true,
-		//		"i i",
-		//		"i i",
-		//		"i i",
-		//		'i',
-		//		"ingotIron");
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(new ItemStack(
+						RailcraftItem.rail.item(), 8), "I I", "I I", "I I",
+						'I', "ingotIron"));
 
 	}
 
@@ -735,6 +734,10 @@ public class TFTechness2 {
 			tag.setAccessible(true);
 			finalField(tag);
 			tag.set(Fluids.WATER, "freshwater");
+
+			Field waterBlock = Blocks.class.getDeclaredField("water");
+			finalField(waterBlock);
+			waterBlock.set(null, TFCBlocks.freshWaterStationary);
 
 			//Field fluidsField = FluidRegistry.class.getDeclaredField("fluids");
 			//fluidsField.setAccessible(true);
