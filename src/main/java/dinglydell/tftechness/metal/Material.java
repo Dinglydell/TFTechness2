@@ -376,10 +376,8 @@ public class Material {
 	}
 
 	public void addMachineRecipes() {
-		if (sheet == null || sheet2x == null || ingot2x == null
-				|| ingot == null || TFTMeta.ieMoldPlate == null) {
-			TFTechness2.logger.info(name);
-		}
+
+		MetalPressRecipe.removeRecipes(new ItemStack(sheet));
 		//sheet
 		MetalPressRecipe.addRecipe(new ItemStack(sheet, 1), new ItemStack(
 				ingot, 2), TFTMeta.ieMoldPlate, 2400);
@@ -399,6 +397,11 @@ public class Material {
 	public void addAnvilRecipes() {
 		AnvilManager manager = AnvilManager.getInstance();
 		AnvilReq req = AnvilReq.getReqFromInt(tier);
+		//rod
+
+		manager.addRecipe(new AnvilRecipe(new ItemStack(ingot), null,
+				TFTAnvilRecipeHandler.rodPlan, req, new ItemStack(rod)));
+
 		if (!isTFC) {
 			//ingot2x
 			manager.addWeldRecipe(new AnvilRecipe(new ItemStack(ingot),
@@ -412,6 +415,7 @@ public class Material {
 			//sheet2x
 			manager.addWeldRecipe(new AnvilRecipe(new ItemStack(sheet),
 					new ItemStack(sheet), req, new ItemStack(sheet2x, 1)));
+
 		}
 	}
 

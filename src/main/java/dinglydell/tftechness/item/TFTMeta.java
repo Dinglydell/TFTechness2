@@ -142,4 +142,10 @@ public class TFTMeta {
 			1, 7);
 	public static ItemStack ieSlag = new ItemStack(IEContent.itemMaterial, 1,
 			13);
+	public static ItemStack ieIronRod = new ItemStack(IEContent.itemMaterial,
+			1, 14);
+	public static ItemStack ieSteelRod = new ItemStack(IEContent.itemMaterial,
+			1, 15);
+	public static ItemStack ieAluminiumRod = new ItemStack(
+			IEContent.itemMaterial, 1, 16);
 }

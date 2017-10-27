@@ -629,6 +629,9 @@ public class TFTechness2 {
 		MetalPressRecipe.removeRecipes(TFTMeta.ieConstantanPlate);
 		MetalPressRecipe.removeRecipes(TFTMeta.ieSteelPlate);
 		MetalPressRecipe.removeRecipes(TFTMeta.ieAluminiumPlate);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieIronRod);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieSteelRod);
+		MetalPressRecipe.removeRecipes(TFTMeta.ieAluminiumRod);
 
 		// blast furnace
 		BlastFurnaceRecipe.removeRecipes(TFTMeta.ieSteelIngot);
@@ -683,6 +686,9 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.ieConstantanPlate);
 		batch.addCrafting(TFTMeta.ieSteelPlate);
 		batch.addCrafting(TFTMeta.ieAluminiumPlate);
+		batch.addCrafting(TFTMeta.ieIronRod);
+		batch.addCrafting(TFTMeta.ieSteelRod);
+		batch.addCrafting(TFTMeta.ieAluminiumRod);
 
 		batch.addCrafting(TFTMeta.ieHammer);
 
