@@ -11,4 +11,12 @@ public class StringUtil {
 	public static String capitaliseFirst(String str) {
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
+
+	/**
+	 * Converts the first letter of the string to lower case, leaves the rest
+	 * unchanged.
+	 */
+	public static String lowerCaseFirst(String str) {
+		return str.substring(0, 1).toLowerCase() + str.substring(1);
+	}
 }

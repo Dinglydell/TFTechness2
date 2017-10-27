@@ -1,5 +1,6 @@
 package dinglydell.tftechness.metal;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -39,6 +40,7 @@ import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
+import dinglydell.tftechness.util.StringUtil;
 
 public class Material {
 	/** Whether this metal exists in vanilla TFC */
@@ -71,6 +73,27 @@ public class Material {
 		this.oreName = name;
 		this.tier = tier;
 		//this.nugget = nugget;
+		if (isTFC) {
+			//no! don't look!
+			try {
+				sheet = get("Sheet");
+				sheet2x = get("Sheet2x");
+				ingot = get("Ingot");
+				ingot2x = get("Ingot2x");
+				unshaped = get("Unshaped");
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	//haha! this doesn't exist!
+	private Item get(String type) throws NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field field = TFCItems.class.getDeclaredField(StringUtil
+				.lowerCaseFirst(name) + type);
+
+		return (Item) field.get(null);
 	}
 
 	public Material(String name, int tier, Alloy.EnumTier alloyTier,
@@ -353,11 +376,15 @@ public class Material {
 	}
 
 	public void addMachineRecipes() {
+		if (sheet == null || sheet2x == null || ingot2x == null
+				|| ingot == null || TFTMeta.ieMoldPlate == null) {
+			TFTechness2.logger.info(name);
+		}
 		//sheet
 		MetalPressRecipe.addRecipe(new ItemStack(sheet, 1), new ItemStack(
 				ingot, 2), TFTMeta.ieMoldPlate, 2400);
 		MetalPressRecipe.addRecipe(new ItemStack(sheet, 1), "ingotDouble"
-				+ metal.name, TFTMeta.ieMoldPlate, 2400);
+				+ oreName, TFTMeta.ieMoldPlate, 2400);
 
 		//sheet2x
 		MetalPressRecipe.addRecipe(new ItemStack(sheet2x, 1), new ItemStack(

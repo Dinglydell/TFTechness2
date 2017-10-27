@@ -10,6 +10,9 @@
 
 -allow external heater to be used to keep crops warm during winter?
 
+-wire as rolling machine recipe? (gates IE wires behind steam -> RC steam engine)
+
+-more steam power stuff
 
 Mid-term:
 
@@ -20,6 +23,7 @@ Mid-term:
     -gate things like force track emitter behind space
 
 -big reactors?
+    -refinement process for pitchblende
 
 -RF forge (multiblock)
 
@@ -34,7 +38,7 @@ Mid-term:
 
 
 
-Longer term (low priority, distant future):
+Longer term (low priority/distant future):
 
 -infa-red googles - allowing you to see exact temperature of items
 

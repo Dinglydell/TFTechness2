@@ -358,32 +358,36 @@ public class TFTechness2 {
 						.setOreName("Aluminum"),
 
 				new Material("WroughtIron", 3, Alloy.EnumTier.TierIII, true)
-						.setUnshaped(TFCItems.wroughtIronUnshaped)
-						.setIngot(TFCItems.wroughtIronIngot)
-						.setIngot2x(TFCItems.wroughtIronIngot2x)
-						.setSheet(TFCItems.wroughtIronSheet)
-						.setSheet2x(TFCItems.wroughtIronSheet2x)
+				//.setUnshaped(TFCItems.wroughtIronUnshaped)
+				//.setIngot(TFCItems.wroughtIronIngot)
+				//.setIngot2x(TFCItems.wroughtIronIngot2x)
+				//.setSheet(TFCItems.wroughtIronSheet)
+				//.setSheet2x(TFCItems.wroughtIronSheet2x)
 						.setNugget(TFTMeta.ieIronNugget).setOreName("Iron"),
-				new Material("Lead", 2, true).setIngot(TFCItems.leadIngot)
-						.setUnshaped(TFCItems.leadUnshaped)
+				new Material("Lead", 2, true)//.setIngot(TFCItems.leadIngot)
+						//.setUnshaped(TFCItems.leadUnshaped)
+						//.setSheet(TFCItems.leadSheet)
 						.setNugget(TFTMeta.ieLeadNugget),
-				new Material("Steel", 4, true).setIngot(TFCItems.steelIngot)
+				new Material("Steel", 4, true)//.setIngot(TFCItems.steelIngot)
 						.setNugget(TFTMeta.ieSteelNugget)
-						.setUnshaped(TFCItems.steelUnshaped)
+						//.setUnshaped(TFCItems.steelUnshaped)
 						.setBlock(IEContent.blockStorage, 7),
-				new Material("Copper", 1, true).setIngot(TFCItems.copperIngot)
+				new Material("Copper", 1, true)//.setIngot(TFCItems.copperIngot)
 						.setNugget(TFTMeta.ieCopperNugget)
-						.setUnshaped(TFCItems.copperUnshaped),
-				new Material("Tin", 0, true).setIngot(TFCItems.tinIngot)
-						.setUnshaped(TFCItems.tinUnshaped),
-				new Material("Bronze", 2, true).setIngot(TFCItems.bronzeIngot)
-						.setUnshaped(TFCItems.bronzeUnshaped),
-				new Material("Silver", 2, true).setIngot(TFCItems.silverIngot)
-						.setNugget(TFTMeta.ieSilverNugget)
-						.setUnshaped(TFCItems.silverUnshaped),
-				new Material("Nickel", 4, true).setIngot(TFCItems.nickelIngot)
+				//.setUnshaped(TFCItems.copperUnshaped)
+				,
+				new Material("Tin", 0, true)//.setIngot(TFCItems.tinIngot)
+				//.setUnshaped(TFCItems.tinUnshaped)
+				,
+				new Material("Bronze", 2, true)//.setIngot(TFCItems.bronzeIngot)
+				//.setUnshaped(TFCItems.bronzeUnshaped)
+				,
+				new Material("Silver", 2, true)//.setIngot(TFCItems.silverIngot)
+						.setNugget(TFTMeta.ieSilverNugget),
+				//.setUnshaped(TFCItems.silverUnshaped),
+				new Material("Nickel", 4, true)//.setIngot(TFCItems.nickelIngot)
 						.setNugget(TFTMeta.ieNickelNugget)
-						.setUnshaped(TFCItems.nickelUnshaped)
+		//.setUnshaped(TFCItems.nickelUnshaped)
 
 		};
 		TFTItems.nuggetMold = new ItemPotteryMold()
