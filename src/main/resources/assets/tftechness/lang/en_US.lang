@@ -48,6 +48,7 @@ metal.Steel.name=Steel
 metal.Silver.name=Silver
 metal.Copper.name=Copper
 metal.Redstone.name=Redstone
+metal.Bronze.name=Bronze
 
 
 tile.Machine.name=TFTMachine

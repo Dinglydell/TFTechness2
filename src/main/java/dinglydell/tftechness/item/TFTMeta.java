@@ -5,6 +5,9 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import mods.railcraft.common.blocks.RailcraftBlocks;
+import mods.railcraft.common.blocks.detector.BlockDetector;
+import mods.railcraft.common.items.RailcraftItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import blusunrize.immersiveengineering.common.IEContent;
@@ -13,6 +16,7 @@ import com.bioxx.tfc.api.TFCItems;
 
 import dinglydell.tftechness.TFTechness2;
 
+/** A help class to get items/blocks with metadata */
 public class TFTMeta {
 
 	/** List of all TFC-style seeds */
@@ -86,6 +90,8 @@ public class TFTMeta {
 	public static ItemStack ieHammer = new ItemStack(IEContent.itemTool, 1, 0);
 	public static ItemStack ieWireCutters = new ItemStack(IEContent.itemTool,
 			1, 1);
+	public static ItemStack ieVoltmeter = new ItemStack(IEContent.itemTool, 1,
+			2);
 
 	public static ItemStack ieConveyor = new ItemStack(
 			IEContent.blockMetalDevice, 1, 11);
@@ -100,8 +106,19 @@ public class TFTMeta {
 
 	public static ItemStack ieLvWire = new ItemStack(IEContent.itemWireCoil, 1,
 			0);
+	public static ItemStack ieLvWireBlock = new ItemStack(
+			IEContent.blockStorage, 1, 8);
+	public static ItemStack ieLvConnector = new ItemStack(
+			IEContent.blockMetalDevice);
+	public static ItemStack ieMvConnector = new ItemStack(
+			IEContent.blockMetalDevice, 1, 2);
+	public static ItemStack ieHvConnector = new ItemStack(
+			IEContent.blockMetalDevice, 1, 6);
 	public static ItemStack ieMvWire = new ItemStack(IEContent.itemWireCoil, 1,
 			1);
+	public static ItemStack ieMvWireBlock = new ItemStack(
+			IEContent.blockStorage, 1, 9);
+
 	public static ItemStack ieHvWire = new ItemStack(IEContent.itemWireCoil, 1,
 			2);
 	public static ItemStack ieHempWire = new ItemStack(IEContent.itemWireCoil,
@@ -134,6 +151,8 @@ public class TFTMeta {
 			IEContent.blockMetalDecoration, 1, 5);
 	public static ItemStack ieLightEngineering = new ItemStack(
 			IEContent.blockMetalDecoration, 1, 7);
+	public static ItemStack ieRadiatorBlock = new ItemStack(
+			IEContent.blockMetalDecoration, 1, 4);
 	public static ItemStack ieSteelBlock = new ItemStack(
 			IEContent.blockStorage, 1, 7);
 	public static ItemStack ieSteelSlab = new ItemStack(
@@ -146,6 +165,64 @@ public class TFTMeta {
 			1, 14);
 	public static ItemStack ieSteelRod = new ItemStack(IEContent.itemMaterial,
 			1, 15);
+
+	public static ItemStack ieBreakerSwitch = new ItemStack(
+			IEContent.blockMetalDevice2);
+	public static ItemStack ieCurrentTransformer = new ItemStack(
+			IEContent.blockMetalDevice2, 1, 2);
+	public static ItemStack iePoweredLantern = new ItemStack(
+			IEContent.blockMetalDevice2, 1, 3);
+
 	public static ItemStack ieAluminiumRod = new ItemStack(
 			IEContent.itemMaterial, 1, 16);
+
+	public static ItemStack railAdvanced = new ItemStack(
+			RailcraftItem.rail.item(), 1, 1);
+	public static ItemStack detectorTank = new ItemStack(
+			BlockDetector.getBlock(), 1, 8);
+	public static ItemStack detectorPlayer = new ItemStack(
+			BlockDetector.getBlock(), 1, 5);
+
+	public static ItemStack detectorMob = new ItemStack(
+			BlockDetector.getBlock(), 1, 3);
+	public static ItemStack detectorExplosive = new ItemStack(
+			BlockDetector.getBlock(), 1, 6);
+	public static ItemStack detectorAnimal = new ItemStack(
+			BlockDetector.getBlock(), 1, 7);
+	public static ItemStack detectorAge = new ItemStack(
+			BlockDetector.getBlock(), 1, 11);
+	public static ItemStack detectorRouting = new ItemStack(
+			BlockDetector.getBlock(), 1, 16);
+
+	public static ItemStack detectorSheep = new ItemStack(
+			BlockDetector.getBlock(), 1, 13);
+	public static ItemStack detectorLocomotive = new ItemStack(
+			BlockDetector.getBlock(), 1, 15);
+	public static ItemStack detectorTrain = new ItemStack(
+			BlockDetector.getBlock(), 1, 12);
+	public static ItemStack itemLoader = new ItemStack(
+			RailcraftBlocks.getBlockMachineGamma());
+	public static ItemStack itemUnloader = new ItemStack(
+			RailcraftBlocks.getBlockMachineGamma(), 1, 1);
+	public static ItemStack advItemLoader = new ItemStack(
+			RailcraftBlocks.getBlockMachineGamma(), 1, 2);
+	public static ItemStack advItemUnloader = new ItemStack(
+			RailcraftBlocks.getBlockMachineGamma(), 1, 3);
+	public static ItemStack engravingBench = new ItemStack(
+			RailcraftBlocks.getBlockMachineEpsilon(), 1, 5);
+	public static ItemStack fireboxSolid = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 5);
+	public static ItemStack fireboxLiquid = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 6);
+	public static ItemStack tankGaugeIron = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 1);
+	public static ItemStack tankGaugeSteel = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 14);
+	public static ItemStack circuitReceiver = new ItemStack(
+			RailcraftItem.circuit.item(), 1, 1);
+	public static ItemStack ieAirTank = new ItemStack(
+			IEContent.itemToolUpgrades);
+	public static ItemStack ieWoodenGrip = new ItemStack(
+			IEContent.itemMaterial, 1, 9);
+
 }

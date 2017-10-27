@@ -16,6 +16,10 @@
 
 -remove creosote requirement for wooden tracks so that it can be available earlier?
 
+-make it harder to obtain electrum so that MV is not available as soon as you unlock power
+
+-maybe get railcraft machines to rest at the external temperature - almost doesn't affect gameplay but would be a nice addition
+
 Mid-term:
 
 -Railcraft

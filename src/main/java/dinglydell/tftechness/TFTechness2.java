@@ -10,6 +10,8 @@ import mods.railcraft.common.carts.EnumCart;
 import mods.railcraft.common.fluids.Fluids;
 import mods.railcraft.common.items.ItemCrowbar;
 import mods.railcraft.common.items.ItemCrowbarReinforced;
+import mods.railcraft.common.items.ItemGear.EnumGear;
+import mods.railcraft.common.items.ItemGoggles;
 import mods.railcraft.common.items.ItemPlate.EnumPlate;
 import mods.railcraft.common.items.RailcraftItem;
 import mods.railcraft.common.util.crafting.RollingMachineCraftingManager;
@@ -386,8 +388,9 @@ public class TFTechness2 {
 						.setNugget(TFTMeta.ieSilverNugget),
 				//.setUnshaped(TFCItems.silverUnshaped),
 				new Material("Nickel", 4, true)//.setIngot(TFCItems.nickelIngot)
-						.setNugget(TFTMeta.ieNickelNugget)
-		//.setUnshaped(TFCItems.nickelUnshaped)
+						.setNugget(TFTMeta.ieNickelNugget),
+				new Material("Gold", 2, true).setNugget(new ItemStack(
+						Items.gold_nugget))
 
 		};
 		TFTItems.nuggetMold = new ItemPotteryMold()
@@ -453,12 +456,21 @@ public class TFTechness2 {
 	}
 
 	private void addRailcraftMachineRecipes() {
+
 		RollingMachineCraftingManager
 				.getInstance()
 				.getRecipeList()
 				.add(new ShapedOreRecipe(new ItemStack(
 						RailcraftItem.rail.item(), 8), "I I", "I I", "I I",
 						'I', "ingotIron"));
+
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(
+						ItemUtil.clone(TFTMeta.railAdvanced, 8), "IRG", "IRG",
+						"IRG", 'I', "ingotIron", 'R', "dustRedstone", 'G',
+						"ingotGold"));
 
 	}
 
@@ -485,13 +497,103 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapelessOreRecipe(EnumCart.CARGO
 				.getCartItem(), "chestWood", Items.minecart));
 
+		//TODO: maybe edit the block textures for recipes that have changed as they no longer look like what they're made of
+		//detectors - half of them use items unobtainable with tfc
+		//these recipes are mostly placeholders
+		//tank
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorTank, "bbb",
+				"bpb", "bbb", 'b', new ItemStack(TFCItems.stoneBrick, 1,
+						OreDictionary.WILDCARD_VALUE), 'p',
+				Blocks.stone_pressure_plate));
+		//player
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorPlayer,
+				"sss", "sps", "sss", 's', "itemRock", 'p',
+				Blocks.stone_pressure_plate));
+		//mob - placeholder
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorMob, "sss",
+				"sps", "sss", 's', "stoneBricks", 'p',
+				Blocks.stone_pressure_plate));
+
+		//explosive
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorExplosive,
+				"sss", "sps", "sss", 's', "woodLumber", 'p',
+				Blocks.stone_pressure_plate));
+		//animal
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorAnimal,
+				"www", "wpw", "www", 'w', "logWood", 'p',
+				Blocks.stone_pressure_plate));
+		//age
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorAge, "www",
+				"wpw", "www", 'w', "plankTreatedWood", 'p',
+				Blocks.stone_pressure_plate));
+		//routing
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorRouting,
+				"www", "wpw", "www", 'w', "ingotIron", 'p',
+				Blocks.stone_pressure_plate));
+		//sheep
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorSheep,
+				"www", "wpw", "www", 'w', "materialCloth", 'p',
+				Blocks.stone_pressure_plate));
+		//locomotive
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorLocomotive,
+				"www", "wpw", "www", 'w', TFTMeta.ieCokeBrick, 'p',
+				Blocks.stone_pressure_plate));
+		//train
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorTrain,
+				"www", "wpw", "www", 'w', TFCBlocks.fireBrick, 'p',
+				Blocks.stone_pressure_plate));
+
+		//adv item loader (requires shovel by default)
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.advItemLoader,
+				"srs", "rlr", "srs", 's', "ingotSteel", 'r', "dustRedstone",
+				'l', TFTMeta.itemLoader));
+		// adv item unloader
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.advItemUnloader,
+				"srs", "rlr", "srs", 's', "ingotSteel", 'r', "dustRedstone",
+				'l', TFTMeta.itemUnloader));
+
+		//dispenser (used for railcraft things)
+		GameRegistry.addRecipe(new ShapedOreRecipe(Blocks.dispenser, "ccc",
+				"cbc", "crc", 'c', "cobblestone", 'b', TFCItems.bow, 'r',
+				"dustRedstone"));
+
+		//engraving bench
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.engravingBench,
+				"csb", "sws", "psp", 'c', TFTMeta.ieLvWire, 's', "plateSteel",
+				'b', Items.book, 'p', Blocks.piston, 'w', "craftingTableWood"));
+
+		//firebox (solid)
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.fireboxSolid, "bsb",
+				"s s", "bsb", 'b', new ItemStack(TFCItems.fireBrick, 1, 1),
+				's', "plateSteel"));
+		//firebox (liquid)
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.fireboxLiquid,
+				"bsb", "sts", "bsb", 'b', new ItemStack(TFCItems.fireBrick, 1,
+						1), 's', "plateSteel", 't', TFTMeta.tankGaugeIron));
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.fireboxLiquid,
+				"bsb", "sts", "bsb", 'b', new ItemStack(TFCItems.fireBrick, 1,
+						1), 's', "plateSteel", 't', TFTMeta.tankGaugeSteel));
+
+		//trackman's goggles
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemGoggles.getItem(),
+				"gcg", "s s", "lll", 'g', "paneGlass", 's', "ingotSteel", 'c',
+				TFTMeta.circuitReceiver, 'l', TFCItems.leather));
+		//electric locomotive
+		ItemStack cartStack = EnumCart.LOCO_ELECTRIC.getCartItem();
+		//ItemLocomotive.setItemColorData(cartStack,
+		//		EnumColor.YELLOW,
+		//		EnumColor.BLACK);
+		GameRegistry.addRecipe(new ShapedOreRecipe(cartStack, " s ", "scs",
+				"gmg", 'g', RailcraftItem.gear.getRecipeObject(EnumGear.STEEL),
+				's', "plateSteel", 'c', TFTMeta.ieMvWireBlock, 'm',
+				Items.minecart));
 	}
 
 	private void tfcBarrelRecipes() {
 		BarrelManager manager = BarrelManager.getInstance();
 
 		//treated wood
-		//there's probably a better way (barrels do not support ordict)
+		//there's probably a better way (barrels do not support oredict)
 		for (ItemStack plank : OreDictionary.getOres("plankWood")) {
 			manager.addRecipe(new BarrelRecipe(plank.copy(), new FluidStack(
 					IEContent.fluidCreosote, 100), new ItemStack(
@@ -610,8 +712,68 @@ public class TFTechness2 {
 				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
 				"ingotSteel", 's', TFTMeta.ieTreatedStick));
 
-		//block -> ingot
+		//broken recipes (recipes with things that are unobtainable with TFC)
 
+		//LV wire connector
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieLvConnector,
+				"wmw", " m ", "wmw", 'w', "plankTreatedWood", 'm',
+				"ingotCopper"));
+
+		//MV wire connector
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieMvConnector,
+				"wmw", " m ", "wmw", 'w', "plankTreatedWood", 'm',
+				"ingotElectrum"));
+
+		//HV wire connector
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieHvConnector,
+				"wmw", " m ", "wmw", 'w', "plankTreatedWood", 'm',
+				"ingotAluminum"));
+
+		//breaker switch
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieBreakerSwitch,
+				" l ", "wcw", 'w', "plankTreatedWood", 'c', "ingotCopper", 'l',
+				Blocks.lever));
+
+		//powered lantern
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.iePoweredLantern,
+				"wgw", "gcg", "iri", 'w', "plankTreatedWood", 'c',
+				TFTMeta.ieLvWire, 'g', "paneGlass", 'i', "ingotIron", 'r',
+				"dustRedstone"));
+
+		//current transformer
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				TFTMeta.ieCurrentTransformer, " v ", "wcw", "ici", 'w',
+				"plankTreatedWood", 'c', TFTMeta.ieLvWireBlock, 'v',
+				TFTMeta.ieVoltmeter, 'i', "ingotIron", 'r', "dustRedstone"));
+
+		//radiator block
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieRadiatorBlock, 2), "scs", "cbc", "scs", 's',
+				"ingotSteel", 'c', "ingotCopper", 'b',
+				TFCItems.redSteelBucketWater));
+
+		//balloon
+		GameRegistry.addRecipe(new ShapedOreRecipe(IEContent.blockClothDevice,
+				" f ", "ftf", " w ", 'f', TFTMeta.ieToughFabric, 't',
+				"blockTorch", 'w', "slabTreatedWood"));
+
+		//jerry can
+		GameRegistry.addRecipe(new ShapedOreRecipe(IEContent.itemJerrycan,
+				" mm", "mbr", "mrb", 'm', "ingotIron", 'r',
+				TFCItems.redSteelBucketEmpty, 'b',
+				TFCItems.blueSteelBucketEmpty));
+		GameRegistry.addRecipe(new ShapedOreRecipe(IEContent.itemJerrycan,
+				" mm", "mrb", "mbr", 'm', "ingotIron", 'r',
+				TFCItems.redSteelBucketEmpty, 'b',
+				TFCItems.blueSteelBucketEmpty));
+
+		//chemical thrower
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(IEContent.itemChemthrower,
+				" ag", " hg", "prb", 'a', TFTMeta.ieAirTank, 'g',
+				TFTMeta.ieWoodenGrip, 'h', TFTMeta.ieHeavyEngineering, 'r',
+				TFCItems.redSteelBucketEmpty, 'b',
+				TFCItems.blueSteelBucketEmpty, 'p', TFTMeta.ieFluidPipe));
 	}
 
 	private void addIEMachineRecipes() {
@@ -716,6 +878,10 @@ public class TFTechness2 {
 							+ StringUtil.capitaliseFirst((plate.name()
 									.toLowerCase())));
 		}
+
+		batch.addOreFix(new ItemStack(Items.gold_ingot), "ingotGold");
+		batch.addOreFix(new ItemStack(Items.iron_ingot), "ingotIron");
+
 		batch.Execute();
 
 	}
