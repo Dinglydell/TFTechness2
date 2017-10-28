@@ -145,6 +145,8 @@ public class TFTMeta {
 			IEContent.itemToolUpgrades, 1, 7);
 	public static ItemStack ieFluidPipe = new ItemStack(
 			IEContent.blockMetalDevice2, 1, 5);
+	public static ItemStack ieFluidPump = new ItemStack(
+			IEContent.blockMetalDevice2, 1, 6);
 	public static ItemStack ieSteelScaffolding = new ItemStack(
 			IEContent.blockMetalDecoration, 1, 1);
 	public static ItemStack ieHeavyEngineering = new ItemStack(
@@ -223,6 +225,10 @@ public class TFTMeta {
 			RailcraftBlocks.getBlockMachineBeta(), 1, 1);
 	public static ItemStack tankGaugeSteel = new ItemStack(
 			RailcraftBlocks.getBlockMachineBeta(), 1, 14);
+	public static ItemStack boilerTankLow = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 3);
+	public static ItemStack boilerTankHigh = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 4);
 	public static ItemStack circuitReceiver = new ItemStack(
 			RailcraftItem.circuit.item(), 1, 1);
 	public static ItemStack circuitController = new ItemStack(

@@ -677,6 +677,14 @@ public class TFTechness2 {
 				.clone(EnumTrack.SLOW_SWITCH.getItem(), 16), "rbr", "rrr",
 				"rrr", 'r', TFTMeta.railWooden, 'b', TFTItems.basicRailbed));
 
+		//boiler tank
+		//low pressure
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.boilerTankLow, "m",
+				"m", 'm', "plateSteel"));
+		//high pressure
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.boilerTankHigh, "m",
+				"m", 'm', "plateBlackSteel"));
+
 	}
 
 	private void tfcBarrelRecipes() {
@@ -809,6 +817,11 @@ public class TFTechness2 {
 		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieHeavyEngineering,
 				"scs", "psp", "scs", 's', "ingotBlackSteel", 'c',
 				TFTMeta.ieComponentSteel, 'p', Blocks.piston)));
+
+		//fluid pump
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieFluidPump, " w ",
+				"mcm", "ppp", 'm', "ingotIron", 'c', TFTMeta.ieComponentIron,
+				'p', TFTMeta.ieFluidPipe, 'w', TFTMeta.ieLvWire));
 
 		//broken recipes (recipes with things that are unobtainable with TFC)
 
@@ -1027,6 +1040,11 @@ public class TFTechness2 {
 
 		batch.addCrafting(TFTMeta.ieLightEngineering);
 		batch.addCrafting(TFTMeta.ieHeavyEngineering);
+
+		batch.addCrafting(TFTMeta.ieFluidPump);
+
+		batch.addCrafting(TFTMeta.boilerTankLow);
+		batch.addCrafting(TFTMeta.boilerTankHigh);
 
 		batch.Execute();
 

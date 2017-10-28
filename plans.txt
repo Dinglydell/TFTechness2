@@ -19,9 +19,9 @@
 -bronze minecart that has a chance of breaking down?
   -or only have bronze cargo cart with very limited storage
 
--maybe get railcraft machines to rest at the external temperature - almost doesn't affect gameplay but would be a nice addition
+-maybe get railcraft machines to rest at the external temperature
 
--look into assigning damage types to IE weapons
+-steam powered pump
 
 Mid-term:
 
