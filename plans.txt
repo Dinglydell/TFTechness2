@@ -21,6 +21,8 @@
 
 -maybe get railcraft machines to rest at the external temperature - almost doesn't affect gameplay but would be a nice addition
 
+-look into assigning damage types to IE weapons
+
 Mid-term:
 
 -Railcraft

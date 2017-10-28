@@ -79,6 +79,7 @@ import dinglydell.tftechness.block.TFTOreRegistry;
 import dinglydell.tftechness.config.TFTConfig;
 import dinglydell.tftechness.crop.CropIndexStack;
 import dinglydell.tftechness.crop.TFTCropManager;
+import dinglydell.tftechness.event.TFTDamageHandler;
 import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.TFTFluids;
@@ -133,6 +134,7 @@ public class TFTechness2 {
 		initStatMap();
 		registerEventHandlers();
 		registerPacketHandlers();
+
 		addOres();
 
 	}
@@ -146,6 +148,10 @@ public class TFTechness2 {
 
 	private void registerEventHandlers() {
 		MinecraftForge.EVENT_BUS.register(new TFTEventHandler());
+
+		MinecraftForge.EVENT_BUS.register(new TFTDamageHandler());
+
+		TFTDamageHandler.INSTANCE.registerDamageSources();
 
 	}
 
@@ -800,11 +806,11 @@ public class TFTechness2 {
 		//engineering blocks
 		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieLightEngineering,
 				"scs", "psp", "scs", 's', "ingotSteel", 'c',
-				TFTMeta.ieComponentSteel, 'p', "blockPiston")));
+				TFTMeta.ieComponentSteel, 'p', Blocks.piston)));
 
 		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieHeavyEngineering,
 				"scs", "psp", "scs", 's', "ingotBlackSteel", 'c',
-				TFTMeta.ieComponentSteel, 'p', "blockPiston")));
+				TFTMeta.ieComponentSteel, 'p', Blocks.piston)));
 
 		//broken recipes (recipes with things that are unobtainable with TFC)
 
