@@ -587,6 +587,23 @@ public class TFTechness2 {
 				"gmg", 'g', RailcraftItem.gear.getRecipeObject(EnumGear.STEEL),
 				's', "plateSteel", 'c', TFTMeta.ieMvWireBlock, 'm',
 				Items.minecart));
+
+		//circuits (will probably change)
+		//controller
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.circuitController,
+				" c ", "rwr", " d ", 'c', TFTMeta.ieLvWire, 'r',
+				"dustRedstone", 'w', "plankTreatedWood", 'd', "blockRedstone"));
+
+		//receiver
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.circuitReceiver,
+				" c ", "rwr", " d ", 'c', TFTMeta.ieLvWire, 'r',
+				"dustRedstone", 'w', "plankTreatedWood", 'd',
+				Blocks.redstone_torch));
+
+		//signal
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.circuitSignal,
+				" c ", "rwr", " d ", 'c', TFTMeta.ieLvWire, 'r',
+				"dustRedstone", 'w', "plankTreatedWood", 'd', "dustRedstone"));
 	}
 
 	private void tfcBarrelRecipes() {

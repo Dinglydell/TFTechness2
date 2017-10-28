@@ -220,6 +220,11 @@ public class TFTMeta {
 			RailcraftBlocks.getBlockMachineBeta(), 1, 14);
 	public static ItemStack circuitReceiver = new ItemStack(
 			RailcraftItem.circuit.item(), 1, 1);
+	public static ItemStack circuitController = new ItemStack(
+			RailcraftItem.circuit.item(), 1, 0);
+	public static ItemStack circuitSignal = new ItemStack(
+			RailcraftItem.circuit.item(), 1, 2);
+
 	public static ItemStack ieAirTank = new ItemStack(
 			IEContent.itemToolUpgrades);
 	public static ItemStack ieWoodenGrip = new ItemStack(
