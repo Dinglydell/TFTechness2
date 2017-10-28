@@ -7,6 +7,7 @@ import java.util.List;
 
 import mods.railcraft.common.blocks.RailcraftBlocks;
 import mods.railcraft.common.blocks.detector.BlockDetector;
+import mods.railcraft.common.items.ItemGear.EnumGear;
 import mods.railcraft.common.items.RailcraftItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -249,5 +250,12 @@ public class TFTMeta {
 	public static ItemStack fluxTransformer = new ItemStack(
 			RailcraftBlocks.getBlockMachineEpsilon(), 1, 4);
 	//public static ItemStack trackWood = new ItemStack();
+	public static ItemStack tinGearBushing = new ItemStack(
+			RailcraftItem.gear.item(), 1, EnumGear.BUSHING.ordinal());
+	public static ItemStack ironGear = new ItemStack(RailcraftItem.gear.item(),
+			1, EnumGear.IRON.ordinal());
+
+	public static ItemStack steelGear = new ItemStack(
+			RailcraftItem.gear.item(), 1, EnumGear.STEEL.ordinal());
 
 }

@@ -846,32 +846,32 @@ public class TFTechness2 {
 
 		//Industrial Squeezer
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieSqueezer, 2), "mwm", "cwc", "mgm", 'm',
+				.clone(TFTMeta.ieSqueezer, 2), "mwm", "cgc", "mpm", 'm',
 				"ingotIron", 'c', TFTMeta.ieComponentIron, 'p', Blocks.piston,
 				'w', TFTMeta.ieLvWire, 'g', "dyeGreen"));
 
 		//Fermenter
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieFermenter, 2), "mwm", "cwc", "mgm", 'm',
+				.clone(TFTMeta.ieFermenter, 2), "mwm", "cgc", "mpm", 'm',
 				"ingotIron", 'c', TFTMeta.ieComponentIron, 'p', Blocks.piston,
 				'w', TFTMeta.ieLvWire, 'g', "dyeBlue"));
 
 		//broken recipes (recipes with things that are unobtainable with TFC)
 
 		//LV wire connector
-		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieLvConnector,
-				"wmw", " m ", "wmw", 'w', "plankTreatedWood", 'm',
-				"ingotCopper"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieLvConnector, 8), "wmw", " m ", "wmw", 'w',
+				"plankTreatedWood", 'm', "ingotCopper"));
 
 		//MV wire connector
-		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieMvConnector,
-				"wmw", " m ", "wmw", 'w', "plankTreatedWood", 'm',
-				"ingotElectrum"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieMvConnector, 8), "wmw", " m ", "wmw", 'w',
+				"plankTreatedWood", 'm', "ingotElectrum"));
 
 		//HV wire connector
-		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieHvConnector,
-				"wmw", " m ", "wmw", 'w', "plankTreatedWood", 'm',
-				"ingotAluminum"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieHvConnector, 4), "wmw", "wmw", "wmw", 'w',
+				"plankTreatedWood", 'm', "ingotAluminum"));
 
 		//breaker switch
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieBreakerSwitch,
@@ -1080,6 +1080,11 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.boilerTankHigh);
 
 		batch.addCrafting(TFTMeta.ieSqueezer);
+		batch.addCrafting(TFTMeta.ieFermenter);
+
+		batch.addCrafting(TFTMeta.tinGearBushing);
+		batch.addCrafting(TFTMeta.ironGear);
+		batch.addCrafting(TFTMeta.steelGear);
 
 		batch.Execute();
 
