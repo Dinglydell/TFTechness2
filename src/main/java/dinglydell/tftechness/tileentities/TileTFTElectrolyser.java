@@ -53,7 +53,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	/** internal temperature (degrees C) */
 	protected float temperature = 20f;
 	protected int oldTemp = 0;
-	protected int targetTemperature = (int) temperature;
+	protected int targetTemperature = 1010;
 
 	protected SolutionTank cryoliteTank = new SolutionTank(
 			MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));

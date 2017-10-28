@@ -849,12 +849,41 @@ public class TFTechness2 {
 		}
 
 		//electrum processing
+		int electrumTime = 200;
+		int electrumRf = 512;
+
 		ArcFurnaceRecipe.addRecipe(new ItemStack(TFTItems.ingots
 				.get("Electrum")),
 				"ingotDullElectrum",
 				null,
-				200,
-				32,
+				electrumTime,
+				electrumRf,
+				"dustRedstone");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(TFTItems.ingots2x
+				.get("Electrum")),
+				"ingotDoubleDullElectrum",
+				null,
+				electrumTime * 2,
+				electrumRf,
+				"dustRedstone",
+				"dustRedstone");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(TFTItems.sheets
+				.get("Electrum")),
+				"plateDullElectrum",
+				null,
+				electrumTime * 2,
+				electrumRf,
+				"dustRedstone",
+				"dustRedstone");
+		ArcFurnaceRecipe.addRecipe(new ItemStack(TFTItems.sheets2x
+				.get("Electrum")),
+				"plateDoubleDullElectrum",
+				null,
+				electrumTime * 4,
+				electrumRf,
+				"dustRedstone",
+				"dustRedstone",
+				"dustRedstone",
 				"dustRedstone");
 
 		//Aluminium refinement - stage 1
