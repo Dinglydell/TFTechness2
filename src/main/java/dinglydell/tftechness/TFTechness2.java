@@ -615,6 +615,11 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemMagnifyingGlass
 				.getItem(), " g", "s ", 'g', "paneGlass", 's', "stickIron"));
 
+		//flux transformer
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.fluxTransformer,
+				"crc", "rbr", "crc", 'c', "plateCopper", 'r', "dustRedstone",
+				'b', TFTMeta.ieMvWireBlock));
+
 	}
 
 	private void tfcBarrelRecipes() {
@@ -948,6 +953,8 @@ public class TFTechness2 {
 		batch.addOreFix(new ItemStack(Items.iron_ingot), "ingotIron");
 
 		batch.addCrafting(ItemMagnifyingGlass.getItem());
+
+		batch.addCrafting(TFTMeta.fluxTransformer);
 
 		batch.Execute();
 

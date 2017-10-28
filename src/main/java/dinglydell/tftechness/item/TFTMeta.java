@@ -230,4 +230,7 @@ public class TFTMeta {
 	public static ItemStack ieWoodenGrip = new ItemStack(
 			IEContent.itemMaterial, 1, 9);
 
+	public static ItemStack fluxTransformer = new ItemStack(
+			RailcraftBlocks.getBlockMachineEpsilon(), 1, 4);
+
 }
