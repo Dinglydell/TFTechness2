@@ -755,6 +755,10 @@ public class TFTechness2 {
 		//Redstone
 		manager.addIndex(new HeatIndex(new ItemStack(Items.redstone, 1),
 				TFTechness2.statMap.get("Redstone").heat));
+
+		//HOP graphite dust -> HOP graphite ingot (placeholder)
+		manager.addIndex(new HeatIndex(TFTMeta.hopGraphiteDust, 1, 1000,
+				TFTMeta.hopGraphiteIngot));
 	}
 
 	private void tfcKilnRecipes() {
@@ -958,7 +962,7 @@ public class TFTechness2 {
 		DieselHandler.addSqueezerRecipe(ItemUtil.clone(TFTMeta.graphite, 4),
 				180,
 				null,
-				TFTMeta.hopGraphite);
+				TFTMeta.hopGraphiteDust);
 
 		for (ItemStack seed : TFTMeta.seeds) {
 			DieselHandler.addSqueezerRecipe(seed, 80, new FluidStack(

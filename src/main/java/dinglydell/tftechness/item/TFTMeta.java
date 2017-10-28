@@ -51,8 +51,10 @@ public class TFTMeta {
 	public static ItemStack ieCoalCokeBlock = new ItemStack(
 			IEContent.blockStoneDecoration, 1, 3);
 
-	public static ItemStack hopGraphite = new ItemStack(IEContent.itemMetal, 1,
-			19);
+	public static ItemStack hopGraphiteDust = new ItemStack(
+			IEContent.itemMetal, 1, 19);
+	public static ItemStack hopGraphiteIngot = new ItemStack(
+			IEContent.itemMetal, 1, 20);
 
 	public static ItemStack ieIronPlate = new ItemStack(IEContent.itemMetal, 1,
 			30);
