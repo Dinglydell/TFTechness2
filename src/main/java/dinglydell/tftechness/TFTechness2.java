@@ -499,6 +499,27 @@ public class TFTechness2 {
 						ItemUtil.clone(TFTMeta.railElectric, 6), "RWR", "RWR",
 						"RWR", 'R', TFTMeta.railStandard, 'W', TFTMeta.ieMvWire));
 
+		//wire coils
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(ItemUtil.clone(TFTMeta.ieLvWire, 4),
+						" m ", "msm", " m ", 'm', "ingotCopper", 's',
+						TFTMeta.ieTreatedStick));
+
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(ItemUtil.clone(TFTMeta.ieMvWire, 4),
+						" m ", "msm", " m ", 'm', "ingotElectrum", 's',
+						TFTMeta.ieTreatedStick));
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(ItemUtil.clone(TFTMeta.ieHvWire, 4),
+						" a ", "msm", " a ", 'm', "ingotSteel", 'a',
+						"ingotAluminum", 's', TFTMeta.ieTreatedStick));
+
 	}
 
 	private void removeRollingMachineRecipes() {
@@ -792,23 +813,23 @@ public class TFTechness2 {
 				TFCItems.leather, 'w', "ingotIron", 'r', "dustRedstone"));
 
 		//wire coils
-		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieLvWire, 4), " m ", "msm", " m ", 'm',
-				"ingotCopper", 's', TFTMeta.ieTreatedStick));
-		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieMvWire, 4), " m ", "msm", " m ", 'm',
-				"ingotElectrum", 's', TFTMeta.ieTreatedStick));
-		GameRegistry
-				.addRecipe(new ShapedOreRecipe(ItemUtil.clone(TFTMeta.ieHvWire,
-						4), " a ", "msm", " a ", 'm', "ingotSteel", 'a',
-						"ingotAluminum", 's', TFTMeta.ieTreatedStick));
-		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieHempWire, 4), " m ", "msm", " m ", 'm',
-				TFTMeta.ieHempFibre, 's', TFTMeta.ieTreatedStick));
-		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
-				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
-				"ingotSteel", 's', TFTMeta.ieTreatedStick));
-
+		//GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+		//		.clone(TFTMeta.ieLvWire, 4), " m ", "msm", " m ", 'm',
+		//		"ingotCopper", 's', TFTMeta.ieTreatedStick));
+		//GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+		//		.clone(TFTMeta.ieMvWire, 4), " m ", "msm", " m ", 'm',
+		//		"ingotElectrum", 's', TFTMeta.ieTreatedStick));
+		//GameRegistry
+		//		.addRecipe(new ShapedOreRecipe(ItemUtil.clone(TFTMeta.ieHvWire,
+		//				4), " a ", "msm", " a ", 'm', "ingotSteel", 'a',
+		//				"ingotAluminum", 's', TFTMeta.ieTreatedStick));
+		//GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+		//		.clone(TFTMeta.ieHempWire, 4), " m ", "msm", " m ", 'm',
+		//		TFTMeta.ieHempFibre, 's', TFTMeta.ieTreatedStick));
+		//GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+		//		.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
+		//		"ingotSteel", 's', TFTMeta.ieTreatedStick));
+		//
 		//engineering blocks
 		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieLightEngineering,
 				"scs", "psp", "scs", 's', "ingotSteel", 'c',
@@ -822,6 +843,18 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieFluidPump, " w ",
 				"mcm", "ppp", 'm', "ingotIron", 'c', TFTMeta.ieComponentIron,
 				'p', TFTMeta.ieFluidPipe, 'w', TFTMeta.ieLvWire));
+
+		//Industrial Squeezer
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieSqueezer, 2), "mwm", "cwc", "mgm", 'm',
+				"ingotIron", 'c', TFTMeta.ieComponentIron, 'p', Blocks.piston,
+				'w', TFTMeta.ieLvWire, 'g', "dyeGreen"));
+
+		//Fermenter
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(TFTMeta.ieFermenter, 2), "mwm", "cwc", "mgm", 'm',
+				"ingotIron", 'c', TFTMeta.ieComponentIron, 'p', Blocks.piston,
+				'w', TFTMeta.ieLvWire, 'g', "dyeBlue"));
 
 		//broken recipes (recipes with things that are unobtainable with TFC)
 
@@ -1045,6 +1078,8 @@ public class TFTechness2 {
 
 		batch.addCrafting(TFTMeta.boilerTankLow);
 		batch.addCrafting(TFTMeta.boilerTankHigh);
+
+		batch.addCrafting(TFTMeta.ieSqueezer);
 
 		batch.Execute();
 

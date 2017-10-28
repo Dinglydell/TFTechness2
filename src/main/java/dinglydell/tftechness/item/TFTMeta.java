@@ -93,6 +93,11 @@ public class TFTMeta {
 	public static ItemStack ieVoltmeter = new ItemStack(IEContent.itemTool, 1,
 			2);
 
+	public static ItemStack ieSqueezer = new ItemStack(
+			IEContent.blockMetalMultiblocks, 1, 2);
+	public static ItemStack ieFermenter = new ItemStack(
+			IEContent.blockMetalMultiblocks, 1, 3);
+
 	public static ItemStack ieConveyor = new ItemStack(
 			IEContent.blockMetalDevice, 1, 11);
 	public static ItemStack ieConveyorDrop = new ItemStack(
