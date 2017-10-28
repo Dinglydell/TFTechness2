@@ -72,7 +72,7 @@ public class TFTDamageHandler extends EntityDamageHandler {
 		registerDamageSource(Lib.DMG_RevolverSilver, EnumDamageType.PIERCING);
 		registerDamageSource(Lib.DMG_RevolverWolfpack, EnumDamageType.PIERCING);
 		registerDamageSource(Lib.DMG_RevolverAP, EnumDamageType.PIERCING);
-		registerDamageSource(Lib.DMG_Railgun, EnumDamageType.GENERIC);
+		registerDamageSource(Lib.DMG_Railgun, EnumDamageType.CRUSHING);
 
 		registerDamageSource(RailcraftDamageSource.CRUSHER,
 				EnumDamageType.CRUSHING);
