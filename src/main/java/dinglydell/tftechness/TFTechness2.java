@@ -797,6 +797,15 @@ public class TFTechness2 {
 				.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
 				"ingotSteel", 's', TFTMeta.ieTreatedStick));
 
+		//engineering blocks
+		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieLightEngineering,
+				"scs", "psp", "scs", 's', "ingotSteel", 'c',
+				TFTMeta.ieComponentSteel, 'p', "blockPiston")));
+
+		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieHeavyEngineering,
+				"scs", "psp", "scs", 's', "ingotBlackSteel", 'c',
+				TFTMeta.ieComponentSteel, 'p', "blockPiston")));
+
 		//broken recipes (recipes with things that are unobtainable with TFC)
 
 		//LV wire connector
@@ -1011,6 +1020,9 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.fluxTransformer);
 
 		batch.addCrafting(TFTMeta.railWooden);
+
+		batch.addCrafting(TFTMeta.ieLightEngineering);
+		batch.addCrafting(TFTMeta.ieHeavyEngineering);
 
 		batch.Execute();
 
