@@ -708,8 +708,7 @@ public class TFTechness2 {
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
 				.clone(TFTMeta.ieConveyor, 8), "lll", "wrw", 'l',
-				new ItemStack(TFCItems.leather, 1, 1), 'w', "ingotIron", 'r',
-				"dustRedstone"));
+				TFCItems.leather, 'w', "ingotIron", 'r', "dustRedstone"));
 
 		//wire coils
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
