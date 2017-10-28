@@ -3,6 +3,7 @@ package dinglydell.tftechness.event;
 import java.util.HashMap;
 import java.util.Map;
 
+import mods.railcraft.common.util.misc.RailcraftDamageSource;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -31,7 +32,9 @@ public class TFTDamageHandler extends EntityDamageHandler {
 
 	/**
 	 * Associate a damage source with a damage type. TFT will make sure this
-	 * type is applied whenever an entity is hurt with this source.
+	 * type is applied whenever an entity is hurt with this source. Warning:
+	 * Anything registered in this way will automatically have its damage value
+	 * multiplied by 10 to adjust for the TFC scale
 	 */
 	public void registerDamageSource(String sourceName, EnumDamageType type) {
 		types.put(sourceName, type);
@@ -70,6 +73,13 @@ public class TFTDamageHandler extends EntityDamageHandler {
 		registerDamageSource(Lib.DMG_RevolverWolfpack, EnumDamageType.PIERCING);
 		registerDamageSource(Lib.DMG_RevolverAP, EnumDamageType.PIERCING);
 		registerDamageSource(Lib.DMG_Railgun, EnumDamageType.PIERCING);
+
+		registerDamageSource(RailcraftDamageSource.CRUSHER,
+				EnumDamageType.CRUSHING);
+		registerDamageSource(RailcraftDamageSource.TRAIN,
+				EnumDamageType.CRUSHING);
+		registerDamageSource(RailcraftDamageSource.BORE,
+				EnumDamageType.CRUSHING);
 	}
 
 }
