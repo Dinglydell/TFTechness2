@@ -5,7 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-import mods.railcraft.common.blocks.machine.alpha.TileSteamTrap;
 import mods.railcraft.common.blocks.tracks.EnumTrack;
 import mods.railcraft.common.carts.EnumCart;
 import mods.railcraft.common.fluids.Fluids;
@@ -129,7 +128,6 @@ public class TFTechness2 {
 	public void preInit(FMLPreInitializationEvent event) {
 		TFTConfig.loadConifg(event);
 		replaceWater();
-		fixDamage();
 		editIEMetalRelations();
 		initStatMap();
 		registerEventHandlers();
@@ -1031,19 +1029,6 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.ieHeavyEngineering);
 
 		batch.Execute();
-
-	}
-
-	private void fixDamage() {
-		try {
-			Field dmg = TileSteamTrap.class.getDeclaredField("DAMAGE");
-			finalField(dmg);
-			dmg.setAccessible(true);
-			dmg.set(null, (byte) 160);
-		} catch (Exception e) {
-
-			e.printStackTrace();
-		}
 
 	}
 

@@ -34,7 +34,7 @@ public class TFTDamageHandler extends EntityDamageHandler {
 	 * Associate a damage source with a damage type. TFT will make sure this
 	 * type is applied whenever an entity is hurt with this source. Warning:
 	 * Anything registered in this way will automatically have its damage value
-	 * multiplied by 10 to adjust for the TFC scale
+	 * multiplied by 100 to adjust for the TFC scale
 	 */
 	public void registerDamageSource(String sourceName, EnumDamageType type) {
 		types.put(sourceName, type);
@@ -45,7 +45,7 @@ public class TFTDamageHandler extends EntityDamageHandler {
 	@SubscribeEvent
 	public void onEntityHurt(LivingHurtEvent event) {
 		if (types.containsKey(event.source.getDamageType())) {
-
+			event.ammount *= 100;
 			event.ammount = applyArmorCalculations(event.entityLiving,
 					new EntityDamageSource(event.source.getDamageType(),
 							new DamageTypeSource(event.entity.worldObj, types
@@ -63,7 +63,7 @@ public class TFTDamageHandler extends EntityDamageHandler {
 	/** Registers all the damage sources added by IE & RC */
 	public void registerDamageSources() {
 		registerDamageSource(Lib.DMG_Crusher, EnumDamageType.CRUSHING);
-
+		registerDamageSource(Lib.DMG_Acid, EnumDamageType.GENERIC);
 		registerDamageSource(Lib.DMG_RevolverCasull, EnumDamageType.PIERCING);
 
 		registerDamageSource(Lib.DMG_RevolverBuck, EnumDamageType.PIERCING);
@@ -80,6 +80,10 @@ public class TFTDamageHandler extends EntityDamageHandler {
 				EnumDamageType.CRUSHING);
 		registerDamageSource(RailcraftDamageSource.BORE,
 				EnumDamageType.CRUSHING);
+		registerDamageSource(RailcraftDamageSource.STEAM,
+				EnumDamageType.GENERIC);
+		registerDamageSource(RailcraftDamageSource.TRACK_ELECTRIC,
+				EnumDamageType.GENERIC);
 	}
 
 }
