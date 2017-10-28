@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mods.railcraft.common.blocks.machine.alpha.TileSteamTrap;
+import mods.railcraft.common.blocks.tracks.EnumTrack;
 import mods.railcraft.common.carts.EnumCart;
 import mods.railcraft.common.fluids.Fluids;
 import mods.railcraft.common.items.ItemCrowbar;
@@ -19,6 +20,7 @@ import mods.railcraft.common.util.crafting.RollingMachineCraftingManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -429,6 +431,11 @@ public class TFTechness2 {
 				.setWeight(EnumWeight.MEDIUM).setUnlocalizedName("alumina");
 		GameRegistry.registerItem(TFTItems.alumina, "alumina");
 
+		TFTItems.basicRailbed = new ItemTerra().setSize(EnumSize.SMALL)
+				.setWeight(EnumWeight.LIGHT).setUnlocalizedName("basicRailbed");
+		GameRegistry.registerItem(TFTItems.basicRailbed,
+				TFTItems.basicRailbed.getUnlocalizedName());
+
 		//TFTItems.seedHemp = new ItemCustomSeeds(TFTConfig.HEMP_ID)
 		//	.setUnlocalizedName("hempSeed");
 
@@ -463,6 +470,8 @@ public class TFTechness2 {
 
 	private void addRailcraftMachineRecipes() {
 
+		removeRollingMachineRecipes();
+
 		RollingMachineCraftingManager
 				.getInstance()
 				.getRecipeList()
@@ -475,8 +484,26 @@ public class TFTechness2 {
 				.getRecipeList()
 				.add(new ShapedOreRecipe(
 						ItemUtil.clone(TFTMeta.railAdvanced, 8), "IRG", "IRG",
-						"IRG", 'I', "ingotIron", 'R', "dustRedstone", 'G',
-						"ingotGold"));
+						"IRG", 'I', TFTMeta.railStandard, 'R', "dustRedstone",
+						'G', "ingotGold"));
+
+		//electric rail
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(
+						ItemUtil.clone(TFTMeta.railElectric, 6), "RWR", "RWR",
+						"RWR", 'R', TFTMeta.railStandard, 'W', TFTMeta.ieMvWire));
+
+	}
+
+	private void removeRollingMachineRecipes() {
+		RemoveBatch rollingBatch = new RemoveBatch(
+				RollingMachineCraftingManager.getInstance().getRecipeList());
+
+		rollingBatch.addCrafting(TFTMeta.railElectric);
+
+		rollingBatch.Execute();
 
 	}
 
@@ -619,6 +646,32 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.fluxTransformer,
 				"crc", "rbr", "crc", 'c', "plateCopper", 'r', "dustRedstone",
 				'b', TFTMeta.ieMvWireBlock));
+
+		//wooden rail
+		GameRegistry.addRecipe(new ShapelessOreRecipe(ItemUtil
+				.clone(TFTMeta.railWooden, 6), "woodLumber", "itemSaw"));
+		// basic railbed
+		GameRegistry.addRecipe(new ShapelessOreRecipe(TFTItems.basicRailbed,
+				"stickWood", "stickWood", "stickWood", "stickWood"));
+
+		//wooden track
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(EnumTrack.SLOW.getItem(), 32), "r r", "rbr", "r r", 'r',
+				TFTMeta.railWooden, 'b', TFTItems.basicRailbed));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(EnumTrack.SLOW_BOOSTER.getItem(), 16), "r r", "gbg",
+				"rsr", 'r', TFTMeta.railWooden, 'b', TFTItems.basicRailbed,
+				'g', "ingotGold", 's', "dustRedstone"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(EnumTrack.SLOW_JUNCTION.getItem(), 16), "rrr", "rbr",
+				"rrr", 'r', TFTMeta.railWooden, 'b', TFTItems.basicRailbed));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(EnumTrack.SLOW_WYE.getItem(), 16), "rrr", "rrb", "rrr",
+				'r', TFTMeta.railWooden, 'b', TFTItems.basicRailbed));
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
+				.clone(EnumTrack.SLOW_SWITCH.getItem(), 16), "rbr", "rrr",
+				"rrr", 'r', TFTMeta.railWooden, 'b', TFTItems.basicRailbed));
 
 	}
 
@@ -905,7 +958,8 @@ public class TFTechness2 {
 	}
 
 	private void removeRecipes() {
-		RemoveBatch batch = new RemoveBatch();
+		RemoveBatch batch = new RemoveBatch(CraftingManager.getInstance()
+				.getRecipeList());
 
 		for (Material m : materials) {
 			m.batchRemove(batch);
@@ -955,6 +1009,8 @@ public class TFTechness2 {
 		batch.addCrafting(ItemMagnifyingGlass.getItem());
 
 		batch.addCrafting(TFTMeta.fluxTransformer);
+
+		batch.addCrafting(TFTMeta.railWooden);
 
 		batch.Execute();
 

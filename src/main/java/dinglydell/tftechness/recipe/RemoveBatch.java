@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.oredict.OreDictionary;
@@ -22,6 +21,13 @@ public class RemoveBatch {
 	private ArrayList<BatchCraftingItem> crafting = new ArrayList<BatchCraftingItem>();
 
 	private Map<ItemMeta, String> oreFix = new HashMap<ItemMeta, String>();
+
+	private List<IRecipe> recipes;
+
+	public RemoveBatch(List<IRecipe> recipes) {
+		this.recipes = recipes;
+
+	}
 
 	public void addCrafting(ItemStack output) {
 		crafting.add(new BatchCraftingItem(output));
@@ -43,8 +49,7 @@ public class RemoveBatch {
 	private void ExecuteCrafting() {
 		TFTechness2.logger.info("Removing crafting recipes");
 
-		Iterator<IRecipe> iterator = CraftingManager.getInstance()
-				.getRecipeList().iterator();
+		Iterator<IRecipe> iterator = recipes.iterator();
 		List<IRecipe> fixedRecipes = new ArrayList<IRecipe>();
 		while (iterator.hasNext()) {
 			IRecipe recipe = iterator.next();

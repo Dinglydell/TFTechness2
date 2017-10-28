@@ -175,9 +175,14 @@ public class TFTMeta {
 
 	public static ItemStack ieAluminiumRod = new ItemStack(
 			IEContent.itemMaterial, 1, 16);
-
+	public static ItemStack railStandard = new ItemStack(
+			RailcraftItem.rail.item(), 1, 0);
 	public static ItemStack railAdvanced = new ItemStack(
 			RailcraftItem.rail.item(), 1, 1);
+	public static ItemStack railWooden = new ItemStack(
+			RailcraftItem.rail.item(), 1, 2);
+	public static ItemStack railElectric = new ItemStack(
+			RailcraftItem.rail.item(), 1, 5);
 	public static ItemStack detectorTank = new ItemStack(
 			BlockDetector.getBlock(), 1, 8);
 	public static ItemStack detectorPlayer = new ItemStack(
@@ -232,5 +237,6 @@ public class TFTMeta {
 
 	public static ItemStack fluxTransformer = new ItemStack(
 			RailcraftBlocks.getBlockMachineEpsilon(), 1, 4);
+	//public static ItemStack trackWood = new ItemStack();
 
 }

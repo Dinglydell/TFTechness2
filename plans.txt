@@ -14,9 +14,10 @@
 
 -more steam power stuff
 
--remove creosote requirement for wooden tracks so that it can be available earlier?
+-make wooden rails rot? (due to lack of creosote)
 
--make it harder to obtain electrum so that MV is not available as soon as you unlock power
+-bronze minecart that has a chance of breaking down?
+  -or only have bronze cargo cart with very limited storage
 
 -maybe get railcraft machines to rest at the external temperature - almost doesn't affect gameplay but would be a nice addition
 

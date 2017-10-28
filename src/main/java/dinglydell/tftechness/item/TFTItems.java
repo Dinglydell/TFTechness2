@@ -12,6 +12,7 @@ public class TFTItems {
 	public static Item nuggetMold;
 	public static Item crushedBauxite;
 	public static Item alumina;
+	public static Item basicRailbed;
 
 	/** maps cropName -> seed item */
 	public static Map<String, Item> seed = new HashMap<String, Item>();
