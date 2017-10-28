@@ -12,6 +12,12 @@ item.ElectrumSheet.name=Electrum Sheet
 item.ElectrumSheet2x.name=Electrum Double Sheet
 item.ElectrumUnshaped.name=Unshaped: Electrum
 
+item.DullElectrumIngot.name=Dull Electrum Ingot
+item.DullElectrumIngot2x.name=Dull Electrum Double Ingot
+item.DullElectrumSheet.name=Dull Electrum Sheet
+item.DullElectrumSheet2x.name=Dull Electrum Double Sheet
+item.DullElectrumUnshaped.name=Unshaped: Dull Electrum
+
 item.AluminumIngot.name=Aluminium Ingot
 item.AluminumIngot2x.name=Aluminium Double Ingot
 item.AluminumSheet.name=Aluminium Sheet
@@ -41,6 +47,7 @@ metal.Tin.name=Tin
 metal.Aluminum.name=Aluminum
 metal.Alumina.name=Alumina
 metal.Electrum.name=Electrum
+metal.DullElectrum.name=Dull Electrum
 metal.Constantan.name=Constantan
 metal.Lead.name=Lead
 metal.Wrought Iron.name=Wrought Iron

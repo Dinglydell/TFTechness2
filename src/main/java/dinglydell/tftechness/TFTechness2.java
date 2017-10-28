@@ -12,6 +12,7 @@ import mods.railcraft.common.items.ItemCrowbar;
 import mods.railcraft.common.items.ItemCrowbarReinforced;
 import mods.railcraft.common.items.ItemGear.EnumGear;
 import mods.railcraft.common.items.ItemGoggles;
+import mods.railcraft.common.items.ItemMagnifyingGlass;
 import mods.railcraft.common.items.ItemPlate.EnumPlate;
 import mods.railcraft.common.items.RailcraftItem;
 import mods.railcraft.common.util.crafting.RollingMachineCraftingManager;
@@ -220,6 +221,7 @@ public class TFTechness2 {
 		// TFT
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
 		statMap.put("Uranium", new MetalStat(0.12, 1132, 19100));
+		statMap.put("DullElectrum", new MetalStat(0.181, 650, 14460));
 
 		//non-metals
 		statMap.put("Redstone", new MetalStat(1.136, 1000, 3000));
@@ -349,11 +351,15 @@ public class TFTechness2 {
 				.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred("Copper",
 						50, 60), new AlloyIngred("Nickel", 40, 50) })
 				.setBlock(IEContent.blockStorage, 0),
-				new Material("Electrum", 5, Alloy.EnumTier.TierIV, false)
-						.setNugget(TFTMeta.ieElectrumNugget)
+				new Material("DullElectrum", 5, Alloy.EnumTier.TierIV, false)
 						.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
 								"Gold", 50, 60),
 								new AlloyIngred("Silver", 40, 50) }),
+				new Material("Electrum", 5, Alloy.EnumTier.TierIV, false)
+						.setNugget(TFTMeta.ieElectrumNugget),
+				//.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
+				//	"Gold", 50, 60),
+				//new AlloyIngred("Silver", 40, 50) }),
 				//my eyes honestly hurt
 				new Material("Aluminum", 3, Alloy.EnumTier.TierIII, false)
 						.setNugget(TFTMeta.ieAluminiumNugget)
@@ -604,6 +610,11 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.circuitSignal,
 				" c ", "rwr", " d ", 'c', TFTMeta.ieLvWire, 'r',
 				"dustRedstone", 'w', "plankTreatedWood", 'd', "dustRedstone"));
+
+		// magnifying glass
+		GameRegistry.addRecipe(new ShapedOreRecipe(ItemMagnifyingGlass
+				.getItem(), " g", "s ", 'g', "paneGlass", 's', "stickIron"));
+
 	}
 
 	private void tfcBarrelRecipes() {
@@ -837,6 +848,15 @@ public class TFTechness2 {
 					IEContent.fluidPlantoil, 80), null);
 		}
 
+		//electrum processing
+		ArcFurnaceRecipe.addRecipe(new ItemStack(TFTItems.ingots
+				.get("Electrum")),
+				"ingotDullElectrum",
+				null,
+				200,
+				32,
+				"dustRedstone");
+
 		//Aluminium refinement - stage 1
 		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 5),
 				"oreBauxite",
@@ -897,6 +917,8 @@ public class TFTechness2 {
 
 		batch.addOreFix(new ItemStack(Items.gold_ingot), "ingotGold");
 		batch.addOreFix(new ItemStack(Items.iron_ingot), "ingotIron");
+
+		batch.addCrafting(ItemMagnifyingGlass.getItem());
 
 		batch.Execute();
 
