@@ -27,7 +27,7 @@ Things it does so far: (not an exhaustive list)
 * Added the electrolyser - a multiblock machine for processing alumina into aluminium (with a "lovely" placeholder texture)
 
 Ugly but readable tech tree: (drawn by a program I wrote, hence the poor presentation)
-![it no work](https://github.com/Dinglydell/TFTechness/raw/master/TechTree-2017-10-29.png "The Ugly Tree")
+![it no work](https://github.com/Dinglydell/TFTechness2/raw/master/TechTree-2017-10-29.png "The Ugly Tree")
 
 
 List of dependencies:
