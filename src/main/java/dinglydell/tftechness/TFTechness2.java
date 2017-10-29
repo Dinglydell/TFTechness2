@@ -520,6 +520,13 @@ public class TFTechness2 {
 						" a ", "msm", " a ", 'm', "ingotSteel", 'a',
 						"ingotAluminum", 's', TFTMeta.ieTreatedStick));
 
+		//rebar
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(RailcraftItem.rebar.getStack(4),
+						"  s", " s ", "s  ", 's', "ingotBlackSteel"));
+
 	}
 
 	private void removeRollingMachineRecipes() {
@@ -527,6 +534,7 @@ public class TFTechness2 {
 				RollingMachineCraftingManager.getInstance().getRecipeList());
 
 		rollingBatch.addCrafting(TFTMeta.railElectric);
+		rollingBatch.addCrafting(RailcraftItem.rebar.getStack());
 
 		rollingBatch.Execute();
 
@@ -563,6 +571,7 @@ public class TFTechness2 {
 				"bpb", "bbb", 'b', new ItemStack(TFCItems.stoneBrick, 1,
 						OreDictionary.WILDCARD_VALUE), 'p',
 				Blocks.stone_pressure_plate));
+
 		//player
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.detectorPlayer,
 				"sss", "sps", "sss", 's', "itemRock", 'p',
@@ -814,7 +823,7 @@ public class TFTechness2 {
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
 				.clone(TFTMeta.ieConveyor, 8), "lll", "wrw", 'l',
-				TFCItems.leather, 'w', "ingotIron", 'r', "dustRedstone"));
+				TFCItems.leather, 'w', "ingotSteel", 'r', TFTMeta.ieLvWire));
 
 		//wire coils
 		//GameRegistry.addRecipe(new ShapedOreRecipe(ItemUtil
@@ -1089,6 +1098,41 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.tinGearBushing);
 		batch.addCrafting(TFTMeta.ironGear);
 		batch.addCrafting(TFTMeta.steelGear);
+
+		//broken recipes (recipes that were unobtainable due to using items that are not available with TFC)
+
+		batch.addCrafting(TFTMeta.ieLvConnector);
+		batch.addCrafting(TFTMeta.ieMvConnector);
+		batch.addCrafting(TFTMeta.ieHvConnector);
+		batch.addCrafting(TFTMeta.iePoweredLantern);
+		batch.addCrafting(TFTMeta.ieCurrentTransformer);
+		batch.addCrafting(TFTMeta.ieRadiatorBlock);
+		batch.addCrafting(new ItemStack(IEContent.blockClothDevice));
+		batch.addCrafting(new ItemStack(IEContent.itemJerrycan));
+		batch.addCrafting(new ItemStack(IEContent.itemChemthrower));
+		batch.addCrafting(TFTMeta.detectorTank);
+		batch.addCrafting(TFTMeta.detectorPlayer);
+		batch.addCrafting(TFTMeta.detectorMob);
+		batch.addCrafting(TFTMeta.detectorExplosive);
+		batch.addCrafting(TFTMeta.detectorAnimal);
+		batch.addCrafting(TFTMeta.detectorAge);
+		batch.addCrafting(TFTMeta.detectorRouting);
+		batch.addCrafting(TFTMeta.detectorSheep);
+		batch.addCrafting(TFTMeta.detectorLocomotive);
+		batch.addCrafting(TFTMeta.detectorTrain);
+		batch.addCrafting(TFTMeta.advItemLoader);
+		batch.addCrafting(TFTMeta.advItemUnloader);
+		batch.addCrafting(new ItemStack(Blocks.dispenser));
+		batch.addCrafting(TFTMeta.engravingBench);
+		batch.addCrafting(TFTMeta.fireboxSolid);
+		batch.addCrafting(TFTMeta.fireboxLiquid);
+		batch.addCrafting(ItemGoggles.getItem());
+		batch.addCrafting(EnumCart.LOCO_ELECTRIC.getCartItem());
+		batch.addCrafting(TFTMeta.circuitController);
+		batch.addCrafting(TFTMeta.circuitReceiver);
+		batch.addCrafting(TFTMeta.circuitSignal);
+		batch.addCrafting(ItemMagnifyingGlass.getItem());
+		batch.addCrafting(TFTMeta.ieConveyor);
 
 		batch.Execute();
 
