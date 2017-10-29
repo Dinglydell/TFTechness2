@@ -46,7 +46,7 @@ dependencies {
 		"lib/ImmersiveEngineering-0.7.7-deobf.jar"
 	)
 	compile files (
-		"Railcraft_1.7.10-9.8.0.0-dev.jar"
+		"lib/Railcraft_1.7.10-9.8.0.0-dev.jar"
 	)
 	
 
