@@ -24,5 +24,6 @@ public class TFTItems {
 	public static Map<String, Item> sheets2x = new HashMap<String, Item>();
 	public static Map<String, Item> rods = new HashMap<String, Item>();
 	public static Map<String, Item> nuggets = new HashMap<String, Item>();
+	public static Item hopGraphite;
 
 }

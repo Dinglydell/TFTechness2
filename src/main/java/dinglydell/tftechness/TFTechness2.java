@@ -843,6 +843,10 @@ public class TFTechness2 {
 		//		.clone(TFTMeta.ieSteelWire, 4), " m ", "msm", " m ", 'm',
 		//		"ingotSteel", 's', TFTMeta.ieTreatedStick));
 		//
+		GameRegistry
+				.addRecipe(new ShapedOreRecipe(TFTMeta.ieToughFabric, "fff",
+						"fsf", "fff", 'f', "fibreHemp", 's', "stickTreatedWood"));
+
 		//engineering blocks
 		GameRegistry.addRecipe((new ShapedOreRecipe(TFTMeta.ieLightEngineering,
 				"scs", "psp", "scs", 's', "ingotSteel", 'c',
@@ -931,6 +935,15 @@ public class TFTechness2 {
 				TFTMeta.ieWoodenGrip, 'h', TFTMeta.ieHeavyEngineering, 'r',
 				TFCItems.redSteelBucketEmpty, 'b',
 				TFCItems.blueSteelBucketEmpty, 'p', TFTMeta.ieFluidPipe));
+
+		// concrete
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieConcrete, "scs",
+				"gbg", "scs", 's', TFTMeta.ieSlag, 'g', "blockGravel", 'r',
+				TFCItems.redSteelBucketWater, 'c', "lumpClay"));
+
+		//hempcrete
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieHempcrete, "ccc",
+				"fff", "ccc", 'c', "lumpClay", 'f', "fiberHemp"));
 	}
 
 	private void addIEMachineRecipes() {
@@ -1049,6 +1062,7 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.ieAluminiumRod);
 
 		batch.addCrafting(TFTMeta.ieHammer);
+		batch.addCrafting(TFTMeta.ieToughFabric);
 
 		batch.addCrafting(TFTMeta.ieLvWire);
 		batch.addCrafting(TFTMeta.ieMvWire);

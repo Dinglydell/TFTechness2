@@ -259,5 +259,9 @@ public class TFTMeta {
 
 	public static ItemStack steelGear = new ItemStack(
 			RailcraftItem.gear.item(), 1, EnumGear.STEEL.ordinal());
+	public static ItemStack ieConcrete = new ItemStack(
+			IEContent.blockStoneDecoration, 1, 4);
+	public static ItemStack ieHempcrete = new ItemStack(
+			IEContent.blockStoneDecoration, 1, 0);
 
 }
