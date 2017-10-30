@@ -938,7 +938,7 @@ public class TFTechness2 {
 
 		// concrete
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.ieConcrete, "scs",
-				"gbg", "scs", 's', TFTMeta.ieSlag, 'g', "blockGravel", 'r',
+				"gbg", "scs", 's', TFTMeta.ieSlag, 'g', "blockGravel", 'b',
 				TFCItems.redSteelBucketWater, 'c', "lumpClay"));
 
 		//hempcrete
