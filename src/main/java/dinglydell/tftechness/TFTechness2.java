@@ -1070,6 +1070,9 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.ieHempWire);
 		batch.addCrafting(TFTMeta.ieSteelWire);
 
+		batch.addCrafting(TFTMeta.ieConcrete);
+		batch.addCrafting(TFTMeta.ieHempcrete);
+
 		batch.addCrafting(new ItemStack(IEContent.blockTreatedWood));
 		batch.addCrafting(TFTMeta.ieTreatedStick);
 
