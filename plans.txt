@@ -2,17 +2,9 @@
 
 -iron/steel components as anvil recipes?
 
--change light engineering blocks to steel, heavy engineering to black steel?
-
 -treated lumber?
 
--increase steam trap damage
-
 -allow external heater to be used to keep crops warm during winter?
-
--wire as rolling machine recipe? (gates IE wires behind steam -> RC steam engine)
-
--more steam power stuff
 
 -make wooden rails rot? (due to lack of creosote)
 
@@ -21,7 +13,7 @@
 
 -maybe get railcraft machines to rest at the external temperature
 
--steam powered pump
+-steam powered pump?
 
 Mid-term:
 
@@ -30,6 +22,7 @@ Mid-term:
     
 -Advanced rocketry
     -gate things like force track emitter behind space
+    -climate & temperature for other planets (feasible?)
 
 -big reactors?
     -refinement process for pitchblende
@@ -42,6 +35,7 @@ Mid-term:
  how good of an insulator it is
  
  -Reintroduction of the cryothermic chamber (known to some as a "fridge")
+    -cellars addon?
  
  -RF Crucible (could be the same as a forge but with some special parts in the multiblock
 
