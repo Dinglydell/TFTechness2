@@ -40,6 +40,7 @@ import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
+import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.util.StringUtil;
 
 public class Material {
@@ -65,6 +66,7 @@ public class Material {
 	public Alloy.EnumTier alloyTier;
 	public String oreName;
 	private AlloyIngred[] alloyRecipe;
+	public int colour;
 
 	public Material(String name, int tier, boolean isTFC) {
 		this.isTFC = isTFC;
@@ -87,11 +89,16 @@ public class Material {
 		}
 	}
 
+	public Material setColour(int colour) {
+		this.colour = colour;
+		return this;
+	}
+
 	//haha! this doesn't exist!
 	private Item get(String type) throws NoSuchFieldException,
 			SecurityException, IllegalArgumentException, IllegalAccessException {
 		Field field = TFCItems.class.getDeclaredField(StringUtil
-				.lowerCaseFirst(name) + type);
+				.lowerCaseFirst(name.replaceAll(" ", "")) + type);
 
 		return (Item) field.get(null);
 	}
@@ -102,7 +109,7 @@ public class Material {
 		this.alloyTier = alloyTier;
 	}
 
-	public void initialise() {
+	public void initialise(RenderItemMetal render) {
 		if (isTFC) {
 			this.metal = MetalRegistry.instance.getMetalFromItem(ingot);
 		} else {
@@ -113,7 +120,7 @@ public class Material {
 		}
 		addMolds();
 		addNuggets();
-		addRod();
+		addRod(render);
 		registerItemProps();
 	}
 
@@ -174,7 +181,7 @@ public class Material {
 
 	}
 
-	private void addRod() {
+	private void addRod(RenderItemMetal render) {
 
 		rod = new ItemMetal(metal.name, 50, "metalRod").setUnlocalizedName(name
 				+ "Rod");
@@ -184,6 +191,9 @@ public class Material {
 		OreDictionary.registerOre("stick" + oreName, rod);
 
 		addHeatIndex(rod, 0, 50);
+		if (render != null) {
+			//MinecraftForgeClient.registerItemRenderer(rod, render);
+		}
 	}
 
 	private void addSheets() {

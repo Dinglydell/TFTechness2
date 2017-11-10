@@ -2,7 +2,10 @@ package dinglydell.tftechness;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mods.railcraft.common.blocks.tracks.EnumTrack;
@@ -31,6 +34,11 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import org.apache.logging.log4j.LogManager;
 
+import zmaster587.advancedRocketry.api.AdvancedRocketryBlocks;
+import zmaster587.advancedRocketry.api.AdvancedRocketryItems;
+import zmaster587.advancedRocketry.tile.multiblock.machine.TileElectricArcFurnace;
+import zmaster587.libVulpes.api.material.MaterialRegistry;
+import zmaster587.libVulpes.recipe.RecipesMachine;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
@@ -97,13 +105,14 @@ import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.EnumState;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.render.RenderBlockTFT;
+import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.util.ItemUtil;
 import dinglydell.tftechness.util.StringUtil;
 
-@Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering")
+@Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering;after:advancedRocketry;after:libVulpes")
 public class TFTechness2 {
 	public static final String MODID = "TFTechness";
 	public static final String VERSION = "0.1";
@@ -113,7 +122,8 @@ public class TFTechness2 {
 
 	public static org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger("TFTechness");
-	public static Material[] materials;
+	public static List<Material> materials;
+	public static Map<String, Material> materialMap;
 	public static TFTechness2 instance;
 
 	public static final int ingotsPerBlock = 10;
@@ -128,12 +138,20 @@ public class TFTechness2 {
 	public void preInit(FMLPreInitializationEvent event) {
 		TFTConfig.loadConifg(event);
 		replaceWater();
+		hackARLocalisation();
 		editIEMetalRelations();
 		initStatMap();
 		registerEventHandlers();
 		registerPacketHandlers();
 
 		addOres();
+
+	}
+
+	private void hackARLocalisation() {
+		AdvancedRocketryBlocks.blockArcFurnace.setBlockName("advArcFurnace");
+		AdvancedRocketryBlocks.blockRollingMachine
+				.setBlockName("advRollingMachine");
 
 	}
 
@@ -156,6 +174,11 @@ public class TFTechness2 {
 	private void addOres() {
 		TFTOreRegistry.registerOre(new TFTOre("Bauxite", "veins", "medium", 50,
 				new String[] { "gneiss", "basalt", "shale" }, 5, 128, 60, 80));
+
+		TFTOreRegistry.registerOre(new TFTOre("Rutile", "veins", "medium", 100,
+				new String[] { "igneous extrusive",
+						"metamorphic",
+						"igneous intrusive" }, 5, 128, 60, 80));
 
 	}
 
@@ -215,7 +238,7 @@ public class TFTechness2 {
 		statMap.put("WeakRedSteel", redSteel);
 		statMap.put("WeakBlueSteel", blueSteel);
 		statMap.put("WeakSteel", steel);
-		statMap.put("WroughtIron", new MetalStat(0.35, 1535, 7500));
+		statMap.put("Wrought Iron", new MetalStat(0.35, 1535, 7500));
 		statMap.put("Zinc", new MetalStat(0.21, 420, 7000));
 
 		// IE
@@ -223,6 +246,13 @@ public class TFTechness2 {
 		statMap.put("Electrum", new MetalStat(0.181, 650, 14460));
 		//the world shudders in silence as a thousand dictionaries crumble in despair
 		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700));
+
+		//AdvancedRocketry
+		statMap.put("Titanium", new MetalStat(0.54, 1668, 4110));
+		statMap.put("TitaniumAluminide", new MetalStat(0.79, 1460, 3123));
+		statMap.put("Iridium", new MetalStat(0.31, 2446, 20000));
+		// could not find any real data on this 
+		statMap.put("TitaniumIridium", new MetalStat(0.43, 2057, 12055));
 
 		// TFT
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
@@ -236,7 +266,7 @@ public class TFTechness2 {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		registerItems();
+		registerItems(event.getSide() == Side.CLIENT);
 		addCrops();
 		registerFluids();
 		registerItemProps();
@@ -350,61 +380,89 @@ public class TFTechness2 {
 		//TODO: Fix this. this is bad. do not leave this here. find another way
 	}
 
-	private void registerItems() {
-		materials = new Material[] { new Material("Constantan", 5,
-				Alloy.EnumTier.TierIV, false)
-				.setNugget(TFTMeta.ieConstantanNugget)
-				.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred("Copper",
-						50, 60), new AlloyIngred("Nickel", 40, 50) })
-				.setBlock(IEContent.blockStorage, 0),
-				new Material("DullElectrum", 5, Alloy.EnumTier.TierIV, false)
+	private void registerItems(boolean client) {
+		materials = new ArrayList<Material>(
+				Arrays.asList(new Material[] { new Material("Constantan", 5,
+						Alloy.EnumTier.TierIV, false)
+						.setNugget(TFTMeta.ieConstantanNugget)
 						.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
-								"Gold", 50, 60),
-								new AlloyIngred("Silver", 40, 50) }),
-				new Material("Electrum", 5, Alloy.EnumTier.TierIV, false)
-						.setNugget(TFTMeta.ieElectrumNugget),
-				//.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
-				//	"Gold", 50, 60),
-				//new AlloyIngred("Silver", 40, 50) }),
-				//my eyes honestly hurt
-				new Material("Aluminum", 3, Alloy.EnumTier.TierIII, false)
-						.setNugget(TFTMeta.ieAluminiumNugget)
-						.setOreName("Aluminum"),
+								"Copper", 50, 60),
+								new AlloyIngred("Nickel", 40, 50) })
+						.setBlock(IEContent.blockStorage, 0),
+						new Material("DullElectrum", 5, Alloy.EnumTier.TierIV,
+								false)
+								.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
+										"Gold", 50, 60),
+										new AlloyIngred("Silver", 40, 50) })
+								.setColour(0xA0A582),
+						new Material("Electrum", 5, Alloy.EnumTier.TierIV,
+								false).setNugget(TFTMeta.ieElectrumNugget)
+								.setColour(0xD8D387),
+						//.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred(
+						//	"Gold", 50, 60),
+						//new AlloyIngred("Silver", 40, 50) }),
+						//my eyes honestly hurt
+						new Material("Aluminum", 3, Alloy.EnumTier.TierIII,
+								false).setNugget(TFTMeta.ieAluminiumNugget)
+								.setOreName("Aluminum").setColour(0xE1EBFA),
 
-				new Material("WroughtIron", 3, Alloy.EnumTier.TierIII, true)
-				//.setUnshaped(TFCItems.wroughtIronUnshaped)
-				//.setIngot(TFCItems.wroughtIronIngot)
-				//.setIngot2x(TFCItems.wroughtIronIngot2x)
-				//.setSheet(TFCItems.wroughtIronSheet)
-				//.setSheet2x(TFCItems.wroughtIronSheet2x)
-						.setNugget(TFTMeta.ieIronNugget).setOreName("Iron"),
-				new Material("Lead", 2, true)//.setIngot(TFCItems.leadIngot)
-						//.setUnshaped(TFCItems.leadUnshaped)
-						//.setSheet(TFCItems.leadSheet)
-						.setNugget(TFTMeta.ieLeadNugget),
-				new Material("Steel", 4, true)//.setIngot(TFCItems.steelIngot)
-						.setNugget(TFTMeta.ieSteelNugget)
-						//.setUnshaped(TFCItems.steelUnshaped)
-						.setBlock(IEContent.blockStorage, 7),
-				new Material("Copper", 1, true)//.setIngot(TFCItems.copperIngot)
-						.setNugget(TFTMeta.ieCopperNugget)
-				//.setUnshaped(TFCItems.copperUnshaped)
-				,
-				new Material("Tin", 0, true)//.setIngot(TFCItems.tinIngot)
-				//.setUnshaped(TFCItems.tinUnshaped)
-				,
-				new Material("Bronze", 2, true)//.setIngot(TFCItems.bronzeIngot)
-				//.setUnshaped(TFCItems.bronzeUnshaped)
-				,
-				new Material("Silver", 2, true)//.setIngot(TFCItems.silverIngot)
-						.setNugget(TFTMeta.ieSilverNugget),
-				//.setUnshaped(TFCItems.silverUnshaped),
-				new Material("Nickel", 4, true)//.setIngot(TFCItems.nickelIngot)
-						.setNugget(TFTMeta.ieNickelNugget),
-				new Material("Gold", 2, true).setNugget(new ItemStack(
-						Items.gold_nugget))
+						new Material("Wrought Iron", 3, Alloy.EnumTier.TierIII,
+								true)
+								.setColour(0xAAAAAA)
+								//.setUnshaped(TFCItems.wroughtIronUnshaped)
+								//.setIngot(TFCItems.wroughtIronIngot)
+								//.setIngot2x(TFCItems.wroughtIronIngot2x)
+								//.setSheet(TFCItems.wroughtIronSheet)
+								//.setSheet2x(TFCItems.wroughtIronSheet2x)
+								.setNugget(TFTMeta.ieIronNugget)
+								.setOreName("Iron"),
+						new Material("Lead", 2, true)//.setIngot(TFCItems.leadIngot)
+								//.setUnshaped(TFCItems.leadUnshaped)
+								//.setSheet(TFCItems.leadSheet)
+								.setNugget(TFTMeta.ieLeadNugget),
+						new Material("Steel", 4, true)//.setIngot(TFCItems.steelIngot)
+								.setNugget(TFTMeta.ieSteelNugget)
+								//.setUnshaped(TFCItems.steelUnshaped)
+								.setBlock(IEContent.blockStorage, 7),
+						new Material("Copper", 1, true)//.setIngot(TFCItems.copperIngot)
+								.setNugget(TFTMeta.ieCopperNugget)
+						//.setUnshaped(TFCItems.copperUnshaped)
+						,
+						new Material("Tin", 0, true)//.setIngot(TFCItems.tinIngot)
+						//.setUnshaped(TFCItems.tinUnshaped)
+						,
+						new Material("Bronze", 2, true)//.setIngot(TFCItems.bronzeIngot)
+						//.setUnshaped(TFCItems.bronzeUnshaped)
+						,
+						new Material("Silver", 2, true)//.setIngot(TFCItems.silverIngot)
+								.setNugget(TFTMeta.ieSilverNugget),
+						//.setUnshaped(TFCItems.silverUnshaped),
+						new Material("Nickel", 4, true)//.setIngot(TFCItems.nickelIngot)
+								.setNugget(TFTMeta.ieNickelNugget),
+						new Material("Gold", 2, true).setNugget(new ItemStack(
+								Items.gold_nugget))
 
-		};
+				}));
+		//TODO: make this less of a hack
+		//HashSet<String> mats = new HashSet<String>();
+		materialMap = new HashMap<String, Material>();
+		for (Material m : materials) {
+			materialMap.put(m.name, m);
+			if (m.oreName != m.name) {
+				materialMap.put(m.oreName, m);
+			}
+		}
+
+		for (zmaster587.libVulpes.api.material.Material m : MaterialRegistry
+				.getAllMaterials()) {
+			if (!materialMap.containsKey(m.getUnlocalizedName())
+					&& statMap.containsKey(m.getUnlocalizedName())) {
+				materials.add(new Material(m.getUnlocalizedName(), 4, false)
+						.setOreName(m.getOreDictNames()[0]));
+
+			}
+		}
+
 		TFTItems.nuggetMold = new ItemPotteryMold()
 				.setMetaNames(new String[] { "Clay Nugget Mold",
 						"Ceramic Nugget Mold" })
@@ -413,8 +471,9 @@ public class TFTechness2 {
 		//TFTItems.nuggetMold.setContainerItem(TFTItems.nuggetMold);
 		GameRegistry.registerItem(TFTItems.nuggetMold, "nuggetMold");
 
+		RenderItemMetal render = client ? new RenderItemMetal() : null;
 		for (Material m : materials) {
-			m.initialise();
+			m.initialise(render);
 		}
 
 		TFTItems.woodenBucketCreosote = new ItemStack(new ItemCustomBucket(
@@ -469,7 +528,36 @@ public class TFTechness2 {
 			m.addMachineRecipes();
 			m.addCraftingRecipes();
 		}
+		addARRecipes();
+		addARMachineRecipes();
 		logger.info(IEApi.modPreference);
+	}
+
+	private void addARRecipes() {
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				AdvancedRocketryBlocks.blockArcFurnace, " u ", "sbs", " a ",
+				'u', AdvancedRocketryItems.itemMisc, 's', "plateBlackSteel",
+				'b', TFCBlocks.fireBrick, 'a', "ingotAluminum"));
+
+	}
+
+	private void addARMachineRecipes() {
+		for (ArcFurnaceRecipe recipe : ArcFurnaceRecipe.recipeList) {
+			List<Object> inputs = new ArrayList<Object>(
+					Arrays.asList(recipe.additives));
+			if (recipe.input instanceof ArrayList<?>) {
+				//TODO: oredict stuff
+			}
+			inputs.add(recipe.input);
+
+			RecipesMachine.getInstance()
+					.addRecipe(TileElectricArcFurnace.class,
+							recipe.output,
+							recipe.time,
+							recipe.energyPerTick,
+							inputs);
+		}
+
 	}
 
 	private void addRailcraftMachineRecipes() {
@@ -1115,6 +1203,8 @@ public class TFTechness2 {
 		batch.addCrafting(TFTMeta.tinGearBushing);
 		batch.addCrafting(TFTMeta.ironGear);
 		batch.addCrafting(TFTMeta.steelGear);
+
+		batch.addCrafting(new ItemStack(AdvancedRocketryBlocks.blockArcFurnace));
 
 		//broken recipes (recipes that were unobtainable due to using items that are not available with TFC)
 

@@ -23,6 +23,7 @@ Mid-term:
 -Advanced rocketry
     -gate things like force track emitter behind space
     -climate & temperature for other planets (feasible?)
+    -space oregen (use TFC ores?)
 
 -big reactors?
     -refinement process for pitchblende

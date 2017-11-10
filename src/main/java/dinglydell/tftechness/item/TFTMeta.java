@@ -11,6 +11,7 @@ import mods.railcraft.common.items.ItemGear.EnumGear;
 import mods.railcraft.common.items.RailcraftItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import zmaster587.advancedRocketry.api.AdvancedRocketryItems;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.api.TFCItems;
@@ -263,5 +264,12 @@ public class TFTMeta {
 			IEContent.blockStoneDecoration, 1, 4);
 	public static ItemStack ieHempcrete = new ItemStack(
 			IEContent.blockStoneDecoration, 1, 0);
+	public static ItemStack arCircuitControl = new ItemStack(
+			AdvancedRocketryItems.itemIC, 1, 3);
+	public static ItemStack arCircuitIO = new ItemStack(
+			AdvancedRocketryItems.itemIC, 1, 4);
+	//public static Item arNugget = MaterialRegistry.oreProducts[AllowedProducts
+	//	.getProductByName("NUGGET").getFlagValue()];
+	//public static ItemStack arTitaniumNugget = new ItemStack(arNugget, 1, MaterialRegistry.getItemStackFromMaterialAndType("titanium", product);
 
 }
