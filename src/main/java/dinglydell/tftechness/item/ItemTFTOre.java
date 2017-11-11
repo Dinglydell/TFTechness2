@@ -14,6 +14,7 @@ public class ItemTFTOre extends ItemOre {
 	public ItemTFTOre(String[] names, Metal[] metals, short[] amounts,
 			EnumTier[] tiers) {
 		super();
+		this.setHasSubtypes(true);
 		metaNames = names;
 		this.metals = metals;
 		this.amounts = amounts;

@@ -69,24 +69,7 @@ public class Material {
 	public int colour;
 
 	public Material(String name, int tier, boolean isTFC) {
-		this.isTFC = isTFC;
-		this.heatRaw = TFTechness2.statMap.get(name).heat;
-		this.name = name;
-		this.oreName = name;
-		this.tier = tier;
-		//this.nugget = nugget;
-		if (isTFC) {
-			//no! don't look!
-			try {
-				sheet = get("Sheet");
-				sheet2x = get("Sheet2x");
-				ingot = get("Ingot");
-				ingot2x = get("Ingot2x");
-				unshaped = get("Unshaped");
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
+		this(name, tier, Alloy.EnumTier.TierI, isTFC);
 	}
 
 	public Material setColour(int colour) {
@@ -105,8 +88,26 @@ public class Material {
 
 	public Material(String name, int tier, Alloy.EnumTier alloyTier,
 			boolean isTFC) {
-		this(name, tier, isTFC);
+
 		this.alloyTier = alloyTier;
+		this.isTFC = isTFC;
+		this.heatRaw = TFTechness2.statMap.get(name).heat;
+		this.name = name;
+		this.oreName = name;
+		this.tier = tier;
+		//this.nugget = nugget;
+		if (isTFC) {
+			//no! don't look!
+			try {
+				sheet = get("Sheet");
+				sheet2x = get("Sheet2x");
+				ingot = get("Ingot");
+				ingot2x = get("Ingot2x");
+				unshaped = get("Unshaped");
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	public void initialise(RenderItemMetal render) {
@@ -309,7 +310,8 @@ public class Material {
 		if (this.alloyRecipe != null) {
 			Alloy alloy = new Alloy(metal, alloyTier);
 			for (AlloyIngred ing : alloyRecipe) {
-				alloy.addIngred(ing.metal, ing.min, ing.max);
+				alloy.addIngred(MetalRegistry.instance
+						.getMetalFromString(ing.metal), ing.min, ing.max);
 			}
 			AlloyManager.INSTANCE.addAlloy(alloy);
 		}

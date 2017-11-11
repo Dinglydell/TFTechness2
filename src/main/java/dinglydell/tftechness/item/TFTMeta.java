@@ -170,6 +170,8 @@ public class TFTMeta {
 			IEContent.blockStorageSlabs, 1, 7);
 	public static ItemStack ieSteelIngot = new ItemStack(IEContent.itemMetal,
 			1, 7);
+	public static ItemStack ieElectrumIngot = new ItemStack(
+			IEContent.itemMetal, 1, 6);
 	public static ItemStack ieSlag = new ItemStack(IEContent.itemMaterial, 1,
 			13);
 	public static ItemStack ieIronRod = new ItemStack(IEContent.itemMaterial,

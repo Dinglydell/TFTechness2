@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -37,7 +39,11 @@ import org.apache.logging.log4j.LogManager;
 import zmaster587.advancedRocketry.api.AdvancedRocketryBlocks;
 import zmaster587.advancedRocketry.api.AdvancedRocketryItems;
 import zmaster587.advancedRocketry.tile.multiblock.machine.TileElectricArcFurnace;
+import zmaster587.advancedRocketry.tile.multiblock.machine.TileRollingMachine;
+import zmaster587.libVulpes.api.LibVulpesBlocks;
+import zmaster587.libVulpes.api.material.AllowedProducts;
 import zmaster587.libVulpes.api.material.MaterialRegistry;
+import zmaster587.libVulpes.interfaces.IRecipe;
 import zmaster587.libVulpes.recipe.RecipesMachine;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.MultiblockHandler;
@@ -50,6 +56,9 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.Metal.Alloy;
+import com.bioxx.tfc.Core.Metal.AlloyManager;
+import com.bioxx.tfc.Core.Metal.AlloyMetal;
+import com.bioxx.tfc.Core.Metal.AlloyMetalCompare;
 import com.bioxx.tfc.Items.ItemTerra;
 import com.bioxx.tfc.Items.Pottery.ItemPotteryMold;
 import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
@@ -110,6 +119,8 @@ import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.util.ItemUtil;
+import dinglydell.tftechness.util.MathsUtils;
+import dinglydell.tftechness.util.OreDict;
 import dinglydell.tftechness.util.StringUtil;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering;after:advancedRocketry;after:libVulpes")
@@ -173,12 +184,26 @@ public class TFTechness2 {
 
 	private void addOres() {
 		TFTOreRegistry.registerOre(new TFTOre("Bauxite", "veins", "medium", 50,
-				new String[] { "gneiss", "basalt", "shale" }, 5, 128, 60, 80));
+				new String[] { "gneiss", "basalt", "shale" }, 5, 150, 60, 80));
 
 		TFTOreRegistry.registerOre(new TFTOre("Rutile", "veins", "medium", 100,
-				new String[] { "igneous extrusive",
+				new String[] { "basalt",
+						"gneiss",
+						"marble",
+						"schist",
+						"phyllite",
+						"slate",
+						"quartzite",
+						"dacite",
+						"andesite",
+						"rhyolite",
+						"gabbro",
+						"granite",
+						"diorite",
+						//this part did not seem to work
+						"igneous extrusive",
 						"metamorphic",
-						"igneous intrusive" }, 5, 128, 60, 80));
+						"igneous intrusive" }, 5, 150, 60, 80));
 
 	}
 
@@ -457,12 +482,20 @@ public class TFTechness2 {
 				.getAllMaterials()) {
 			if (!materialMap.containsKey(m.getUnlocalizedName())
 					&& statMap.containsKey(m.getUnlocalizedName())) {
-				materials.add(new Material(m.getUnlocalizedName(), 4, false)
-						.setOreName(m.getOreDictNames()[0]));
+				Material mat = new Material(m.getUnlocalizedName(), 4,
+						Alloy.EnumTier.TierVI, false).setOreName(m
+						.getOreDictNames()[0]);
+				materials.add(mat);
+				materialMap.put(mat.oreName, mat);
 
 			}
 		}
-
+		materialMap.get("TitaniumAluminide")
+				.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred("Titanium",
+						25, 35), new AlloyIngred("Aluminum", 65, 75) });
+		materialMap.get("TitaniumIridium")
+				.setAlloyRecipe(new AlloyIngred[] { new AlloyIngred("Titanium",
+						45, 55), new AlloyIngred("Iridium", 45, 55) });
 		TFTItems.nuggetMold = new ItemPotteryMold()
 				.setMetaNames(new String[] { "Clay Nugget Mold",
 						"Ceramic Nugget Mold" })
@@ -542,20 +575,180 @@ public class TFTechness2 {
 	}
 
 	private void addARMachineRecipes() {
-		for (ArcFurnaceRecipe recipe : ArcFurnaceRecipe.recipeList) {
-			List<Object> inputs = new ArrayList<Object>(
-					Arrays.asList(recipe.additives));
-			if (recipe.input instanceof ArrayList<?>) {
-				//TODO: oredict stuff
-			}
-			inputs.add(recipe.input);
+		RecipesMachine arRecipeManager = RecipesMachine.getInstance();
 
-			RecipesMachine.getInstance()
-					.addRecipe(TileElectricArcFurnace.class,
-							recipe.output,
-							recipe.time,
-							recipe.energyPerTick,
-							inputs);
+		List<IRecipe> arcRecipes = arRecipeManager.recipeList
+				.get(TileElectricArcFurnace.class);
+
+		removeARMachineRecipes(arcRecipes, new String[] { "ingotTitanium" });
+
+		//sand -> silicon
+		arRecipeManager.addRecipe(TileElectricArcFurnace.class,
+				OreDict.getOreItem("ingotSilicon"),
+				12000,
+				1,
+				"blockSand");
+
+		//rutile -> titanium
+		ItemStack rutile = OreDict.getOreItem("oreRutile");
+		arRecipeManager.addRecipe(TileElectricArcFurnace.class,
+				new ItemStack(TFTItems.ingots.get("Titanium")),
+				200,
+				512,
+				ItemUtil.clone(rutile, 4));
+
+		//poor rutile -> titanium
+		ItemStack rutilePoor = OreDict.getOreItem("orePoorRutile");
+		arRecipeManager.addRecipe(TileElectricArcFurnace.class,
+				new ItemStack(TFTItems.nuggets.get("Titanium"), 3),
+				100,
+				512,
+				ItemUtil.clone(rutilePoor, 2));
+		//rich rutile -> titanium
+		ItemStack rutileRich = OreDict.getOreItem("oreRichRutile");
+		arRecipeManager.addRecipe(TileElectricArcFurnace.class,
+				new ItemStack(TFTItems.nuggets.get("Titanium"), 7),
+				100,
+				512,
+				ItemUtil.clone(rutileRich, 2));
+		arRecipeManager.addRecipe(TileElectricArcFurnace.class,
+				new ItemStack(TFTItems.ingots.get("Titanium"), 7),
+				1000,
+				512,
+				ItemUtil.clone(rutileRich, 20));
+
+		//		for (ArcFurnaceRecipe recipe : ArcFurnaceRecipe.recipeList) {
+		//			List<Object> inputs = new ArrayList<Object>();
+		//			inputs.add(getOreObj(recipe.input));
+		//			for (Object additive : recipe.additives) {
+		//				inputs.add(getOreObj(additive));
+		//			}
+		//
+		//			arRecipeManager.getInstance()
+		//					.addRecipe(TileElectricArcFurnace.class,
+		//							recipe.output,
+		//							recipe.time,
+		//							recipe.energyPerTick,
+		//							inputs.toArray());
+		//		}
+
+		//alloys
+		for (Alloy alloy : AlloyManager.INSTANCE.alloys) {
+			int gcd = 0;
+			if (alloy.outputType.name.equals("Bronze")) {
+				int x = 1;
+			}
+			for (AlloyMetal input : alloy.alloyIngred) {
+				int m = (int) (100 * input.metal);
+				if (input instanceof AlloyMetalCompare) {
+					AlloyMetalCompare a = (AlloyMetalCompare) input;
+					m = (int) (100 * (a.getMetalMax() + a.getMetalMin())) / 2;
+				}
+				if (gcd == 0) {
+					gcd = m;
+					continue;
+				}
+
+				gcd = MathsUtils.gcd(gcd, m);
+
+			}
+
+			List<ItemStack> inputs = new ArrayList<ItemStack>();
+			int total = 0;
+			for (AlloyMetal input : alloy.alloyIngred) {
+				int m = (int) (100 * input.metal) / gcd;
+				if (input instanceof AlloyMetalCompare) {
+					AlloyMetalCompare a = (AlloyMetalCompare) input;
+					m = (int) (100 * (a.getMetalMax() + a.getMetalMin()))
+							/ (gcd * 2);
+				}
+				total += m;
+				inputs.add(new ItemStack(input.metalType.ingot, m));
+			}
+
+			//ItemStack first = inputs.remove(0);
+			if (inputs.size() > 1) {
+				arRecipeManager.addRecipe(TileElectricArcFurnace.class,
+						new ItemStack(alloy.outputType.ingot, total),
+						200,
+						512,
+						inputs.toArray());
+			}
+		}
+
+		arRecipeManager.addRecipe(TileRollingMachine.class,
+				new ItemStack(LibVulpesBlocks.blockAdvStructureBlock),
+				400,
+				200,
+				"stickTitanium",
+				"plateTitanium",
+				"stickTitanium",
+				"plateTitanium",
+				"stickTitanium",
+				"plateTitanium",
+				"stickTitanium",
+				"plateTitanium",
+				"stickTitanium");
+
+		for (net.minecraft.item.crafting.IRecipe recipe : RollingMachineCraftingManager
+				.getInstance().getRecipeList()) {
+			//logger.info(recipe.getClass().getName());
+			//TODO: work out proper time/rf
+			arRecipeManager.addRecipe(TileRollingMachine.class,
+					recipe.getRecipeOutput(),
+					80,
+					1,
+					getInput(recipe));
+		}
+
+	}
+
+	private Object[] getInput(net.minecraft.item.crafting.IRecipe recipe) {
+		if (recipe instanceof ShapedOreRecipe) {
+			ShapedOreRecipe oreRecipe = (ShapedOreRecipe) recipe;
+			List<Object> inputs = new ArrayList<Object>();
+			for (Object in : oreRecipe.getInput()) {
+				inputs.add(getOreObj(in));
+
+			}
+			return inputs.toArray();
+		} else if (recipe instanceof ShapedRecipes) {
+			return ((ShapedRecipes) recipe).recipeItems;
+		}
+
+		return null;
+
+	}
+
+	private Object getOreObj(Object obj) {
+		if (obj instanceof ArrayList<?>) {
+			String ore = OreDict.getOreName((List<ItemStack>) obj);
+			return ore;
+		}
+		return obj;
+	}
+
+	private void removeARMachineRecipes(List<IRecipe> recipeList,
+			String[] toRemove) {
+		Iterator<IRecipe> iterator = recipeList.iterator();
+		while (iterator.hasNext()) {
+			IRecipe recipe = iterator.next();
+			boolean found = false;
+			for (String o : toRemove) {
+
+				//oredict
+				String oreName = (String) o;
+				for (ItemStack out : recipe.getOutput()) {
+					if (OreDict.itemMatches(out, oreName)) {
+						found = true;
+						iterator.remove();
+						break;
+					}
+				}
+				if (found) {
+					break;
+				}
+			}
 		}
 
 	}
@@ -614,6 +807,14 @@ public class TFTechness2 {
 				.getRecipeList()
 				.add(new ShapedOreRecipe(RailcraftItem.rebar.getStack(4),
 						"  s", " s ", "s  ", 's', "ingotBlackSteel"));
+
+		//machine structure (AR)
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(LibVulpesBlocks.blockStructureBlock,
+						"rsr", "s s", "rsr", 'r', "stickSteel", 's',
+						"plateSteel"));
 
 	}
 
@@ -1061,6 +1262,7 @@ public class TFTechness2 {
 				TFTMeta.ieSlag);
 
 		//arc furnace
+		ArcFurnaceRecipe.removeRecipes(TFTMeta.ieElectrumIngot);
 		ArcFurnaceRecipe.removeRecipes(TFTMeta.ieSteelIngot);
 		ArcFurnaceRecipe.addRecipe(new ItemStack(TFCItems.steelIngot),
 				"ingotIron",
@@ -1078,6 +1280,8 @@ public class TFTechness2 {
 			DieselHandler.addSqueezerRecipe(seed, 80, new FluidStack(
 					IEContent.fluidPlantoil, 80), null);
 		}
+
+		//alloy recipes
 
 		//electrum processing
 		int electrumTime = 200;
@@ -1206,6 +1410,16 @@ public class TFTechness2 {
 
 		batch.addCrafting(new ItemStack(AdvancedRocketryBlocks.blockArcFurnace));
 
+		batch.addCrafting(new ItemStack(LibVulpesBlocks.blockStructureBlock));
+		batch.addCrafting(new ItemStack(LibVulpesBlocks.blockAdvStructureBlock));
+		AllowedProducts stick = AllowedProducts.getProductByName("STICK");
+
+		batch.addCrafting(new ItemStack(MaterialRegistry
+				.getItemStackFromMaterialAndType("Titanium", stick).getItem(),
+				1, OreDictionary.WILDCARD_VALUE));
+
+		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.itemSawBlade,1));
+		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.block,1));
 		//broken recipes (recipes that were unobtainable due to using items that are not available with TFC)
 
 		batch.addCrafting(TFTMeta.ieLvConnector);

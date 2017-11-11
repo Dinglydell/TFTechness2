@@ -24,6 +24,30 @@ item.AluminumSheet.name=Aluminium Sheet
 item.AluminumSheet2x.name=Aluminium Double Sheet
 item.AluminumUnshaped.name=Unshaped: Aluminium
 
+item.TitaniumIngot.name=Titanium Ingot
+item.TitaniumIngot2x.name=Titanium Double Ingot
+item.TitaniumSheet.name=Titanium Sheet
+item.TitaniumSheet2x.name=Titanium Double Sheet
+item.TitaniumUnshaped.name=Unshaped: Titanium
+
+item.IridiumIngot.name=Iridium Ingot
+item.IridiumIngot2x.name=Iridium Double Ingot
+item.IridiumSheet.name=Iridium Sheet
+item.IridiumSheet2x.name=Iridium Double Sheet
+item.IridiumUnshaped.name=Unshaped: Iridium
+
+item.TitaniumAluminideIngot.name=Titanium Aluminide Ingot
+item.TitaniumAluminideIngot2x.name=Titanium Aluminide Double Ingot
+item.TitaniumAluminideSheet.name=Titanium Aluminide Sheet
+item.TitaniumAluminideSheet2x.name=Titanium Aluminide Double Sheet
+item.TitaniumAluminideUnshaped.name=Unshaped: Titanium Aluminide
+
+item.TitaniumIridiumIngot.name=Titanium Iridium Ingot
+item.TitaniumIridiumIngot2x.name=Titanium Iridium Double Ingot
+item.TitaniumIridiumSheet.name=Titanium Iridium Sheet
+item.TitaniumIridiumSheet2x.name=Titanium Iridium Double Sheet
+item.TitaniumIridiumUnshaped.name=Unshaped: Titanium Iridium
+
 item.nuggetMold.Ceramic Nugget Mold.name=Ceramic Nugget Mold
 item.nuggetMold.Clay Nugget Mold.name=Clay Nugget Mold
 item.nuggetMold.name=Nugget Mold
@@ -31,6 +55,10 @@ item.nuggetMold.name=Nugget Mold
 gui.metal.Electrum=Electrum
 gui.metal.Constantan=Constantan
 gui.metal.Aluminum=Aluminium
+
+item.ore.Rutile.name=Rutile
+item.ore.Rich Rutile.name=Rich Rutile
+item.ore.Poor Rutile.name=Poor Rutile
 
 item.ore.Bauxite.name=Bauxite
 item.ore.Rich Bauxite.name=Rich Bauxite
@@ -56,6 +84,11 @@ metal.Silver.name=Silver
 metal.Copper.name=Copper
 metal.Redstone.name=Redstone
 metal.Bronze.name=Bronze
+metal.Titanium.name=Titanium
+metal.Iridium.name=Iridium
+metal.TitaniumAluminide.name=Titanium Aluminide
+metal.TitaniumIridium.name=Titanium Iridium
+metal.Gold.name=Gold
 
 
 tile.Machine.name=TFTMachine
@@ -68,3 +101,4 @@ item.seedHemp.name=Industrial Hemp Seeds
 item.basicRailbed.name=Basic Wooden Railbed
 
 tile.advArcFurnace.name=Advanced Arc Furnace
+tile.advRollingMachine.name=Advanced Rolling Machine

@@ -34,29 +34,29 @@ public class TFTOreRegistry {
 			if (i % 16 == 0) {
 				GameRegistry.registerBlock(new BlockTFTOre(i / 16,
 						getBlockNames(i / 16)), "ore" + i / 16);
-				if (ores.get(i).drop == null) {
-					Metal metal = ores.get(i).metal;
-					EnumTier tier = ores.get(i).tier;
-					ores.get(i).meta = itemOreNames.size();
+			}
+			if (ores.get(i).drop == null) {
+				Metal metal = ores.get(i).metal;
+				EnumTier tier = ores.get(i).tier;
+				ores.get(i).meta = itemOreNames.size();
 
-					itemOreNames.add(ores.get(i).name);
-					itemOreAmounts.add((short) TFCOptions.normalOreUnits);
-					itemOreMetals.add(metal);
-					itemOreTiers.add(tier);
+				itemOreNames.add(ores.get(i).name);
+				itemOreAmounts.add((short) TFCOptions.normalOreUnits);
+				itemOreMetals.add(metal);
+				itemOreTiers.add(tier);
 
-					itemOreNames.add("Rich " + ores.get(i).name);
-					itemOreAmounts.add((short) TFCOptions.richOreUnits);
-					itemOreMetals.add(metal);
-					itemOreTiers.add(tier);
+				itemOreNames.add("Rich " + ores.get(i).name);
+				itemOreAmounts.add((short) TFCOptions.richOreUnits);
+				itemOreMetals.add(metal);
+				itemOreTiers.add(tier);
 
-					itemOreNames.add("Poor " + ores.get(i).name);
-					itemOreAmounts.add((short) TFCOptions.poorOreUnits);
-					itemOreMetals.add(metal);
-					itemOreTiers.add(tier);
-
-				}
+				itemOreNames.add("Poor " + ores.get(i).name);
+				itemOreAmounts.add((short) TFCOptions.poorOreUnits);
+				itemOreMetals.add(metal);
+				itemOreTiers.add(tier);
 
 			}
+
 			OreSpawnData data = ores.get(i).getSpawnData(TFTechness2.MODID
 					+ ":ore" + i / 16,
 					i % 16);

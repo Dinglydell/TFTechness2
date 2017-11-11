@@ -25,7 +25,9 @@ public class BatchCraftingItem {
 	public boolean matches(ItemStack out, IRecipe recipe) {
 		boolean match = true;
 		if (output != null) {
-			match &= OreDict.oresMatch(out, output);
+			match &= OreDict.oresMatch(out, output)
+					|| (out.getItemDamage() == OreDictionary.WILDCARD_VALUE && out
+							.isItemEqual(output));
 		} else if (inputs == null) {
 			return false;
 		}

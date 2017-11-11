@@ -85,13 +85,6 @@ public class RemoveBatch {
 
 	// a big mess - don't look
 	private IRecipe fix(IRecipe recipe) {
-		if ((new ItemStack(
-				mods.railcraft.common.blocks.RailcraftBlocks
-						.getBlockMachineBeta())).isItemEqual(recipe
-				.getRecipeOutput())
-				&& recipe.getRecipeOutput().getItemDamage() == 1) {
-			TFTechness2.logger.info("boo!");
-		}
 		if (recipe instanceof ShapedRecipes) {
 			ShapedRecipes shaped = (ShapedRecipes) recipe;
 			boolean needsFix = false;
