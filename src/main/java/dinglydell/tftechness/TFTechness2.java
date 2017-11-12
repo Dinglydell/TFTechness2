@@ -39,8 +39,10 @@ import org.apache.logging.log4j.LogManager;
 import zmaster587.advancedRocketry.api.AdvancedRocketryBlocks;
 import zmaster587.advancedRocketry.api.AdvancedRocketryItems;
 import zmaster587.advancedRocketry.tile.multiblock.machine.TileElectricArcFurnace;
+import zmaster587.advancedRocketry.tile.multiblock.machine.TilePrecisionAssembler;
 import zmaster587.advancedRocketry.tile.multiblock.machine.TileRollingMachine;
 import zmaster587.libVulpes.api.LibVulpesBlocks;
+import zmaster587.libVulpes.api.LibVulpesItems;
 import zmaster587.libVulpes.api.material.AllowedProducts;
 import zmaster587.libVulpes.api.material.MaterialRegistry;
 import zmaster587.libVulpes.interfaces.IRecipe;
@@ -55,6 +57,7 @@ import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
+import com.bioxx.tfc.Core.FluidBaseTFC;
 import com.bioxx.tfc.Core.Metal.Alloy;
 import com.bioxx.tfc.Core.Metal.AlloyManager;
 import com.bioxx.tfc.Core.Metal.AlloyMetal;
@@ -346,6 +349,20 @@ public class TFTechness2 {
 				statMap.get("Alumina").heat.meltTemp);
 		TFTFluids.moltenMetal.put("Alumina", alumina);
 		FluidRegistry.registerFluid(alumina);
+
+		//H2SO4
+		TFTFluids.sulfuricAcid = new FluidBaseTFC("sulfuricAcid")
+				.setBaseColor(0xf3f7d0).setUnlocalizedName("sulfuricAcid");
+		FluidRegistry.registerFluid(TFTFluids.sulfuricAcid);
+
+		//HCL
+		TFTFluids.hydrochloricAcid = new FluidBaseTFC("hydrochloricAcid")
+				.setBaseColor(0xd0e9f7).setUnlocalizedName("hydrochloricAcid");
+		FluidRegistry.registerFluid(TFTFluids.hydrochloricAcid);
+
+		TFTFluids.ferrousChloride = new FluidBaseTFC("ferrousChloride")
+				.setBaseColor(0xA1580A).setUnlocalizedName("ferrousChloride");
+		FluidRegistry.registerFluid(TFTFluids.ferrousChloride);
 	}
 
 	private void registerGui() {
@@ -532,6 +549,25 @@ public class TFTechness2 {
 		GameRegistry.registerItem(TFTItems.basicRailbed,
 				TFTItems.basicRailbed.getUnlocalizedName());
 
+		TFTItems.controlCircuitUnfinished = new ItemTerra()
+				.setSize(EnumSize.SMALL).setWeight(EnumWeight.LIGHT)
+				.setUnlocalizedName("controlCircuitUnfinished");
+		GameRegistry.registerItem(TFTItems.controlCircuitUnfinished,
+				TFTItems.controlCircuitUnfinished.getUnlocalizedName());
+
+		TFTItems.ioCircuitUnfinished = new ItemTerra().setSize(EnumSize.SMALL)
+				.setWeight(EnumWeight.LIGHT)
+				.setUnlocalizedName("ioCircuitUnfinished");
+
+		GameRegistry.registerItem(TFTItems.ioCircuitUnfinished,
+				TFTItems.ioCircuitUnfinished.getUnlocalizedName());
+
+		TFTItems.liquidIoCircuitUnfinished = new ItemTerra()
+				.setSize(EnumSize.SMALL).setWeight(EnumWeight.LIGHT)
+				.setUnlocalizedName("liquidIoCircuitUnfinished");
+
+		GameRegistry.registerItem(TFTItems.liquidIoCircuitUnfinished,
+				TFTItems.liquidIoCircuitUnfinished.getUnlocalizedName());
 		//TFTItems.seedHemp = new ItemCustomSeeds(TFTConfig.HEMP_ID)
 		//	.setUnlocalizedName("hempSeed");
 
@@ -571,6 +607,22 @@ public class TFTechness2 {
 				AdvancedRocketryBlocks.blockArcFurnace, " u ", "sbs", " a ",
 				'u', AdvancedRocketryItems.itemMisc, 's', "plateBlackSteel",
 				'b', TFCBlocks.fireBrick, 'a', "ingotAluminum"));
+
+		//circuits
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				TFTItems.controlCircuitUnfinished, " p ", "rcr", " w ", 'p',
+				Items.paper, 'r', "dustRedstone", 'c', "plateCopper", 'w',
+				"slabTreatedWood"));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				TFTItems.ioCircuitUnfinished, "rpr", " c ", " w ", 'p',
+				Items.paper, 'r', "dustRedstone", 'c', "plateCopper", 'w',
+				"slabTreatedWood"));
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				TFTItems.liquidIoCircuitUnfinished, " p ", " c ", "rwr", 'p',
+				Items.paper, 'r', "dustRedstone", 'c', "plateCopper", 'w',
+				"slabTreatedWood"));
 
 	}
 
@@ -701,6 +753,48 @@ public class TFTechness2 {
 					getInput(recipe));
 		}
 
+		//precision assembler
+		//liquid IO circuit board
+		arRecipeManager.addRecipe(TilePrecisionAssembler.class,
+				TFTMeta.arCircuitLiquidIO,
+				200,
+				10,
+				"plateSilicon",
+				"dyeBlue",
+				TFTMeta.arCircuitBasic,
+				"dustRedstone");
+
+		//circuit plates
+		arRecipeManager.addRecipe(TilePrecisionAssembler.class,
+				TFTMeta.arCircuitPlateBasic,
+				9000,
+				100,
+				"ingotGold",
+				"dustRedstone",
+				TFTMeta.arWaferSilicon);
+		arRecipeManager.addRecipe(TilePrecisionAssembler.class,
+				TFTMeta.arCircuitPlateAdv,
+				9000,
+				100,
+				"ingotElectrum",
+				"dustRedstone",
+				TFTMeta.arWaferSilicon);
+
+		//data storage chip
+		arRecipeManager.addRecipe(TilePrecisionAssembler.class,
+				TFTMeta.arCircuitPlateAdv,
+				9000,
+				100,
+				TFTMeta.arCircuitBasic,
+				"dustRedstone");
+
+		//tracking circuit
+		arRecipeManager.addRecipe(TilePrecisionAssembler.class,
+				TFTMeta.arCircuitTracking,
+				9000,
+				100,
+				TFTMeta.arCircuitBasic,
+				"dustRedstone");
 	}
 
 	private Object[] getInput(net.minecraft.item.crafting.IRecipe recipe) {
@@ -815,6 +909,14 @@ public class TFTechness2 {
 				.add(new ShapedOreRecipe(LibVulpesBlocks.blockStructureBlock,
 						"rsr", "s s", "rsr", 'r', "stickSteel", 's',
 						"plateSteel"));
+
+		//small battery (AR)
+		RollingMachineCraftingManager
+				.getInstance()
+				.getRecipeList()
+				.add(new ShapedOreRecipe(LibVulpesItems.itemBattery, " s ",
+						"prp", "prp", 's', "stickTin", 'p', "plateTin", 'r',
+						"dustRedstone"));
 
 	}
 
@@ -1022,6 +1124,45 @@ public class TFTechness2 {
 			manager.addRecipe(new BarrelRecipe(stick.copy(), new FluidStack(
 					IEContent.fluidCreosote, 25), TFTMeta.ieTreatedStick,
 					new FluidStack(IEContent.fluidCreosote, 25), 1));
+		}
+
+		//H2SO4
+		manager.addRecipe(new BarrelRecipe(TFTMeta.sulfur, new FluidStack(
+				TFCFluids.FRESHWATER, 1000), null, new FluidStack(
+				TFTFluids.sulfuricAcid, 1000), 0).setSealedRecipe(false)
+				.setRemovesLiquid(false).setAllowAnyStack(false));
+
+		//HCL
+		manager.addRecipe(new BarrelRecipe(TFTMeta.salt, new FluidStack(
+				TFTFluids.sulfuricAcid, 1000), null, new FluidStack(
+				TFTFluids.hydrochloricAcid, 1000), 0).setSealedRecipe(false)
+				.setRemovesLiquid(false).setAllowAnyStack(false));
+
+		setupFeClRecipes(manager, "oreNormalIron", 250);
+		setupFeClRecipes(manager, "orePoorIron", 150);
+		setupFeClRecipes(manager, "oreRichIron", 350);
+		setupFeClRecipes(manager, "oreSmallIron", 100);
+
+		//circuits
+		FluidStack fecl = new FluidStack(TFTFluids.ferrousChloride, 100);
+		manager.addRecipe(new BarrelRecipe(new ItemStack(
+				TFTItems.controlCircuitUnfinished), fecl,
+				TFTMeta.arCircuitControl, fecl, 1));
+		manager.addRecipe(new BarrelRecipe(new ItemStack(
+				TFTItems.ioCircuitUnfinished), fecl, TFTMeta.arCircuitIO, fecl,
+				1));
+		manager.addRecipe(new BarrelRecipe(new ItemStack(
+				TFTItems.liquidIoCircuitUnfinished), fecl,
+				TFTMeta.arCircuitLiquidIO, fecl, 1));
+
+	}
+
+	private void setupFeClRecipes(BarrelManager manager, String oreName, int amt) {
+		for (ItemStack iron : OreDictionary.getOres(oreName)) {
+			manager.addRecipe(new BarrelRecipe(iron, new FluidStack(
+					TFTFluids.hydrochloricAcid, amt), null, new FluidStack(
+					TFTFluids.ferrousChloride, amt), 0).setSealedRecipe(false)
+					.setRemovesLiquid(false).setAllowAnyStack(false));
 		}
 
 	}
@@ -1417,7 +1558,11 @@ public class TFTechness2 {
 		batch.addCrafting(new ItemStack(MaterialRegistry
 				.getItemStackFromMaterialAndType("Titanium", stick).getItem(),
 				1, OreDictionary.WILDCARD_VALUE));
+		batch.addCrafting(new ItemStack(MaterialRegistry
+				.getItemStackFromMaterialAndType("TitaniumAluminide", stick)
+				.getItem(), 1, OreDictionary.WILDCARD_VALUE));
 
+		batch.addCrafting(new ItemStack(LibVulpesItems.itemBattery));
 		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.itemSawBlade,1));
 		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.block,1));
 		//broken recipes (recipes that were unobtainable due to using items that are not available with TFC)

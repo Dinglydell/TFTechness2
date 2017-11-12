@@ -100,5 +100,13 @@ item.seedHemp.name=Industrial Hemp Seeds
 
 item.basicRailbed.name=Basic Wooden Railbed
 
+item.controlCircuitUnfinished.name=Unfinished Control Circuit
+item.ioCircuitUnfinished.name=Unfinished Item IO Circuit
+item.liquidIoCircuitUnfinished.name=Unfinished Liquid IO Circuit
+
 tile.advArcFurnace.name=Advanced Arc Furnace
 tile.advRollingMachine.name=Advanced Rolling Machine
+
+fluid.sulfuricAcid=Sulfuric Acid
+fluid.hydrochloricAcid=Hydrochloric Acid
+fluid.ferrousChloride=Ferrous Chloride

@@ -270,8 +270,24 @@ public class TFTMeta {
 			AdvancedRocketryItems.itemIC, 1, 3);
 	public static ItemStack arCircuitIO = new ItemStack(
 			AdvancedRocketryItems.itemIC, 1, 4);
+	public static ItemStack arCircuitLiquidIO = new ItemStack(
+			AdvancedRocketryItems.itemIC, 1, 5);
+	public static ItemStack arCircuitBasic = new ItemStack(
+			AdvancedRocketryItems.itemIC, 1, 0);
+	public static ItemStack arCircuitTracking = new ItemStack(
+			AdvancedRocketryItems.itemIC, 1, 1);
+
+	public static ItemStack arWaferSilicon = new ItemStack(
+			AdvancedRocketryItems.itemWafer);
+	public static ItemStack arCircuitPlateBasic = new ItemStack(
+			AdvancedRocketryItems.itemCircuitPlate, 1, 0);
+	public static ItemStack arCircuitPlateAdv = new ItemStack(
+			AdvancedRocketryItems.itemCircuitPlate, 1, 1);
+
 	//public static Item arNugget = MaterialRegistry.oreProducts[AllowedProducts
 	//	.getProductByName("NUGGET").getFlagValue()];
 	//public static ItemStack arTitaniumNugget = new ItemStack(arNugget, 1, MaterialRegistry.getItemStackFromMaterialAndType("titanium", product);
+	public static ItemStack sulfur = new ItemStack(TFCItems.powder, 1, 3);
+	public static ItemStack salt = new ItemStack(TFCItems.powder, 1, 9);
 
 }
