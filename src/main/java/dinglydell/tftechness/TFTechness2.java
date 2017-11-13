@@ -641,8 +641,31 @@ public class TFTechness2 {
 
 		//UI
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.arUi, " s ", "rgr",
-				's', "sheetRedSteel", 'r', "dustRedstone", 'g', "paneGlass"));
+				's', "plateRedSteel", 'r', "dustRedstone", 'g',
+				Blocks.glass_pane));
 
+		//optical sensor
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.arOpticalSensor,
+				"ggg", " w ", " s ", 's', "plateGold", 'w', TFTMeta.ieLvWire,
+				'g', Blocks.glass_pane));
+
+		//carbon brick
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.arCarbonBrick, "cc",
+				"cc", "cc", 'c', TFTMeta.charcoal));
+
+		//Liquid fuel tank
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				AdvancedRocketryBlocks.blockFuelTank, "r r", "s s", "r r", 'r',
+				"stickRedSteel", 's', "plateBlueSteel"));
+		//advanced fuel engine
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				AdvancedRocketryBlocks.blockEngine, "iii", " s ", "s s", 'i',
+				"ingotBlueSteel", 's', "plateTitanium"));
+		//warp core
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				AdvancedRocketryBlocks.blockWarpCore, "tct", "bwb", "tct", 't',
+				"plateTitanium", 'c', TFTMeta.arCircuitAdv, 'b',
+				"plateBlueSteel", 'w', TFTMeta.ieHvWireBlock));
 	}
 
 	private void addARMachineRecipes() {
@@ -1589,6 +1612,11 @@ public class TFTechness2 {
 				AdvancedRocketryBlocks.blockCuttingMachine));
 		batch.addCrafting(new ItemStack(
 				AdvancedRocketryBlocks.blockCrystallizer));
+
+		batch.addCrafting(TFTMeta.arOpticalSensor);
+		batch.addCrafting(new ItemStack(AdvancedRocketryBlocks.blockEngine));
+		batch.addCrafting(new ItemStack(AdvancedRocketryBlocks.blockFuelTank));
+		batch.addCrafting(new ItemStack(AdvancedRocketryBlocks.blockWarpCore));
 		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.itemSawBlade,1));
 		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.block,1));
 		//broken recipes (recipes that were unobtainable due to using items that are not available with TFC)

@@ -130,6 +130,8 @@ public class TFTMeta {
 
 	public static ItemStack ieHvWire = new ItemStack(IEContent.itemWireCoil, 1,
 			2);
+	public static ItemStack ieHvWireBlock = new ItemStack(
+			IEContent.blockStorage, 1, 10);
 	public static ItemStack ieHempWire = new ItemStack(IEContent.itemWireCoil,
 			1, 3);
 	public static ItemStack ieSteelWire = new ItemStack(IEContent.itemWireCoil,
@@ -274,6 +276,8 @@ public class TFTMeta {
 			AdvancedRocketryItems.itemIC, 1, 5);
 	public static ItemStack arCircuitBasic = new ItemStack(
 			AdvancedRocketryItems.itemIC, 1, 0);
+	public static ItemStack arCircuitAdv = new ItemStack(
+			AdvancedRocketryItems.itemIC, 1, 2);
 	public static ItemStack arCircuitTracking = new ItemStack(
 			AdvancedRocketryItems.itemIC, 1, 1);
 
@@ -293,5 +297,7 @@ public class TFTMeta {
 	//public static ItemStack arTitaniumNugget = new ItemStack(arNugget, 1, MaterialRegistry.getItemStackFromMaterialAndType("titanium", product);
 	public static ItemStack sulfur = new ItemStack(TFCItems.powder, 1, 3);
 	public static ItemStack salt = new ItemStack(TFCItems.powder, 1, 9);
+	public static ItemStack arOpticalSensor = new ItemStack(
+			AdvancedRocketryItems.itemSatellitePrimaryFunction);
 
 }
