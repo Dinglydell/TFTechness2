@@ -283,6 +283,10 @@ public class TFTMeta {
 			AdvancedRocketryItems.itemCircuitPlate, 1, 0);
 	public static ItemStack arCircuitPlateAdv = new ItemStack(
 			AdvancedRocketryItems.itemCircuitPlate, 1, 1);
+	public static ItemStack arUi = new ItemStack(AdvancedRocketryItems.itemMisc);
+
+	public static ItemStack arCarbonBrick = new ItemStack(
+			AdvancedRocketryItems.itemMisc, 1, 1);
 
 	//public static Item arNugget = MaterialRegistry.oreProducts[AllowedProducts
 	//	.getProductByName("NUGGET").getFlagValue()];

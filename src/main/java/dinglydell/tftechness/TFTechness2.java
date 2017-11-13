@@ -624,6 +624,25 @@ public class TFTechness2 {
 				Items.paper, 'r', "dustRedstone", 'c', "plateCopper", 'w',
 				"slabTreatedWood"));
 
+		//Cutting machine
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				AdvancedRocketryBlocks.blockCuttingMachine, "gug", "imc",
+				" s ", 'g', "gearSteel", 'u', TFTMeta.arUi, 'i',
+				TFTMeta.arCircuitIO, 'm', LibVulpesBlocks.blockStructureBlock,
+				'c', TFTMeta.arCircuitControl, 's', "plateSteel"));
+
+		//crystalliser
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				AdvancedRocketryBlocks.blockCrystallizer, " u ", "imc", "rsr",
+				'g', "gearSteel", 'u', TFTMeta.arUi, 'i', TFTMeta.arCircuitIO,
+				'm', LibVulpesBlocks.blockStructureBlock, 'c',
+				TFTMeta.arCircuitControl, 's', "plateSteel", 'r',
+				Items.repeater));
+
+		//UI
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.arUi, " s ", "rgr",
+				's', "sheetRedSteel", 'r', "dustRedstone", 'g', "paneGlass"));
+
 	}
 
 	private void addARMachineRecipes() {
@@ -1563,6 +1582,13 @@ public class TFTechness2 {
 				.getItem(), 1, OreDictionary.WILDCARD_VALUE));
 
 		batch.addCrafting(new ItemStack(LibVulpesItems.itemBattery));
+
+		batch.addCrafting(TFTMeta.arUi);
+
+		batch.addCrafting(new ItemStack(
+				AdvancedRocketryBlocks.blockCuttingMachine));
+		batch.addCrafting(new ItemStack(
+				AdvancedRocketryBlocks.blockCrystallizer));
 		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.itemSawBlade,1));
 		//batch.addCrafting(new ItemStack(AdvancedRocketryItems.block,1));
 		//broken recipes (recipes that were unobtainable due to using items that are not available with TFC)

@@ -26,6 +26,7 @@ public class TFTAnvilRecipeHandler {
 	@SubscribeEvent(receiveCanceled = true)
 	public void onServerWorldTick(WorldEvent.Load event) {
 		World world = event.world;
+
 		long newSeed = world.getWorldInfo().getSeed();
 		if (world.provider.dimensionId == 0 && newSeed != wSeed && newSeed != 0) {
 			AnvilManager.world = world;
