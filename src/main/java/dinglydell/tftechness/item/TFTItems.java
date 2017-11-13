@@ -28,5 +28,6 @@ public class TFTItems {
 	public static Item controlCircuitUnfinished;
 	public static Item ioCircuitUnfinished;
 	public static Item liquidIoCircuitUnfinished;
+	public static Item lumberTreatedWood;
 
 }

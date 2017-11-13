@@ -63,6 +63,7 @@ import com.bioxx.tfc.Core.Metal.AlloyManager;
 import com.bioxx.tfc.Core.Metal.AlloyMetal;
 import com.bioxx.tfc.Core.Metal.AlloyMetalCompare;
 import com.bioxx.tfc.Items.ItemTerra;
+import com.bioxx.tfc.Items.ItemBlocks.ItemBarrels;
 import com.bioxx.tfc.Items.Pottery.ItemPotteryMold;
 import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
 import com.bioxx.tfc.api.HeatIndex;
@@ -92,6 +93,7 @@ import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
+import dinglydell.tftechness.block.BlockTreatedBarrel;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
@@ -121,6 +123,7 @@ import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
+import dinglydell.tftechness.tileentities.TileTreatedBarrel;
 import dinglydell.tftechness.util.ItemUtil;
 import dinglydell.tftechness.util.MathsUtils;
 import dinglydell.tftechness.util.OreDict;
@@ -383,6 +386,9 @@ public class TFTechness2 {
 
 		GameRegistry.registerTileEntity(TileMoltenMetal.class, "MoltenMetal");
 
+		GameRegistry.registerTileEntity(TileTreatedBarrel.class,
+				"TreatedBarrel");
+
 	}
 
 	private void registerBlocks() {
@@ -420,6 +426,12 @@ public class TFTechness2 {
 		// pls don't tell
 		TFCBlocks.crops = TFTBlocks.crops;
 		//TODO: Fix this. this is bad. do not leave this here. find another way
+
+		TFTBlocks.barrel = new BlockTreatedBarrel()
+				.setBlockName("treatedBarrel");
+		GameRegistry.registerBlock(TFTBlocks.barrel,
+				ItemBarrels.class,
+				TFTBlocks.barrel.getUnlocalizedName());
 	}
 
 	private void registerItems(boolean client) {
@@ -568,6 +580,19 @@ public class TFTechness2 {
 
 		GameRegistry.registerItem(TFTItems.liquidIoCircuitUnfinished,
 				TFTItems.liquidIoCircuitUnfinished.getUnlocalizedName());
+
+		//treated lumber
+		//TODO: make this placeable
+		TFTItems.lumberTreatedWood = new ItemTerra().setSize(EnumSize.MEDIUM)
+				.setWeight(EnumWeight.LIGHT)
+				.setUnlocalizedName("lumberTreatedWood");
+
+		GameRegistry.registerItem(TFTItems.lumberTreatedWood,
+				TFTItems.lumberTreatedWood.getUnlocalizedName());
+
+		OreDictionary.registerOre("lumberTreatedWood",
+				TFTItems.lumberTreatedWood);
+
 		//TFTItems.seedHemp = new ItemCustomSeeds(TFTConfig.HEMP_ID)
 		//	.setUnlocalizedName("hempSeed");
 
@@ -1168,6 +1193,13 @@ public class TFTechness2 {
 					new FluidStack(IEContent.fluidCreosote, 25), 1));
 		}
 
+		for (ItemStack plank : OreDictionary.getOres("woodLumber")) {
+			manager.addRecipe(new BarrelRecipe(plank.copy(), new FluidStack(
+					IEContent.fluidCreosote, 25), new ItemStack(
+					TFTItems.lumberTreatedWood), new FluidStack(
+					IEContent.fluidCreosote, 25), 4));
+		}
+
 		//H2SO4
 		manager.addRecipe(new BarrelRecipe(TFTMeta.sulfur, new FluidStack(
 				TFCFluids.FRESHWATER, 1000), null, new FluidStack(
@@ -1220,6 +1252,10 @@ public class TFTechness2 {
 				.addRecipe(new SolutionRecipe(new ItemStack(TFTItems.ingots
 						.get("Aluminum")), 1, EnumState.liquid, new ItemStack(
 						TFTItems.alumina), 17, SolutionRecipe.electrodes));
+
+		//treated barrel
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTBlocks.barrel, "l l",
+				"l l", "lll", 'l', "lumberTreatedWood"));
 
 	}
 
