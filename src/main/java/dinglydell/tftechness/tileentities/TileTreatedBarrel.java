@@ -22,6 +22,7 @@ public class TileTreatedBarrel extends TEBarrel implements IFluidHandler {
 			}
 			return afterFill;
 		}
+
 		return 0;
 	}
 
@@ -58,7 +59,7 @@ public class TileTreatedBarrel extends TEBarrel implements IFluidHandler {
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fill) {
 
-		return fluid == null || fluid.equals(fill);
+		return fluid == null || fluid.getFluid().equals(fill);
 	}
 
 	@Override

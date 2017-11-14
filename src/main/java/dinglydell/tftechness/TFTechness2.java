@@ -432,6 +432,7 @@ public class TFTechness2 {
 		GameRegistry.registerBlock(TFTBlocks.barrel,
 				ItemBarrels.class,
 				TFTBlocks.barrel.getUnlocalizedName());
+		TFTBlocks.treatedBarrel = new ItemStack(TFTBlocks.barrel, 1, 3);
 	}
 
 	private void registerItems(boolean client) {
@@ -1253,9 +1254,16 @@ public class TFTechness2 {
 						.get("Aluminum")), 1, EnumState.liquid, new ItemStack(
 						TFTItems.alumina), 17, SolutionRecipe.electrodes));
 
+		//treated plank -> treated lumber
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(
+				TFTItems.lumberTreatedWood, 4), "plankTreatedWood", "itemSaw"));
+		//treated lumber -> treated blank
+		GameRegistry.addRecipe(new ShapedOreRecipe(IEContent.blockTreatedWood,
+				"LL", "LL", 'L', "lumberTreatedWood"));
+
 		//treated barrel
-		GameRegistry.addRecipe(new ShapedOreRecipe(TFTBlocks.barrel, "l l",
-				"l l", "lll", 'l', "lumberTreatedWood"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTBlocks.treatedBarrel,
+				"l l", "l l", "lll", 'l', "lumberTreatedWood"));
 
 	}
 
