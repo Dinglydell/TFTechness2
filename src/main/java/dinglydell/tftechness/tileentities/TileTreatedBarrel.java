@@ -1,5 +1,6 @@
 package dinglydell.tftechness.tileentities;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -72,6 +73,11 @@ public class TileTreatedBarrel extends TEBarrel implements IFluidHandler {
 	public FluidTankInfo[] getTankInfo(ForgeDirection from) {
 
 		return new FluidTankInfo[] { new FluidTankInfo(fluid, getMaxLiquid()) };
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
+		return true;
 	}
 
 }

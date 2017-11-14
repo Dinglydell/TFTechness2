@@ -63,7 +63,6 @@ import com.bioxx.tfc.Core.Metal.AlloyManager;
 import com.bioxx.tfc.Core.Metal.AlloyMetal;
 import com.bioxx.tfc.Core.Metal.AlloyMetalCompare;
 import com.bioxx.tfc.Items.ItemTerra;
-import com.bioxx.tfc.Items.ItemBlocks.ItemBarrels;
 import com.bioxx.tfc.Items.Pottery.ItemPotteryMold;
 import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
 import com.bioxx.tfc.api.HeatIndex;
@@ -105,6 +104,7 @@ import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
+import dinglydell.tftechness.item.ItemBlockTreatedBarrel;
 import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
@@ -428,9 +428,9 @@ public class TFTechness2 {
 		//TODO: Fix this. this is bad. do not leave this here. find another way
 
 		TFTBlocks.barrel = new BlockTreatedBarrel()
-				.setBlockName("treatedBarrel");
+				.setBlockName("treatedBarrel").setHardness(2);
 		GameRegistry.registerBlock(TFTBlocks.barrel,
-				ItemBarrels.class,
+				ItemBlockTreatedBarrel.class,
 				TFTBlocks.barrel.getUnlocalizedName());
 		TFTBlocks.treatedBarrel = new ItemStack(TFTBlocks.barrel, 1, 3);
 	}

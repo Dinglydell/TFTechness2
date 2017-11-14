@@ -1,8 +1,7 @@
--automated barrels
 
 -iron/steel components as anvil recipes?
 
--treated lumber?
+-placeable treated lumber? 
 
 -allow external heater to be used to keep crops warm during winter?
 
@@ -14,6 +13,8 @@
 -maybe get railcraft machines to rest at the external temperature
 
 -steam powered pump?
+
+-do more with treat barrels - possibly auto seal/unseal
 
 Mid-term:
 
