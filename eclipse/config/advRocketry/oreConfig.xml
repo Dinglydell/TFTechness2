@@ -1,2 +1,14 @@
 <OreConfig>
+ <oreGen temp="1">
+ <!-- native copper -->
+  <ore block="terrafirmacraft:ore" meta="0" minHeight="20" maxHeight="80" clumpSize="32" chancePerChunk="64" />
+  
+  <!-- bauxite -->
+  <ore block="tftechness:ore" meta="0"  minHeight="40" maxHeight="120" clumpSize="32" chancePerChunk="64"  />
+ </oreGen>
+ 
+ <oreGen pressure="3">
+	<!-- dilithium -->
+	<ore block="libVulpes:libVulpesore0" meta="0" minHeight="20" maxHeight="120" clumpSize="32" chancePerChunk="64"  />
+ </oreGen>
 </OreConfig>

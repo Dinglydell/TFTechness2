@@ -132,7 +132,7 @@ import dinglydell.tftechness.util.StringUtil;
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering;after:advancedRocketry;after:libVulpes")
 public class TFTechness2 {
 	public static final String MODID = "TFTechness";
-	public static final String VERSION = "0.1";
+	public static final String VERSION = "0.3";
 	/** The degree symbol */
 	public static final String degrees = "\u00b0";
 	public static Map<String, MetalStat> statMap = new HashMap();
@@ -156,6 +156,7 @@ public class TFTechness2 {
 		TFTConfig.loadConifg(event);
 		replaceWater();
 		hackARLocalisation();
+
 		editIEMetalRelations();
 		initStatMap();
 		registerEventHandlers();
@@ -692,6 +693,11 @@ public class TFTechness2 {
 				AdvancedRocketryBlocks.blockWarpCore, "tct", "bwb", "tct", 't',
 				"plateTitanium", 'c', TFTMeta.arCircuitAdv, 'b',
 				"plateBlueSteel", 'w', TFTMeta.ieHvWireBlock));
+
+		//drill
+		GameRegistry.addRecipe(new ShapelessOreRecipe(
+				AdvancedRocketryBlocks.blockDrill,
+				LibVulpesBlocks.blockStructureBlock, IEContent.itemDrillhead));
 	}
 
 	private void addARMachineRecipes() {
@@ -1732,7 +1738,7 @@ public class TFTechness2 {
 
 	}
 
-	private void finalField(Field field) throws Exception {
+	public static void finalField(Field field) throws Exception {
 		Field modifiers = Field.class.getDeclaredField("modifiers");
 		modifiers.setAccessible(true);
 		modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
