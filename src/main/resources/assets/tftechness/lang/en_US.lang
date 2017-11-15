@@ -56,11 +56,11 @@ gui.metal.Electrum=Electrum
 gui.metal.Constantan=Constantan
 gui.metal.Aluminum=Aluminium
 
-item.ore.Rutile.name=Rutile
+item.ore.Normal Rutile.name=Rutile
 item.ore.Rich Rutile.name=Rich Rutile
 item.ore.Poor Rutile.name=Poor Rutile
 
-item.ore.Bauxite.name=Bauxite
+item.ore.Normal Bauxite.name=Bauxite
 item.ore.Rich Bauxite.name=Rich Bauxite
 item.ore.Poor Bauxite.name=Poor Bauxite
 item.crushedBauxite.name=Crushed Bauxite

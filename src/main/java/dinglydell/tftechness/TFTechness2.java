@@ -710,7 +710,7 @@ public class TFTechness2 {
 				"blockSand");
 
 		//rutile -> titanium
-		ItemStack rutile = OreDict.getOreItem("oreRutile");
+		ItemStack rutile = OreDict.getOreItem("oreNormalRutile");
 		arRecipeManager.addRecipe(TileElectricArcFurnace.class,
 				new ItemStack(TFTItems.ingots.get("Titanium")),
 				200,
@@ -1550,7 +1550,7 @@ public class TFTechness2 {
 
 		//Aluminium refinement - stage 1
 		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 5),
-				"oreBauxite",
+				"oreNormalBauxite",
 				3600);
 		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 3),
 				"orePoorBauxite",

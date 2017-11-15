@@ -40,7 +40,7 @@ public class TFTOreRegistry {
 				EnumTier tier = ores.get(i).tier;
 				ores.get(i).meta = itemOreNames.size();
 
-				itemOreNames.add(ores.get(i).name);
+				itemOreNames.add("Normal " + ores.get(i).name);
 				itemOreAmounts.add((short) TFCOptions.normalOreUnits);
 				itemOreMetals.add(metal);
 				itemOreTiers.add(tier);

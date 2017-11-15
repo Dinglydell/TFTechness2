@@ -61,7 +61,7 @@ public class BlockCropTFT extends BlockCrop {
 		if (!icons.containsKey(crop)) {
 			return super.getIcon(access, x, y, z, meta);
 		}
-		return icons.get(crop)[stage];
+		return icons.get(crop)[Math.max(0, stage - 1)];
 	}
 
 }

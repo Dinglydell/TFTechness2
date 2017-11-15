@@ -48,3 +48,6 @@ Longer term (low priority/distant future):
 -infa-red googles - allowing you to see exact temperature of items
 
 -advanced machine multiblocks that have a functionality dependent on the types of components used?
+
+-go through all the manual things one has to do in vanilla TFC and make sure there's a way of automating it eventually.
+    Automation will probably mostly be done through mentioned advanced machine multiblocks
