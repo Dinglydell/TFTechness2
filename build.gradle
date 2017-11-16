@@ -48,6 +48,14 @@ dependencies {
 	compile files (
 		"lib/Railcraft_1.7.10-9.8.0.0-dev.jar"
 	)
+	compile files (
+		"lib/AdvancedRocketry-deobf-1.7.10-1.0.19b.jar"
+		
+	)
+	compile files (
+		"lib/LibVulpes-1.7.10-0.1.20-deobf.jar"
+	)
+	
 	
 
 }
