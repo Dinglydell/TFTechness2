@@ -634,6 +634,9 @@ public class TFTechness2 {
 				AdvancedRocketryBlocks.blockArcFurnace, " u ", "sbs", " a ",
 				'u', AdvancedRocketryItems.itemMisc, 's', "plateBlackSteel",
 				'b', TFCBlocks.fireBrick, 'a', "ingotAluminum"));
+		
+		GameRegistry.addRecipe(new ShapelessOreRecipe(
+				AdvancedRocketryBlocks.blockBlastBrick, "plateBlackSteel", TFCBlocks.fireBrick));
 
 		//circuits
 		GameRegistry.addRecipe(new ShapedOreRecipe(

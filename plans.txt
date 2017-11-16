@@ -10,7 +10,7 @@
 -bronze minecart that has a chance of breaking down?
   -or only have bronze cargo cart with very limited storage
 
--maybe get railcraft machines to rest at the external temperature
+-maybe get railcraft machines to rest at the external temperature (doesn't look feasible)
 
 -steam powered pump?
 
