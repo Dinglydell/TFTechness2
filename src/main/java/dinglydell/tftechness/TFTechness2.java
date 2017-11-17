@@ -20,6 +20,7 @@ import mods.railcraft.common.items.ItemMagnifyingGlass;
 import mods.railcraft.common.items.ItemPlate.EnumPlate;
 import mods.railcraft.common.items.RailcraftItem;
 import mods.railcraft.common.util.crafting.RollingMachineCraftingManager;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -419,7 +420,8 @@ public class TFTechness2 {
 
 		TFTOreRegistry.registerAllOreBlocks();
 
-		TFTBlocks.crops = new BlockCropTFT().setBlockName("crops");
+		TFTBlocks.crops = new BlockCropTFT().setBlockName("crops")
+				.setHardness(0.3F).setStepSound(Block.soundTypeGrass);
 
 		GameRegistry.registerBlock(TFTBlocks.crops,
 				TFTBlocks.crops.getUnlocalizedName());
@@ -634,9 +636,10 @@ public class TFTechness2 {
 				AdvancedRocketryBlocks.blockArcFurnace, " u ", "sbs", " a ",
 				'u', AdvancedRocketryItems.itemMisc, 's', "plateBlackSteel",
 				'b', TFCBlocks.fireBrick, 'a', "ingotAluminum"));
-		
+
 		GameRegistry.addRecipe(new ShapelessOreRecipe(
-				AdvancedRocketryBlocks.blockBlastBrick, "plateBlackSteel", TFCBlocks.fireBrick));
+				AdvancedRocketryBlocks.blockBlastBrick, "plateBlackSteel",
+				TFCBlocks.fireBrick));
 
 		//circuits
 		GameRegistry.addRecipe(new ShapedOreRecipe(
