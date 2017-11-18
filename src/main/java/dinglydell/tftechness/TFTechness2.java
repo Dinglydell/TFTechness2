@@ -1476,11 +1476,8 @@ public class TFTechness2 {
 
 	private void addIEMachineRecipes() {
 		CokeOvenRecipe.removeRecipes(TFTMeta.ieCoalCoke);
-		CokeOvenRecipe.removeRecipes(TFTMeta.ieCoalCokeBlock);
-		CokeOvenRecipe.addRecipe(TFTMeta.ieCoalCoke,
-				TFTMeta.bituminousCoal,
-				1800,
-				500);
+		//CokeOvenRecipe.removeRecipes(TFTMeta.ieCoalCokeBlock);
+		CokeOvenRecipe.addRecipe(TFTMeta.ieCoalCoke, TFCItems.coal, 1800, 500);
 		CokeOvenRecipe.removeRecipes(new ItemStack(Items.coal, 1, 1));
 		CokeOvenRecipe.addRecipe(TFTMeta.charcoal, "logWood", 1800, 100);
 
