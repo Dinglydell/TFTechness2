@@ -332,15 +332,17 @@ public class Material {
 
 	private void batchRemoveOreDict(RemoveBatch batch, String orePrefix) {
 		List<ItemStack> ores = OreDictionary.getOres(orePrefix + oreName);
+		if (name.equals("Copper")) {
+			TFTechness2.logger.info("hi");
+		}
 		for (ItemStack ore : ores) {
-			//TODO: find a non-deprecated workaround for this?
 			String rl = GameData.getItemRegistry().getNameForObject(ore);
 			UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor(ore
 					.getItem());
 
 			if (ui != null && ui.modId != TFTechness2.MODID
-					&& ui.modId != "terrafirmacraft") {
-				batch.addCrafting(ore);
+					&& !ui.modId.equals("terrafirmacraft")) {
+				batch.addCrafting(ore).setExact(true);
 			}
 		}
 

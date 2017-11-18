@@ -29,12 +29,16 @@ public class RemoveBatch {
 
 	}
 
-	public void addCrafting(ItemStack output) {
-		crafting.add(new BatchCraftingItem(output));
+	public BatchCraftingItem addCrafting(ItemStack output) {
+		BatchCraftingItem item = new BatchCraftingItem(output);
+		crafting.add(item);
+		return item;
 	}
 
-	public void addCrafting(ItemStack output, ItemStack[] inputs) {
-		crafting.add(new BatchCraftingItem(output, inputs));
+	public BatchCraftingItem addCrafting(ItemStack output, ItemStack[] inputs) {
+		BatchCraftingItem item = new BatchCraftingItem(output, inputs);
+		crafting.add(item);
+		return item;
 	}
 
 	public void addOreFix(ItemStack toFix, String oreName) {

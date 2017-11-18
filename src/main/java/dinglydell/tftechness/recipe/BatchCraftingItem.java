@@ -12,6 +12,8 @@ import dinglydell.tftechness.util.OreDict;
 public class BatchCraftingItem {
 	public ItemStack output;
 	public ItemStack[] inputs;
+	/** If exact, it won't use ore dictionary */
+	private boolean exact;
 
 	public BatchCraftingItem(ItemStack out) {
 		this.output = out;
@@ -22,11 +24,17 @@ public class BatchCraftingItem {
 		this.inputs = in;
 	}
 
+	public BatchCraftingItem setExact(boolean exact) {
+		this.exact = exact;
+		return this;
+	}
+
 	public boolean matches(ItemStack out, IRecipe recipe) {
 
 		boolean match = true;
 		if (output != null) {
-			match &= OreDict.oresMatch(out, output)
+			match &= (!exact && OreDict.oresMatch(out, output))
+					|| (out.isItemEqual(output))
 					|| (output.getItemDamage() == OreDictionary.WILDCARD_VALUE && out
 							.getItem() == output.getItem());
 		} else if (inputs == null) {
