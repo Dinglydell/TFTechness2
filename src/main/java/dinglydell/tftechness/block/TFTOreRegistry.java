@@ -14,6 +14,7 @@ import com.google.common.primitives.Shorts;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.item.ItemBlockTFTOre;
 import dinglydell.tftechness.item.ItemTFTOre;
 import dinglydell.tftechness.item.TFTItems;
 
@@ -33,7 +34,8 @@ public class TFTOreRegistry {
 		for (int i = 0; i < ores.size(); i++) {
 			if (i % 16 == 0) {
 				GameRegistry.registerBlock(new BlockTFTOre(i / 16,
-						getBlockNames(i / 16)), "ore" + i / 16);
+						getBlockNames(i / 16)), ItemBlockTFTOre.class, "ore"
+						+ i / 16);
 			}
 			if (ores.get(i).drop == null) {
 				Metal metal = ores.get(i).metal;

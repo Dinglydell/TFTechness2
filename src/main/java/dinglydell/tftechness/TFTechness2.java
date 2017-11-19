@@ -59,6 +59,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.FluidBaseTFC;
+import com.bioxx.tfc.Core.WeatherManager;
 import com.bioxx.tfc.Core.Metal.Alloy;
 import com.bioxx.tfc.Core.Metal.AlloyManager;
 import com.bioxx.tfc.Core.Metal.AlloyMetal;
@@ -129,6 +130,7 @@ import dinglydell.tftechness.util.ItemUtil;
 import dinglydell.tftechness.util.MathsUtils;
 import dinglydell.tftechness.util.OreDict;
 import dinglydell.tftechness.util.StringUtil;
+import dinglydell.tftechness.world.WeatherManagerTFT;
 
 @Mod(modid = TFTechness2.MODID, version = TFTechness2.VERSION, dependencies = "required-after:terrafirmacraft;required-after:ImmersiveEngineering;after:advancedRocketry;after:libVulpes")
 public class TFTechness2 {
@@ -157,13 +159,25 @@ public class TFTechness2 {
 		TFTConfig.loadConifg(event);
 		replaceWater();
 		hackARLocalisation();
-
+		hackTFCWeather();
 		editIEMetalRelations();
 		initStatMap();
 		registerEventHandlers();
 		registerPacketHandlers();
 
 		addOres();
+
+	}
+
+	private void hackTFCWeather() {
+		try {
+			Field manager = WeatherManager.class.getDeclaredField("INSTANCE");
+			finalField(manager);
+			manager.setAccessible(true);
+			manager.set(null, new WeatherManagerTFT());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
 	}
 
