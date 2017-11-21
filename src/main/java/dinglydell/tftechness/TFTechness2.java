@@ -77,6 +77,8 @@ import com.bioxx.tfc.api.Crafting.BarrelRecipe;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
 import com.bioxx.tfc.api.Crafting.KilnCraftingManager;
 import com.bioxx.tfc.api.Crafting.KilnRecipe;
+import com.bioxx.tfc.api.Crafting.QuernManager;
+import com.bioxx.tfc.api.Crafting.QuernRecipe;
 import com.bioxx.tfc.api.Enums.EnumSize;
 import com.bioxx.tfc.api.Enums.EnumWeight;
 
@@ -1581,6 +1583,12 @@ public class TFTechness2 {
 		CrusherRecipe.addRecipe(new ItemStack(TFTItems.crushedBauxite, 7),
 				"oreRichBauxite",
 				4000);
+
+		//quern to crusher recipes
+		for (QuernRecipe recipe : QuernManager.getInstance().getRecipes()) {
+			CrusherRecipe
+					.addRecipe(recipe.getResult(), recipe.getInItem(), 500);
+		}
 
 	}
 
