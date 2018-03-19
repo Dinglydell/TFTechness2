@@ -1735,7 +1735,7 @@ public class TFTechness2 {
 
 	private void replaceWater() {
 
-		try {
+		try { // this, as you may well have noticed, is a bit of a hack
 			Field water = FluidRegistry.class.getDeclaredField("WATER");
 			finalField(water);
 			water.set(null, TFCFluids.FRESHWATER);

@@ -116,3 +116,6 @@ fluid.ferrousChloride=Ferrous Chloride
 
 tile.treatedBarrel.Chestnut.name=Treated Barrel
 item.lumberTreatedWood.name=Treated Lumber
+
+tile.Bauxite.name=Bauxite
+tile.Rutile.name=Rutile
