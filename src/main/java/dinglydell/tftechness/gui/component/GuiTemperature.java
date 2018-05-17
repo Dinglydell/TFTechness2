@@ -11,7 +11,6 @@ import org.lwjgl.input.Mouse;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 
 import dinglydell.tftechness.TFTechness2;
-import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class GuiTemperature extends GuiButton {
 	public static final int MAX_SCALE_TEMP = 2000;
@@ -19,12 +18,12 @@ public class GuiTemperature extends GuiButton {
 			TFTechness2.MODID + ":textures/gui/machine/SliderIndicator.png");
 	private static final int TEX_WIDTH = 15;
 	private static final int TEX_HEIGHT = 5;
-	private TileTFTElectrolyser tile;
+	private ITileTemperature tile;
 	private boolean target;
 	private boolean mouseDown = false;
 
 	public GuiTemperature(int id, int x, int y, int width, int height,
-			TileTFTElectrolyser tile, boolean target) {
+			ITileTemperature tile, boolean target) {
 		super(id, x, y, width, height, "");
 		this.tile = tile;
 		this.target = target;

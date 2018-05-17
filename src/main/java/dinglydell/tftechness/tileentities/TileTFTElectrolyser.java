@@ -25,6 +25,7 @@ import dinglydell.tftechness.fluid.FluidTankMetal;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
+import dinglydell.tftechness.gui.component.ITileTemperature;
 import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.metal.MetalStat;
@@ -33,7 +34,7 @@ import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 
 public class TileTFTElectrolyser extends TileTFTMachineBase implements
-		IFluidHandler {
+		IFluidHandler, ITileTemperature {
 	public enum Slots {
 		ELECTRODE_A, ELECTRODE_B, INPUT, MOLD
 	}

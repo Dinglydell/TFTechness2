@@ -3,9 +3,8 @@ package dinglydell.tftechness.core;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 
-@MCVersion(value = "1.7.10")
+//@MCVersion(value = "1.7.10")
 public class TFTLoadingPlugin implements IFMLLoadingPlugin {
 
 	@Override

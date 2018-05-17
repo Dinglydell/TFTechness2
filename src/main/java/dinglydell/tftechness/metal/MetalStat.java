@@ -6,6 +6,7 @@ public class MetalStat {
 	public HeatRaw heat;
 	/** Density in kg/m^3 */
 	public int density;
+	public float conductivity;
 
 	/**
 	 * @param specificHeat
@@ -15,9 +16,11 @@ public class MetalStat {
 	 * @param density
 	 *            Density in kg/m^3
 	 * */
-	public MetalStat(double specificHeat, double meltTemp, int density) {
+	public MetalStat(double specificHeat, double meltTemp, int density,
+			float conductivity) {
 		this.heat = new HeatRaw(specificHeat, meltTemp);
 		this.density = density;
+		this.conductivity = conductivity;
 	}
 
 	/**

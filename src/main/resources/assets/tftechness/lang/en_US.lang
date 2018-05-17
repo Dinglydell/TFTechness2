@@ -69,7 +69,7 @@ item.alumina.name=Alumina
 item.metalRod.name=Rod
 item.nugget.name=Nugget
 
-fluid.moltenMetal.name=Molten 
+fluid.moltenMetal.name=Molten
 
 metal.Tin.name=Tin
 metal.Aluminum.name=Aluminum
@@ -119,3 +119,12 @@ item.lumberTreatedWood.name=Treated Lumber
 
 tile.Bauxite.name=Bauxite
 tile.Rutile.name=Rutile
+
+info.machine.tooltip.0=Use any combination of machine
+info.machine.tooltip.1=components in a continuous structure
+info.machine.tooltip.2=to build a machine.
+
+info.machine.heater.tooltip=Produces heat.
+
+tile.wall.name=§7Machine Wall§r
+tile.heater.name=§7Machine Heating Element§r

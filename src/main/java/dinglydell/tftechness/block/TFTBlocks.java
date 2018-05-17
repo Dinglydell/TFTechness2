@@ -13,4 +13,6 @@ public class TFTBlocks {
 	public static Block crops;
 	public static Block barrel;
 	public static ItemStack treatedBarrel;
+	public static Block machineController;
+	public static Block machineComponent;
 }

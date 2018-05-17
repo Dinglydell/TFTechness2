@@ -83,6 +83,7 @@ import com.bioxx.tfc.api.Enums.EnumSize;
 import com.bioxx.tfc.api.Enums.EnumWeight;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -94,9 +95,12 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
+import dinglydell.tftechness.block.BlockTFTComponent;
+import dinglydell.tftechness.block.BlockTFTController;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.BlockTreatedBarrel;
+import dinglydell.tftechness.block.ComponentMaterialRegistry;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
@@ -108,6 +112,7 @@ import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
+import dinglydell.tftechness.item.ItemBlockMachineComponent;
 import dinglydell.tftechness.item.ItemBlockTreatedBarrel;
 import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
@@ -116,6 +121,8 @@ import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
+import dinglydell.tftechness.network.MachineComponentPacketHandler;
+import dinglydell.tftechness.network.PacketMachineComponent;
 import dinglydell.tftechness.network.PacketTFTMachine;
 import dinglydell.tftechness.network.TFTMachinePacketHandler;
 import dinglydell.tftechness.recipe.RemoveBatch;
@@ -125,8 +132,11 @@ import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.render.RenderBlockTFT;
 import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
+import dinglydell.tftechness.tileentities.TileMachineComponent;
+import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
+import dinglydell.tftechness.tileentities.TileTFTMachineController;
 import dinglydell.tftechness.tileentities.TileTreatedBarrel;
 import dinglydell.tftechness.util.ItemUtil;
 import dinglydell.tftechness.util.MathsUtils;
@@ -199,7 +209,7 @@ public class TFTechness2 {
 
 	private void registerEventHandlers() {
 		MinecraftForge.EVENT_BUS.register(new TFTEventHandler());
-
+		FMLCommonHandler.instance().bus().register(new TFTEventHandler());
 		MinecraftForge.EVENT_BUS.register(new TFTDamageHandler());
 
 		TFTDamageHandler.INSTANCE.registerDamageSources();
@@ -248,69 +258,78 @@ public class TFTechness2 {
 				PacketTFTMachine.class,
 				1,
 				Side.CLIENT);
+		snw.registerMessage(MachineComponentPacketHandler.class,
+				PacketMachineComponent.class,
+				2,
+				Side.SERVER);
+		snw.registerMessage(MachineComponentPacketHandler.class,
+				PacketMachineComponent.class,
+				3,
+				Side.CLIENT);
 	}
 
 	private void initStatMap() {
 
 		// Stock TFC
 		// For multiple metals with the same stat entry
-		MetalStat blackSteel = new MetalStat(0.35, 1485, 8982);
-		MetalStat blueSteel = new MetalStat(0.35, 1540, 8775);
-		MetalStat copper = new MetalStat(0.35, 1080, 8960);
-		MetalStat redSteel = new MetalStat(0.35, 1540, 9837);
-		MetalStat steel = new MetalStat(0.35, 1540, 8000);
+		MetalStat blackSteel = new MetalStat(0.35, 1485, 8982, 0.113f);
+		MetalStat blueSteel = new MetalStat(0.35, 1540, 8775, 0.115f);
+		MetalStat copper = new MetalStat(0.35, 1080, 8960, 0.772f);
+		MetalStat redSteel = new MetalStat(0.35, 1540, 9837, 0.115f);
+		MetalStat steel = new MetalStat(0.35, 1540, 8000, 0.108f);
 
-		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000));
-		statMap.put("BismuthBronze", new MetalStat(0.35, 985, 963));
-		statMap.put("BlackBronze", new MetalStat(0.35, 1070, 8626));
+		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000, 0.017f));
+		statMap.put("BismuthBronze", new MetalStat(0.35, 985, 963, 0.50445f));
+		statMap.put("BlackBronze", new MetalStat(0.35, 1070, 8626, 0.752f));
 		statMap.put("BlackSteel", blackSteel);
 		statMap.put("BlueSteel", blueSteel);
-		statMap.put("Brass", new MetalStat(0.35, 930, 8500));
-		statMap.put("Bronze", new MetalStat(0.35, 950, 8523));
+		statMap.put("Brass", new MetalStat(0.35, 930, 8500, 0.222f));
+		statMap.put("Bronze", new MetalStat(0.35, 950, 8523, 0.052f));
 		statMap.put("Copper", copper);
-		statMap.put("Gold", new MetalStat(0.6, 1060, 18000));
+		statMap.put("Gold", new MetalStat(0.6, 1060, 18000, 0.63f));
 		statMap.put("HCBlackSteel", blackSteel);
 		statMap.put("HCBlueSteel", blueSteel);
 		statMap.put("HCRedSteel", redSteel);
-		statMap.put("Lead", new MetalStat(0.22, 328, 11000));
-		statMap.put("Nickel", new MetalStat(0.48, 1453, 8200));
-		statMap.put("PigIron", new MetalStat(0.35, 1500, 8100));
-		statMap.put("Platinum", new MetalStat(0.35, 1730, 20000));
+		statMap.put("Lead", new MetalStat(0.22, 328, 11000, 0.07f));
+		statMap.put("Nickel", new MetalStat(0.48, 1453, 8200, 0.18f));
+		statMap.put("PigIron", new MetalStat(0.35, 1500, 8100, 0.115f));
+		statMap.put("Platinum", new MetalStat(0.35, 1730, 20000, 0.146f));
 		statMap.put("RedSteel", redSteel);
-		statMap.put("RoseGold", new MetalStat(0.35, 960, 16731));
-		statMap.put("Silver", new MetalStat(0.48, 961, 10000));
+		statMap.put("RoseGold", new MetalStat(0.35, 960, 16731, 0.6584f));
+		statMap.put("Silver", new MetalStat(0.48, 961, 10000, 0.814f));
 		statMap.put("Steel", steel);
-		statMap.put("SterlingSilver", new MetalStat(0.35, 900, 9738));
-		statMap.put("Tin", new MetalStat(0.14, 230, 7000));
+		statMap.put("SterlingSilver", new MetalStat(0.35, 900, 9738, 0.8014f));
+		statMap.put("Tin", new MetalStat(0.14, 230, 7000, 0.13f));
 		// TFC uses copper heat properties for all unknown ingots
 		statMap.put("Unknown", copper);
 		statMap.put("WeakRedSteel", redSteel);
 		statMap.put("WeakBlueSteel", blueSteel);
 		statMap.put("WeakSteel", steel);
-		statMap.put("Wrought Iron", new MetalStat(0.35, 1535, 7500));
-		statMap.put("Zinc", new MetalStat(0.21, 420, 7000));
+		statMap.put("Wrought Iron", new MetalStat(0.35, 1535, 7500, 0.118f));
+		statMap.put("Zinc", new MetalStat(0.21, 420, 7000, 0.232f));
 
 		// IE
-		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870));
-		statMap.put("Electrum", new MetalStat(0.181, 650, 14460));
+		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870, 0.0424f));
+		statMap.put("Electrum", new MetalStat(0.181, 650, 14460, 0.9f));
 		//the world shudders in silence as a thousand dictionaries crumble in despair
-		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700));
+		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700, 0.408f));
 
 		//AdvancedRocketry
-		statMap.put("Titanium", new MetalStat(0.54, 1668, 4110));
-		statMap.put("TitaniumAluminide", new MetalStat(0.79, 1460, 3123));
-		statMap.put("Iridium", new MetalStat(0.31, 2446, 20000));
-		// could not find any real data on this 
-		statMap.put("TitaniumIridium", new MetalStat(0.43, 2057, 12055));
+		statMap.put("Titanium", new MetalStat(0.54, 1668, 4110, 0.042f));
+		statMap.put("TitaniumAluminide", new MetalStat(0.79, 1460, 3123,
+				0.2982f));
+		statMap.put("Iridium", new MetalStat(0.31, 2446, 20000, 0.294f));
+		// could not find any real data on this
+		statMap.put("TitaniumIridium", new MetalStat(0.43, 2057, 12055, 0.168f));
 
 		// TFT
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
-		statMap.put("Uranium", new MetalStat(0.12, 1132, 19100));
-		statMap.put("DullElectrum", new MetalStat(0.181, 650, 14460));
+		statMap.put("Uranium", new MetalStat(0.12, 1132, 19100, 0.048f));
+		statMap.put("DullElectrum", new MetalStat(0.181, 650, 14460, 0.722f));
 
 		//non-metals
-		statMap.put("Redstone", new MetalStat(1.136, 1000, 3000));
-		statMap.put("Alumina", new MetalStat(0.451, 2072, 3900));
+		statMap.put("Redstone", new MetalStat(1.136, 1000, 3000, 0.5f));
+		statMap.put("Alumina", new MetalStat(0.451, 2072, 3900, 0.05f));
 	}
 
 	@EventHandler
@@ -407,6 +426,13 @@ public class TFTechness2 {
 		GameRegistry.registerTileEntity(TileTreatedBarrel.class,
 				"TreatedBarrel");
 
+		GameRegistry.registerTileEntity(TileTFTMachineController.class,
+				"TFTMachineController");
+		GameRegistry.registerTileEntity(TileMachineComponent.class,
+				"TFTMachineComponent");
+		GameRegistry.registerTileEntity(TileMachineHeatingElement.class,
+				"TFTMachineHeatingElement");
+
 	}
 
 	private void registerBlocks() {
@@ -452,6 +478,20 @@ public class TFTechness2 {
 				ItemBlockTreatedBarrel.class,
 				TFTBlocks.barrel.getUnlocalizedName());
 		TFTBlocks.treatedBarrel = new ItemStack(TFTBlocks.barrel, 1, 3);
+
+		//machines
+
+		TFTBlocks.machineController = new BlockTFTController()
+				.setBlockName("machineController");
+		GameRegistry.registerBlock(TFTBlocks.machineController,
+				"machineController");
+
+		TFTBlocks.machineComponent = new BlockTFTComponent()
+				.setBlockName("machineComponent");
+		GameRegistry.registerBlock(TFTBlocks.machineComponent,
+				ItemBlockMachineComponent.class,
+				"machineComponent");
+
 	}
 
 	private void registerItems(boolean client) {
@@ -1293,6 +1333,21 @@ public class TFTechness2 {
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTBlocks.treatedBarrel,
 				"l l", "l l", "lll", 'l', "lumberTreatedWood"));
 
+		//components
+		//GameRegistry.addShapelessRecipe(BlockTFTComponent
+		//	.getBlockWithNBT(TFTComponents.wall, 0.05f), Blocks.dirt);
+		ComponentMaterialRegistry.registerBaseMaterial("stoneBricks",
+				0.05f,
+				false);
+		for (Material m : materials) {
+			//	if (m.block != null) {
+			ComponentMaterialRegistry.registerBaseMaterial("block" + m.oreName,
+					statMap.get(m.name).conductivity,
+					false);
+			//}
+
+		}
+		ComponentMaterialRegistry.registerRecipes();
 	}
 
 	private void tfcHeatRecipes() {

@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import zmaster587.advancedRocketry.api.RocketEvent.RocketDeOrbitingEvent;
 import zmaster587.advancedRocketry.entity.EntityRocket;
@@ -77,14 +78,13 @@ public class TFTEventHandler {
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event) {
 		TFTWorldData data = TFTWorldData.get(event.world);
-
+		//cpw.mods.fml.common.gameevent.TickEvent.
 		data.tick(event);
 
 	}
 
 	@SubscribeEvent
-	public void onBlockBroken(BlockEvent.BreakEvent event) {
-		//TODO: Make this work when blocks are created/destroyed by things other than player
+	public void onBlockBroken(BlockEvent.HarvestDropsEvent event) {
 		if (event.block == TFCBlocks.leaves || event.block == TFCBlocks.leaves2) {
 			TFTWorldData.get(event.world).breakLeaf();
 		}
@@ -92,9 +92,14 @@ public class TFTEventHandler {
 
 	@SubscribeEvent
 	public void onBlockPlaced(BlockEvent.PlaceEvent event) {
-		//TODO: Make this work when blocks are created/destroyed by things other than player
 		if (event.block == TFCBlocks.leaves || event.block == TFCBlocks.leaves2) {
 			TFTWorldData.get(event.world).makeLeaf();
 		}
+
+	}
+
+	@SubscribeEvent
+	public void onTreeGrown(SaplingGrowTreeEvent event) {
+		TFTWorldData.get(event.world).makeTree(event);
 	}
 }
