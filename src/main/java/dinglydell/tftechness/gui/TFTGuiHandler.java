@@ -4,11 +4,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
+import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class TFTGuiHandler implements IGuiHandler {
 	public enum TFTGuis {
-		Electrolyser, Machine
+		Electrolyser, Machine, ItemShelf
 	}
 
 	@Override
@@ -21,6 +22,11 @@ public class TFTGuiHandler implements IGuiHandler {
 		if (ID == TFTGuis.Machine.ordinal()) {
 			return new ContainerMachine(player.inventory,
 					(TileMachineComponent) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.ItemShelf.ordinal()) {
+			return new ContainerMachineShelf(player.inventory,
+					(TileMachineComponentItemShelf) world
+							.getTileEntity(x, y, z));
 		}
 		return null;
 	}
@@ -35,6 +41,11 @@ public class TFTGuiHandler implements IGuiHandler {
 		if (ID == TFTGuis.Machine.ordinal()) {
 			return new GuiMachine(player.inventory,
 					(TileMachineComponent) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.ItemShelf.ordinal()) {
+			return new GuiMachineShelf(player.inventory,
+					(TileMachineComponentItemShelf) world
+							.getTileEntity(x, y, z));
 		}
 		return null;
 	}

@@ -5,8 +5,6 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -16,6 +14,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.IFluidBlock;
+import cofh.api.energy.IEnergyReceiver;
 
 import com.bioxx.tfc.Core.TFC_Climate;
 
@@ -27,10 +26,13 @@ import dinglydell.tftechness.gui.component.ITileTemperature;
 import dinglydell.tftechness.network.PacketMachineComponent;
 
 public/* abstract */class TileMachineComponent extends TileEntity implements
-		ITileTemperature, IInventory {
-	private static final float AIR_CONDUCTIVITY = 0.005f;
+		ITileTemperature, IEnergyReceiver {
+	protected static final float AIR_CONDUCTIVITY = 0.005f;
 	private int masterX, masterY = -1, masterZ;
 	protected float temperature;
+	protected int rf;
+	//default capacity is 1s of HV power
+	protected int rfCapacity = 20 * 4096;
 	protected float conductivity = 0.5f;
 
 	//private ItemStack[] inventory;
@@ -39,6 +41,11 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	public TileMachineComponent() {
 
+	}
+
+	public TileMachineComponent setRFCapacity(int capacity) {
+		rfCapacity = capacity;
+		return this;
 	}
 
 	public TileMachineComponent setConductivity(float conductivity) {
@@ -166,20 +173,28 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				//}
 
 				temperature -= 1 / 6f * (temperature - ambientTemp) * 0.5f
-						* (getConductivity() + ambientConductivity);
+						* (getConductivity()); //+ ambientConductivity);
 			} else {
 				TileMachineComponent tc = (TileMachineComponent) tile;
 				float dTemp = 1 / 6f * (temperature - tc.getTemperature())
 						* 0.5f * (getConductivity() + tc.getConductivity());
 				temperature -= dTemp;
 				tc.temperature += dTemp;
-
+				float avgrf = (rf / (float) rfCapacity + tc.rf
+						/ (float) tc.rfCapacity) / 2;
+				if (rf / (float) rfCapacity > avgrf) {
+					int desiredRf = (int) (rfCapacity * avgrf);
+					rf -= tc.receiveEnergy(dir.getOpposite(),
+							(rf - desiredRf),
+							false);
+				}
 			}
 		}
+
 		this.sendServerToClientMessage();
 	}
 
-	private float getConductivity() {
+	public float getConductivity() {
 		return conductivity;
 	}
 
@@ -191,6 +206,15 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//data.setInteger("masterZ", masterZ);
 
 		data.setFloat("Temperature", temperature);
+		data.setInteger("rf", rf);
+		writeComponentPropertiesToNBT(data);
+	}
+
+	/**
+	 * Writes just the component's properties to the nbt file - without
+	 * temperature or other tileentity data
+	 */
+	public void writeComponentPropertiesToNBT(NBTTagCompound data) {
 		data.setFloat("Conductivity", conductivity);
 	}
 
@@ -203,6 +227,8 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 		temperature = data.getFloat("Temperature");
 		conductivity = data.getFloat("Conductivity");
+
+		rf = data.getInteger("rf");
 	}
 
 	public boolean hasMaster() {
@@ -241,7 +267,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//masterY = nbt.getInteger("masterY");
 		//masterZ = nbt.getInteger("masterZ");
 		temperature = nbt.getFloat("temperature");
-
+		rf = nbt.getInteger("rf");
 	}
 
 	@Override
@@ -258,6 +284,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//nbt.setInteger("masterY", masterY);
 		//nbt.setInteger("masterZ", masterZ);
 		nbt.setFloat("temperature", temperature);
+		nbt.setInteger("rf", rf);
 
 	}
 
@@ -295,72 +322,6 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		return true;
 	}
 
-	@Override
-	public int getSizeInventory() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int p_70301_1_) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int p_70304_1_) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getInventoryName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void openInventory() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void closeInventory() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public void sendClientToServerMessage(NBTTagCompound nbt) {
 		TFTechness2.snw.sendToServer(new PacketMachineComponent(this,
 				Side.CLIENT));
@@ -377,6 +338,8 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	public void writeServerToClientMessage(NBTTagCompound nbt) {
 		nbt.setFloat("temperature", temperature);
+		nbt.setInteger("rf", rf);
+		nbt.setInteger("rfCapacity", rfCapacity);
 
 	}
 
@@ -387,7 +350,8 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 		temperature = nbt.getFloat("temperature");
-
+		rf = nbt.getInteger("rf");
+		rfCapacity = nbt.getInteger("rfCapacity");
 	}
 
 	public void readClientToServerMessage(NBTTagCompound nbt) {
@@ -399,4 +363,31 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	public int getLightLevel() {
 		return (int) Math.min(15, Math.max(0, (temperature - 480) / 120));
 	}
+
+	@Override
+	public boolean canConnectEnergy(ForgeDirection arg0) {
+		return true;
+	}
+
+	@Override
+	public int getEnergyStored(ForgeDirection arg0) {
+		return rf;
+	}
+
+	@Override
+	public int getMaxEnergyStored(ForgeDirection arg0) {
+		return rfCapacity;
+	}
+
+	@Override
+	public int receiveEnergy(ForgeDirection direction, int amt,
+			boolean simulated) {
+		int oldRf = rf;
+		int newRf = Math.min(rf + amt, getMaxEnergyStored(direction));
+		if (!simulated) {
+			rf = newRf;
+		}
+		return newRf - oldRf;
+	}
+
 }

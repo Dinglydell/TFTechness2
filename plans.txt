@@ -1,7 +1,7 @@
 
 -iron/steel components as anvil recipes?
 
--placeable treated lumber? 
+-placeable treated lumber?
 
 -allow external heater to be used to keep crops warm during winter?
 
@@ -20,7 +20,7 @@ Mid-term:
 
 -Railcraft
     -tunnel bore + support beams?
-    
+
 -Advanced rocketry
     -gate things like force track emitter behind space
     -climate & temperature for other planets (feasible?)
@@ -35,10 +35,12 @@ Mid-term:
 
 -Allow swappable parts in multiblocks - such as an upgradable casing that determines
  how good of an insulator it is
- 
+
+ -multiblock components with melting/deformation temperatures - eg a silver based wall component may be a great conductor but will melt if you heat it too much
+
  -Reintroduction of the cryothermic chamber (known to some as a "fridge")
     -cellars addon?
- 
+
  -RF Crucible (could be the same as a forge but with some special parts in the multiblock
 
 

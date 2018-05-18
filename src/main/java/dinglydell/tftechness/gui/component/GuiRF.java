@@ -9,19 +9,20 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
 
+import cofh.api.energy.IEnergyReceiver;
 import dinglydell.tftechness.TFTechness2;
-import dinglydell.tftechness.tileentities.TileTFTMachineBase;
+import dinglydell.tftechness.tileentities.TileMachineRF;
 
 public class GuiRF extends Gui implements ITFTComponent {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(
 			TFTechness2.MODID + ":textures/gui/machine/RFIndicator.png");
-	private TileTFTMachineBase tile;
+	private IEnergyReceiver tile;
 	private int height;
 	private int width;
 	private int y;
 	private int x;
 
-	public GuiRF(int x, int y, int width, int height, TileTFTMachineBase tile) {
+	public GuiRF(int x, int y, int width, int height, IEnergyReceiver tile) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -47,7 +48,10 @@ public class GuiRF extends Gui implements ITFTComponent {
 
 		tooltip.add(tile.getEnergyStored(ForgeDirection.UNKNOWN) + "/"
 				+ tile.getMaxEnergyStored(ForgeDirection.UNKNOWN) + "RF");
-		tooltip.add(tile.getEnergyConsumptionRate() + "RF/t");
+		if (tile instanceof TileMachineRF) {
+			tooltip.add(((TileMachineRF) tile).getEnergyConsumptionRate()
+					+ "RF/t");
+		}
 
 	}
 

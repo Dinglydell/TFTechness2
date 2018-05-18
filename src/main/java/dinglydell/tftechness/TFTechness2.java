@@ -96,6 +96,7 @@ import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
 import dinglydell.tftechness.block.BlockTFTComponent;
+import dinglydell.tftechness.block.BlockTFTComponent.TFTComponents;
 import dinglydell.tftechness.block.BlockTFTController;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
@@ -133,6 +134,7 @@ import dinglydell.tftechness.render.RenderBlockTFT;
 import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
+import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
@@ -432,6 +434,8 @@ public class TFTechness2 {
 				"TFTMachineComponent");
 		GameRegistry.registerTileEntity(TileMachineHeatingElement.class,
 				"TFTMachineHeatingElement");
+		GameRegistry.registerTileEntity(TileMachineComponentItemShelf.class,
+				"TFTMachineItemShelf");
 
 	}
 
@@ -1337,11 +1341,12 @@ public class TFTechness2 {
 		//GameRegistry.addShapelessRecipe(BlockTFTComponent
 		//	.getBlockWithNBT(TFTComponents.wall, 0.05f), Blocks.dirt);
 		ComponentMaterialRegistry.registerBaseMaterial("stoneBricks",
-				0.05f,
+				0.01f,
 				false);
 		for (Material m : materials) {
 			//	if (m.block != null) {
 			ComponentMaterialRegistry.registerBaseMaterial("block" + m.oreName,
+					"plate" + m.oreName,
 					statMap.get(m.name).conductivity,
 					false);
 			//}
@@ -1367,6 +1372,11 @@ public class TFTechness2 {
 		//HOP graphite dust -> HOP graphite ingot (placeholder)
 		manager.addIndex(new HeatIndex(TFTMeta.hopGraphiteDust, 1, 1000,
 				TFTMeta.hopGraphiteIngot));
+
+		for (TFTComponents c : TFTComponents.values()) {
+			manager.addIndex(new HeatIndex(new ItemStack(
+					TFTBlocks.machineComponent, 1, c.ordinal()), 1, 9999, null));
+		}
 	}
 
 	private void tfcKilnRecipes() {

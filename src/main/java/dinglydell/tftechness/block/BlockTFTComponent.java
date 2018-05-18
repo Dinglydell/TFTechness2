@@ -1,5 +1,6 @@
 package dinglydell.tftechness.block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.BlockContainer;
@@ -11,33 +12,63 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.Explosion;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
+import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
+import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 
 public class BlockTFTComponent extends BlockContainer {
 
 	public enum TFTComponents {
-		wall(null), heater("info.machine.heater.tooltip");
+		wall(null, null), heater("info.machine.heater.tooltip",
+				new String[] { "tier" }), shelf("info.machine.shelf.tooltip",
+				null);
 
 		private String tooltip;
+		private String[] properties;
 
-		TFTComponents(String tooltip) {
+		TFTComponents(String tooltip, String[] properties) {
 			this.tooltip = tooltip;
+			this.properties = properties;
 		}
 
 		public boolean hasTooltip() {
-			return tooltip != null;
+			return tooltip != null || properties != null;
 		}
 
 		public String getTooltip() {
 			return tooltip;
+		}
+
+		public void addTooltip(List list, NBTTagCompound nbt) {
+			list.add(EnumChatFormatting.RED.toString()
+					+ StatCollector.translateToLocal(tooltip));
+			if (properties != null && nbt != null) { //TODO: better system than just enums - make it dynamic
+				for (String prop : properties) {
+					list.add(EnumChatFormatting.DARK_AQUA.toString()
+							+ StatCollector
+									.translateToLocal("info.machine.property."
+											+ prop) + " "
+							+ EnumChatFormatting.RED.toString()
+							+ nbt.getTag(prop).toString());
+				}
+			}
+		}
+
+		public boolean hasProperties() {
+			return properties != null;
+		}
+
+		public String[] getProperties() {
+			return properties;
 		}
 	}
 
@@ -53,7 +84,7 @@ public class BlockTFTComponent extends BlockContainer {
 	public int getLightValue(IBlockAccess world, int x, int y, int z) {
 		TileMachineComponent tile = (TileMachineComponent) world
 				.getTileEntity(x, y, z);
-		return tile.getLightLevel();
+		return tile == null ? 0 : tile.getLightLevel();
 	}
 
 	@Override
@@ -78,36 +109,37 @@ public class BlockTFTComponent extends BlockContainer {
 	//	}
 	//
 	//}
+
 	@Override
-	public int onBlockPlaced(World p_149660_1_, int p_149660_2_,
-			int p_149660_3_, int p_149660_4_, int p_149660_5_,
-			float p_149660_6_, float p_149660_7_, float p_149660_8_,
-			int p_149660_9_) {
-		// TODO Auto-generated method stub
-		return super.onBlockPlaced(p_149660_1_,
-				p_149660_2_,
-				p_149660_3_,
-				p_149660_4_,
-				p_149660_5_,
-				p_149660_6_,
-				p_149660_7_,
-				p_149660_8_,
-				p_149660_9_);
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z,
+			int metadata, int fortune) {
+		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
+
+		return drops;
+
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		TileMachineComponent tile;
 		switch (TFTComponents.values()[meta]) {
+
 		case wall:
-			return new TileMachineComponent();//.setConductivity(0.01f);//new TileMachineWall();
-			//return new TileTFTElectrolyser();
+			tile = new TileMachineComponent();//.setConductivity(0.01f);//new TileMachineWall();
+			break;
+		//return new TileTFTElectrolyser();
 		case heater:
-			return new TileMachineHeatingElement();//.setConductivity(0.5f);
+			tile = new TileMachineHeatingElement();//.setConductivity(0.5f);
+			break;
+		case shelf:
+			tile = new TileMachineComponentItemShelf();
+			break;
 		default:
 			return null;
 
 		}
-
+		//tile.setTemperature(TFC_Climate.getHeightAdjustedTemp(worldIn, x, y, z))
+		return tile;
 	}
 
 	@Override
@@ -118,12 +150,25 @@ public class BlockTFTComponent extends BlockContainer {
 	}
 
 	@Override
-	public void onBlockDestroyedByPlayer(World world, int x, int y, int z,
-			int meta) {
-		super.onBlockDestroyedByPlayer(world, x, y, z, meta);
-		//restoreMultiblock(world, x, y, z);
+	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+		TileMachineComponent tile = (TileMachineComponent) world
+				.getTileEntity(x, y, z);
+		ItemStack dropStack = new ItemStack(this, 1, meta);
+		NBTTagCompound nbt = new NBTTagCompound();
+		tile.writeComponentPropertiesToNBT(nbt);
+		dropStack.setTagCompound(nbt);
+
+		dropBlockAsItem(world, x, y, z, dropStack);
 
 	}
+
+	//@Override
+	//public void onBlockDestroyedByPlayer(World world, int x, int y, int z,
+	//		int meta) {
+	//	super.onBlockDestroyedByPlayer(world, x, y, z, meta);
+	//	//restoreMultiblock(world, x, y, z);
+	//
+	//}
 
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -143,13 +188,6 @@ public class BlockTFTComponent extends BlockContainer {
 	}
 
 	@Override
-	public void onBlockDestroyedByExplosion(World world, int x, int y, int z,
-			Explosion explosion) {
-
-		//restoreMultiblock(world, x, y, z);
-	}
-
-	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z,
 			EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
@@ -163,11 +201,12 @@ public class BlockTFTComponent extends BlockContainer {
 	}
 
 	public static ItemStack getBlockWithNBT(TFTComponents component,
-			float conductivity) {
+			float conductivity, WireTier wireTier) {
 		ItemStack is = new ItemStack(TFTBlocks.machineComponent, 1,
 				component.ordinal());
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat("conductivity", conductivity);
+		nbt.setFloat("Conductivity", conductivity);
+		nbt.setInteger("tier", wireTier.ordinal());
 		is.setTagCompound(nbt);
 		return is;
 	}

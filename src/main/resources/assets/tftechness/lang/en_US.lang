@@ -125,6 +125,10 @@ info.machine.tooltip.1=components in a continuous structure
 info.machine.tooltip.2=to build a machine.
 
 info.machine.heater.tooltip=Produces heat.
+info.machine.shelf.tooltip=Can hold items. Perhaps it could even cook them?
+
+info.machine.property.tier=Wire Tier:
 
 tile.wall.name=§7Machine Wall§r
 tile.heater.name=§7Machine Heating Element§r
+tile.shelf.name=§7Machine Item Shelf§r
