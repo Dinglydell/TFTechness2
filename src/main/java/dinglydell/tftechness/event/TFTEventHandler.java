@@ -7,6 +7,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -43,17 +44,28 @@ public class TFTEventHandler {
 			event.toolTip.add(TFC_Core.translate("gui.food.amount") + " " + kg
 					+ " kg / " + FOOD_MAX_MASS_KG + " kg");
 		}
-		if (event.itemStack.getItem() instanceof ItemTerra) {
-			return;
-		}
-		float temp = TFC_ItemHeat.getTemp(event.itemStack);
-
-		if (temp != 0) {
+		if (TFC_ItemHeat.hasTemp(event.itemStack)) {
+			float temp = TFC_ItemHeat.getTemp(event.itemStack);
 			HeatIndex index = HeatRegistry.getInstance()
 					.findMatchingIndex(event.itemStack);
-			event.toolTip.add(TFC_ItemHeat.getHeatColor(temp,
-					index == null ? Float.MAX_VALUE : index.meltTemp));
+			//if (temp < 15) {
+			//event.toolTip.add(getColdHeatColour(temp));
+			/* } else */if (!(event.itemStack.getItem() instanceof ItemTerra)) {
+
+				event.toolTip.add(TFC_ItemHeat.getHeatColor(temp,
+						index == null ? Float.MAX_VALUE : index.meltTemp));
+			}
 		}
+	}
+
+	private String getColdHeatColour(float temp) {
+		String colour = null;
+		if (temp <= 0) {
+			colour = EnumChatFormatting.AQUA.toString() + "Frozen";
+		} else {
+			colour = "Cold";
+		}
+		return colour;
 	}
 
 	//replaces stone with basalt for asteroid missions

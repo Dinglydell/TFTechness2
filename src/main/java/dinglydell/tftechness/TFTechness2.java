@@ -135,6 +135,7 @@ import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
+import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
@@ -153,7 +154,7 @@ public class TFTechness2 {
 	/** The degree symbol */
 	public static final String degrees = "\u00b0";
 	public static Map<String, MetalStat> statMap = new HashMap();
-
+	public static final float ABSOLUTE_ZERO = -273f;
 	public static org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger("TFTechness");
 	public static List<Material> materials;
@@ -436,6 +437,8 @@ public class TFTechness2 {
 				"TFTMachineHeatingElement");
 		GameRegistry.registerTileEntity(TileMachineComponentItemShelf.class,
 				"TFTMachineItemShelf");
+		GameRegistry.registerTileEntity(TileMachineCoolingElement.class,
+				"TFTMachineCoolingElement");
 
 	}
 

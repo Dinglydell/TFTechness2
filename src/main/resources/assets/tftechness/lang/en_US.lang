@@ -120,15 +120,19 @@ item.lumberTreatedWood.name=Treated Lumber
 tile.Bauxite.name=Bauxite
 tile.Rutile.name=Rutile
 
+gui.tooltip.frozen=Frozen
+
 info.machine.tooltip.0=Use any combination of machine
 info.machine.tooltip.1=components in a continuous structure
 info.machine.tooltip.2=to build a machine.
 
 info.machine.heater.tooltip=Produces heat.
 info.machine.shelf.tooltip=Can hold items. Perhaps it could even cook them?
+info.machine.cooler.tooltip=Cools down. But where does the heat go?
 
 info.machine.property.tier=Wire Tier:
 
 tile.wall.name=§7Machine Wall§r
 tile.heater.name=§7Machine Heating Element§r
 tile.shelf.name=§7Machine Item Shelf§r
+tile.cooler.name=§7Machine Cooling Element§r

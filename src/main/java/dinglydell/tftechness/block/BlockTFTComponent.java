@@ -22,6 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
+import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 
@@ -30,7 +31,8 @@ public class BlockTFTComponent extends BlockContainer {
 	public enum TFTComponents {
 		wall(null, null), heater("info.machine.heater.tooltip",
 				new String[] { "tier" }), shelf("info.machine.shelf.tooltip",
-				null);
+				null), cooler("info.machine.cooler.tooltip",
+				new String[] { "tier" });
 
 		private String tooltip;
 		private String[] properties;
@@ -133,6 +135,9 @@ public class BlockTFTComponent extends BlockContainer {
 			break;
 		case shelf:
 			tile = new TileMachineComponentItemShelf();
+			break;
+		case cooler:
+			tile = new TileMachineCoolingElement();
 			break;
 		default:
 			return null;

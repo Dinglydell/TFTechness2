@@ -2,7 +2,7 @@ package dinglydell.tftechness.tileentities;
 
 public class TileMachineHeatingElement extends TileMachineRF {
 
-	protected static final float RF_TO_TEMP = 0.01f;
+	protected static final float RF_TO_TEMP = 0.1f;
 
 	public TileMachineHeatingElement() {
 		super();

@@ -5,6 +5,8 @@ import java.util.Random;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -27,8 +29,12 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 		implements IInventory {
 
 	private static final float SPECIFIC_HEAT = 1000;
-	/** The amount the temperature is divided by to convert to cooking progress */
-	private static final float TEMP_COOK_RATIO = 700f;
+	/**
+	 * The amount the temperature is divided by to convert to cooking progress -
+	 * for TFC machines it's 700 - note that conductivity is also a factor for
+	 * TFT machines hence it is lower here
+	 */
+	private static final float TEMP_COOK_RATIO = 100f;
 	private static final int[] RF_TASTE_PROFILE = new int[] {/* Sweet */-5,/* Sour */
 	1,/* Salty */
 	0,/* Bitter */
@@ -75,32 +81,40 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 
 					if (index != null) {// && index.hasOutput()) {
 						if (stack.getItem() instanceof IFood) {
-							float cook = Food.getCooked(stack)
-									+ Math.max(0, temperature / TEMP_COOK_RATIO);
-							Food.setCooked(stack, cook);
-							temp = cook;
-							// from TEGrill:
-							if (Food.isCooked(stack)) {
-								int[] cookedTasteProfile = new int[] { 0,
-										0,
-										0,
-										0,
-										0 };
+							//only cook the food if it's greater than the default maximum ambient temperature in TFC
+							if (temperature > TFC_Climate.getMaxTemperature()) {
+								float cook = Food.getCooked(stack)
+										+ Math.max(0, temperature
+												* getConductivity()
+												/ TEMP_COOK_RATIO);
+								Food.setCooked(stack, cook);
+								itemTemp = cook;
+								// from TEGrill:
+								if (Food.isCooked(stack)) {
+									int[] cookedTasteProfile = new int[] { 0,
+											0,
+											0,
+											0,
+											0 };
 
-								Random r = new Random(
-										((ICookableFood) stack.getItem())
-												.getFoodID()
-												+ (((int) Food.getCooked(stack) - 600) / 120));
-								cookedTasteProfile[0] = r.nextInt(31) - 15;
-								cookedTasteProfile[1] = r.nextInt(31) - 15;
-								cookedTasteProfile[2] = r.nextInt(31) - 15;
-								cookedTasteProfile[3] = r.nextInt(31) - 15;
-								cookedTasteProfile[4] = r.nextInt(31) - 15;
-								Food.setCookedProfile(stack, cookedTasteProfile);
+									Random r = new Random(
+											((ICookableFood) stack.getItem())
+													.getFoodID()
+													+ (((int) Food
+															.getCooked(stack) - 600) / 120));
+									cookedTasteProfile[0] = r.nextInt(31) - 15;
+									cookedTasteProfile[1] = r.nextInt(31) - 15;
+									cookedTasteProfile[2] = r.nextInt(31) - 15;
+									cookedTasteProfile[3] = r.nextInt(31) - 15;
+									cookedTasteProfile[4] = r.nextInt(31) - 15;
+									Food.setCookedProfile(stack,
+											cookedTasteProfile);
 
-								Food.setFuelProfile(stack, RF_TASTE_PROFILE);
+									Food.setFuelProfile(stack, RF_TASTE_PROFILE);
+								}
+							} else { //no cook food!
+								itemTemp = 0;
 							}
-
 						} else {
 							float change = (getConductivity() + AIR_CONDUCTIVITY)
 									* 0.5f * (temperature - itemTemp);
@@ -110,8 +124,7 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 									/ SPECIFIC_HEAT;
 						}
 						TFC_ItemHeat.setTemp(stack, itemTemp);
-						if (temp > index.meltTemp
-								&& stack.getItem() instanceof ISmeltable) {
+						if (itemTemp > index.meltTemp) {
 
 							ItemStack output = index.getOutput(stack,
 									new Random());
@@ -168,7 +181,6 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot) {
-
 		return inventory[slot];
 	}
 
@@ -208,6 +220,44 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 	public boolean isItemValidForSlot(int slot, ItemStack stack) {
 
 		return HeatRegistry.getInstance().findMatchingIndex(stack) != null;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound data) {
+
+		super.readFromNBT(data);
+		//inventory
+		NBTTagList invTag = data.getTagList("Items", 10);
+
+		for (int i = 0; i < invTag.tagCount(); ++i) {
+			NBTTagCompound itemTag = invTag.getCompoundTagAt(i);
+			byte b0 = itemTag.getByte("Slot");
+
+			if (b0 >= 0 && b0 < inventory.length) {
+				inventory[b0] = ItemStack.loadItemStackFromNBT(
+
+				itemTag);
+			}
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound data) {
+
+		super.writeToNBT(data);
+		//inventory
+		NBTTagList invTag = new NBTTagList();
+
+		for (int i = 0; i < inventory.length; ++i) {
+			if (inventory[i] != null) {
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", (byte) i);
+				inventory[i].writeToNBT(itemTag);
+				invTag.appendTag(itemTag);
+			}
+		}
+
+		data.setTag("Items", invTag);
 	}
 
 	public boolean openGui(World world, EntityPlayer player) {

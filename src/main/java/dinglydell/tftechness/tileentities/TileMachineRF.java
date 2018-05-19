@@ -6,7 +6,7 @@ import blusunrize.immersiveengineering.common.IEContent;
 
 public abstract class TileMachineRF extends TileMachineComponent {
 	public enum WireTier {
-		lv(256, 1f), mv(1024, 0.9f), hv(4096, 0.8f);
+		lv(256, 1f), mv(1024, 0.85f), hv(4096, 0.7f);
 
 		public final float efficiency;
 		public final int transferRate;

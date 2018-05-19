@@ -73,6 +73,17 @@ public class ComponentMaterialRegistry {
 				GameRegistry.addRecipe(new ShapedOreRecipe(shelf, "mm", "mm",
 						'm', material.shelfMaterial));
 			}
+
+			//coolers
+			for (WireTier tier : WireTier.values()) {
+				ItemStack cooler = BlockTFTComponent
+						.getBlockWithNBT(TFTComponents.cooler,
+								material.conductivity,
+								tier);
+				GameRegistry.addRecipe(new ShapedOreRecipe(cooler, "   ",
+						"cmc", " c ", 'c', tier.getWire(), 'm',
+						material.material));
+			}
 		}
 	}
 

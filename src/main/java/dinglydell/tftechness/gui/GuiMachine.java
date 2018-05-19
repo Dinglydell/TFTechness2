@@ -19,13 +19,16 @@ public class GuiMachine extends GuiContainer {
 	private static final int TEX_HEIGHT = 165;
 
 	private GuiTemperature tempControl;
-	private TileMachineComponent tile;
+	protected TileMachineComponent tile;
+
+	protected InventoryPlayer player;
 
 	protected List<ITFTComponent> components = new ArrayList<ITFTComponent>();
 
 	public GuiMachine(ContainerMachine container, InventoryPlayer player,
 			TileMachineComponent tile) {
 		super(container);
+		this.player = player;
 		this.tile = tile;
 	}
 

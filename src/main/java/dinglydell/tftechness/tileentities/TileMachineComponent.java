@@ -27,7 +27,7 @@ import dinglydell.tftechness.network.PacketMachineComponent;
 
 public/* abstract */class TileMachineComponent extends TileEntity implements
 		ITileTemperature, IEnergyReceiver {
-	protected static final float AIR_CONDUCTIVITY = 0.005f;
+	protected static final float AIR_CONDUCTIVITY = 0.001f;
 	private int masterX, masterY = -1, masterZ;
 	protected float temperature;
 	protected int rf;
@@ -173,13 +173,14 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				//}
 
 				temperature -= 1 / 6f * (temperature - ambientTemp) * 0.5f
-						* (getConductivity()); //+ ambientConductivity);
+						* (getConductivity() + ambientConductivity);
 			} else {
 				TileMachineComponent tc = (TileMachineComponent) tile;
 				float dTemp = 1 / 6f * (temperature - tc.getTemperature())
 						* 0.5f * (getConductivity() + tc.getConductivity());
 				temperature -= dTemp;
 				tc.temperature += dTemp;
+
 				float avgrf = (rf / (float) rfCapacity + tc.rf
 						/ (float) tc.rfCapacity) / 2;
 				if (rf / (float) rfCapacity > avgrf) {
@@ -383,7 +384,12 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	public int receiveEnergy(ForgeDirection direction, int amt,
 			boolean simulated) {
 		int oldRf = rf;
-		int newRf = Math.min(rf + amt, getMaxEnergyStored(direction));
+		int newRf;
+		if (amt > getMaxEnergyStored(direction)) {//fixes overflow issue with creative capacitors
+			newRf = getMaxEnergyStored(direction);
+		} else {
+			newRf = Math.min(rf + amt, getMaxEnergyStored(direction));
+		}
 		if (!simulated) {
 			rf = newRf;
 		}

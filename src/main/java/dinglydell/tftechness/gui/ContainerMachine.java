@@ -29,4 +29,5 @@ public class ContainerMachine extends Container {
 	public boolean canInteractWith(EntityPlayer player) {
 		return this.tile.isUseableByPlayer(player);
 	}
+
 }
