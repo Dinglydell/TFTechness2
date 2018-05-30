@@ -1387,7 +1387,7 @@ public class TFTechness2 {
 
 		//register stone with the conductivity property
 		ComponentMaterialRegistry.registerMaterial("stoneBricks",
-				new ItemStack(TFCItems.flatRock, 1,
+				new ItemStack(TFCItems.looseRock, 1,
 						OreDictionary.WILDCARD_VALUE))
 				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f);
 		for (Material m : materials) {

@@ -65,8 +65,8 @@ public class Component {
 	}
 
 	public Component registerAdditionalIcon(String name) {
-		iconStrs.add(TFTechness2.MODID + ":machine/" + name.toLowerCase() + "_"
-				+ name);
+		iconStrs.add(TFTechness2.MODID + ":machine/" + this.name.toLowerCase()
+				+ "_" + name);
 		return this;
 	}
 
