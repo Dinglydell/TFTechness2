@@ -36,7 +36,14 @@ Mid-term:
 -Allow swappable parts in multiblocks - such as an upgradable casing that determines
  how good of an insulator it is
 
+
  -multiblock components with melting/deformation temperatures - eg a silver based wall component may be a great conductor but will melt if you heat it too much
+ -multiblock components with an additional material for the "coating" of the block - this will determine the conductivity with the air as opposed to other machine blocks
+ -cooling element that transfers heat away from a target block rather than deleting it
+ -multiblock components that consider the atmospheric conditions of the planet its on when calculating heat loss to the environment
+ -steam powered multiblock components?
+ -target temperature in multiblocks
+
 
  -Reintroduction of the cryothermic chamber (known to some as a "fridge")
     -cellars addon?

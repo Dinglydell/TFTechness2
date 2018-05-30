@@ -34,7 +34,7 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 	 * for TFC machines it's 700 - note that conductivity is also a factor for
 	 * TFT machines hence it is lower here
 	 */
-	private static final float TEMP_COOK_RATIO = 100f;
+	private static final float TEMP_COOK_RATIO = 200f;
 	private static final int[] RF_TASTE_PROFILE = new int[] {/* Sweet */-5,/* Sour */
 	1,/* Salty */
 	0,/* Bitter */

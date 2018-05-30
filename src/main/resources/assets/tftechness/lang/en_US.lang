@@ -126,10 +126,14 @@ info.machine.tooltip.0=Use any combination of machine
 info.machine.tooltip.1=components in a continuous structure
 info.machine.tooltip.2=to build a machine.
 
-info.machine.heater.tooltip=Produces heat.
-info.machine.shelf.tooltip=Can hold items. Perhaps it could even cook them?
-info.machine.cooler.tooltip=Cools down. But where does the heat go?
+info.machine.brokendata=Broken data!
 
+info.machine.wall.tooltip=It's a wall.
+info.machine.heater.tooltip=Turns RF into heat.
+info.machine.shelf.tooltip=Can hold items. Perhaps it could even cook them?
+info.machine.cooler.tooltip=Uses RF to transfer heat from neighbour blocks into itself.
+
+info.machine.property.conductivity=Thermal Conductivity:
 info.machine.property.tier=Wire Tier:
 
 tile.wall.name=§7Machine Wall§r

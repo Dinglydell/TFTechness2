@@ -95,16 +95,17 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
-import dinglydell.tftechness.block.BlockTFTComponent;
-import dinglydell.tftechness.block.BlockTFTComponent.TFTComponents;
 import dinglydell.tftechness.block.BlockTFTController;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.BlockTreatedBarrel;
-import dinglydell.tftechness.block.ComponentMaterialRegistry;
 import dinglydell.tftechness.block.TFTBlocks;
 import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
+import dinglydell.tftechness.block.component.BlockTFTComponent;
+import dinglydell.tftechness.block.component.Component;
+import dinglydell.tftechness.block.component.ComponentMaterialRegistry;
+import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.config.TFTConfig;
 import dinglydell.tftechness.crop.CropIndexStack;
 import dinglydell.tftechness.crop.TFTCropManager;
@@ -137,6 +138,7 @@ import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
+import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.tileentities.TileTFTMachineController;
@@ -180,7 +182,39 @@ public class TFTechness2 {
 		registerEventHandlers();
 		registerPacketHandlers();
 
+		registerTFTMachineComponents();
+
 		addOres();
+
+	}
+
+	private void registerTFTMachineComponents() {
+		//wall
+		Component.registerComponent(new Component("wall",
+				TileMachineComponent.class,
+				new Object[] { " a ", "aAa", " a " }));
+
+		//heater (b is wire coil)
+		Component
+				.registerComponent(new Component("heater",
+						TileMachineHeatingElement.class, new Object[] { " b ",
+								"bAb",
+								" b " })
+						.registerPropertySet(new ComponentProperty[] { ComponentProperty.WIRE_TIER }));
+
+		// item shelf
+		Component.registerComponent(new Component("shelf",
+				TileMachineComponentItemShelf.class,
+				new Object[] { "aa", "aa" }));
+
+		// cooler (b is wire coil)
+		Component
+				.registerComponent(new Component("cooler",
+						TileMachineCoolingElement.class, new Object[] { " a ",
+								"bAb",
+								" b " })
+						.registerPropertySet(new ComponentProperty[] { ComponentProperty.WIRE_TIER })
+						.registerAdditionalIcon("cool"));
 
 	}
 
@@ -493,11 +527,15 @@ public class TFTechness2 {
 		GameRegistry.registerBlock(TFTBlocks.machineController,
 				"machineController");
 
-		TFTBlocks.machineComponent = new BlockTFTComponent()
-				.setBlockName("machineComponent");
-		GameRegistry.registerBlock(TFTBlocks.machineComponent,
-				ItemBlockMachineComponent.class,
-				"machineComponent");
+		//Add all component blocks
+		for (Component c : Component.components) {
+			BlockTFTComponent comp = (BlockTFTComponent) new BlockTFTComponent(
+					c).setBlockName("machineComponent" + c.name);
+			GameRegistry.registerBlock(comp,
+					ItemBlockMachineComponent.class,
+					"machineComponent" + c.name);
+			TFTBlocks.components.put(c, comp);
+		}
 
 	}
 
@@ -1343,18 +1381,32 @@ public class TFTechness2 {
 		//components
 		//GameRegistry.addShapelessRecipe(BlockTFTComponent
 		//	.getBlockWithNBT(TFTComponents.wall, 0.05f), Blocks.dirt);
-		ComponentMaterialRegistry.registerBaseMaterial("stoneBricks",
-				0.01f,
-				false);
+		//ComponentMaterialRegistry.registerBaseMaterial("stoneBricks",
+		//	0.01f,
+		//false);
+
+		//register stone with the conductivity property
+		ComponentMaterialRegistry.registerMaterial("stoneBricks",
+				new ItemStack(TFCItems.flatRock, 1,
+						OreDictionary.WILDCARD_VALUE))
+				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f);
 		for (Material m : materials) {
-			//	if (m.block != null) {
-			ComponentMaterialRegistry.registerBaseMaterial("block" + m.oreName,
-					"plate" + m.oreName,
-					statMap.get(m.name).conductivity,
-					false);
-			//}
+			// register metal materials with conductivity property
+			ComponentMaterialRegistry.registerMaterial("block" + m.oreName,
+					"plate" + m.oreName)
+					.addProperty(ComponentProperty.CONDUCTIVITY,
+							statMap.get(m.name).conductivity);
 
 		}
+
+		//wires
+		for (WireTier wire : WireTier.values()) {
+			//register a wire with wire tier property
+			ComponentMaterialRegistry.registerMaterial(wire.getWire(),
+					wire.getWire()).addProperty(ComponentProperty.WIRE_TIER,
+					wire);
+		}
+
 		ComponentMaterialRegistry.registerRecipes();
 	}
 
@@ -1376,10 +1428,10 @@ public class TFTechness2 {
 		manager.addIndex(new HeatIndex(TFTMeta.hopGraphiteDust, 1, 1000,
 				TFTMeta.hopGraphiteIngot));
 
-		for (TFTComponents c : TFTComponents.values()) {
-			manager.addIndex(new HeatIndex(new ItemStack(
-					TFTBlocks.machineComponent, 1, c.ordinal()), 1, 9999, null));
-		}
+		//for (Component c : Component.components) {
+		//	manager.addIndex(new HeatIndex(new ItemStack(
+		//			TFTBlocks.components.get(c)), 1, 9999, null));
+		//}
 	}
 
 	private void tfcKilnRecipes() {

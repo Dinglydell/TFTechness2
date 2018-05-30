@@ -13,11 +13,8 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dinglydell.tftechness.TFTechness2;
-import dinglydell.tftechness.block.BlockTFTComponent;
-import dinglydell.tftechness.block.BlockTFTComponent.TFTComponents;
+import dinglydell.tftechness.block.component.BlockTFTComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
-import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
-import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 
 public class ItemBlockMachineComponent extends ItemBlock {
 
@@ -49,9 +46,7 @@ public class ItemBlockMachineComponent extends ItemBlock {
 	@Override
 	public String getUnlocalizedName(ItemStack stack) {
 
-		return "tile."
-				+ BlockTFTComponent.TFTComponents.values()[stack
-						.getItemDamage()].name();
+		return "tile." + block.component.name;
 	}
 
 	@Override
@@ -69,18 +64,19 @@ public class ItemBlockMachineComponent extends ItemBlock {
 				+ StatCollector.translateToLocal("info.machine.tooltip.2"));
 		NBTTagCompound tag = stack.getTagCompound();
 		if (tag == null) {
-			list.add("Broken data!");
-		} else {
-			list.add(EnumChatFormatting.DARK_AQUA.toString() + "Conductivity: "
-					+ EnumChatFormatting.RED.toString()
-					+ Math.round(100 * tag.getFloat("Conductivity")) + "%");
+			list.add(StatCollector.translateToLocal("info.machine.brokendata"));
+			//} else {
+			//	list.add(EnumChatFormatting.DARK_AQUA.toString()
+			//			+ StatCollector
+			//					.translateToLocal("info.machine.property.conductivity")
+			//			+ " " + EnumChatFormatting.RED.toString()
+			//			+ Math.round(100 * tag.getFloat("Conductivity")) + "%");
 		}
-		TFTComponents component = TFTComponents.values()[stack.getItemDamage()];
-		if (component.hasTooltip()) {
-			component.addTooltip(list, tag);
-			//list.add(EnumChatFormatting.RED.toString()
-			//	+ StatCollector.translateToLocal(component.getTooltip()));
-		}
+		block.component.addTooltip(list, tag);
+
+		//list.add(EnumChatFormatting.RED.toString()
+		//	+ StatCollector.translateToLocal(component.getTooltip()));
+
 	}
 
 	@Override
@@ -101,13 +97,16 @@ public class ItemBlockMachineComponent extends ItemBlock {
 			TileMachineComponent tile = (TileMachineComponent) world
 					.getTileEntity(x, y, z);
 			if (stack.hasTagCompound()) {
-				tile.setConductivity(stack.getTagCompound()
-						.getFloat("Conductivity"));
-				if (tile instanceof TileMachineHeatingElement) {
-					((TileMachineHeatingElement) tile)
-							.setWireTier(WireTier.values()[stack
-									.getTagCompound().getInteger("tier")]);
-				}
+
+				block.component.setTileEntityValues(tile, stack);
+
+				//tile.setConductivity(stack.getTagCompound()
+				//		.getFloat("Conductivity"));
+				//if (tile instanceof TileMachineHeatingElement) {
+				//	((TileMachineHeatingElement) tile)
+				//			.setWireTier(WireTier.values()[stack
+				//					.getTagCompound().getInteger("tier")]);
+				//}
 				//TFTComponents c = TFTComponents.values()[metadata];
 				//if(c.hasProperties()){
 				//	for(String prop : c.getProperties()){
@@ -116,7 +115,7 @@ public class ItemBlockMachineComponent extends ItemBlock {
 				//}
 			} else {
 				TFTechness2.logger
-						.warn("Placed a TFT component with no conductivity value!");
+						.warn("Placed a TFT component with no property values!");
 			}
 			return true;
 		}

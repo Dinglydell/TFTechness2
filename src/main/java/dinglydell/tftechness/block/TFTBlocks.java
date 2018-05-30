@@ -5,6 +5,8 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import dinglydell.tftechness.block.component.BlockTFTComponent;
+import dinglydell.tftechness.block.component.Component;
 
 public class TFTBlocks {
 	public static Block metalSheet;
@@ -14,5 +16,6 @@ public class TFTBlocks {
 	public static Block barrel;
 	public static ItemStack treatedBarrel;
 	public static Block machineController;
-	public static Block machineComponent;
+	//public static Block machineComponent;
+	public static Map<Component, BlockTFTComponent> components = new HashMap<Component, BlockTFTComponent>();
 }

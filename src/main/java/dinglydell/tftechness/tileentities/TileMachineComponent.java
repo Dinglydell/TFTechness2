@@ -10,6 +10,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -21,6 +22,7 @@ import com.bioxx.tfc.Core.TFC_Climate;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.block.component.Component;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.gui.component.ITileTemperature;
 import dinglydell.tftechness.network.PacketMachineComponent;
@@ -36,11 +38,17 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	protected float conductivity = 0.5f;
 
 	//private ItemStack[] inventory;
+	protected Component component;
 
 	//protected SolutionTank internalTank;
 
 	public TileMachineComponent() {
-
+		for (Component c : Component.components) {
+			if (c.getType() == this.getClass()) {
+				component = c;
+				break;
+			}
+		}
 	}
 
 	public TileMachineComponent setRFCapacity(int capacity) {
@@ -208,6 +216,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 		data.setFloat("Temperature", temperature);
 		data.setInteger("rf", rf);
+
 		writeComponentPropertiesToNBT(data);
 	}
 
@@ -216,7 +225,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	 * temperature or other tileentity data
 	 */
 	public void writeComponentPropertiesToNBT(NBTTagCompound data) {
-		data.setFloat("Conductivity", conductivity);
+		component.writePropertiesToNBT(this, data);
 	}
 
 	@Override
@@ -227,8 +236,8 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//masterZ = data.getInteger("masterZ");
 
 		temperature = data.getFloat("Temperature");
-		conductivity = data.getFloat("Conductivity");
 
+		component.readPropertiesFromNBT(this, data);
 		rf = data.getInteger("rf");
 	}
 
@@ -394,6 +403,25 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 			rf = newRf;
 		}
 		return newRf - oldRf;
+	}
+
+	protected void setPlacedSide(int side) {
+		//this method is used by machines that aren't the same on each side
+
+	}
+
+	public IIcon getIcon(IIcon[][] icons, int side) {
+		//if (this.blockMetadata == -1) {
+		//	return icons[0][0];
+		//}
+
+		return component.getIcon(0);
+	}
+
+	/** Called when the block is first placed into the world */
+	public void initialiseComponent() {
+		setPlacedSide(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
+		this.sendServerToClientMessage();
 	}
 
 }

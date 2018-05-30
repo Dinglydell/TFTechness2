@@ -33,21 +33,6 @@ public abstract class TileMachineRF extends TileMachineComponent {
 	}
 
 	@Override
-	public void writeComponentPropertiesToNBT(NBTTagCompound data) {
-
-		super.writeComponentPropertiesToNBT(data);
-		data.setInteger("tier", tier.ordinal());
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound data) {
-
-		super.readFromNBT(data);
-
-		this.setWireTier(WireTier.values()[data.getInteger("tier")]);
-	}
-
-	@Override
 	public void writeServerToClientMessage(NBTTagCompound nbt) {
 
 		super.writeServerToClientMessage(nbt);
@@ -69,10 +54,15 @@ public abstract class TileMachineRF extends TileMachineComponent {
 
 		super.updateEntity();
 		if (!worldObj.isRemote) {
-			//TFTechness2.logger.info(temperature);
-			//	temperature += (1 + tier.ordinal()) * 5f;
-			rfRate = spendRF(Math.min(rf, tier.transferRate));
-			rf -= rfRate;
+
+			//redstone power -> shutdown
+			if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) != 0) {
+				rfRate = 0;
+			} else {
+				rfRate = spendRF(Math.min(rf, tier.transferRate));
+				rf -= rfRate;
+			}
+
 		}
 	}
 
@@ -80,5 +70,9 @@ public abstract class TileMachineRF extends TileMachineComponent {
 
 	public int getEnergyConsumptionRate() {
 		return rfRate;
+	}
+
+	public WireTier getWireTier() {
+		return this.tier;
 	}
 }
