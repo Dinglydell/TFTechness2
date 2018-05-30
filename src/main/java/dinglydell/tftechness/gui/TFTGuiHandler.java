@@ -5,11 +5,13 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
+import dinglydell.tftechness.tileentities.TileMachineComponentTank;
+import dinglydell.tftechness.tileentities.TileMachineElectrode;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class TFTGuiHandler implements IGuiHandler {
 	public enum TFTGuis {
-		Electrolyser, Machine, ItemShelf
+		Electrolyser, Machine, ItemShelf, Tank, Electrode
 	}
 
 	@Override
@@ -27,6 +29,14 @@ public class TFTGuiHandler implements IGuiHandler {
 			return new ContainerMachineShelf(player.inventory,
 					(TileMachineComponentItemShelf) world
 							.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Tank.ordinal()) {
+			return new ContainerMachineTank(player.inventory,
+					(TileMachineComponentTank) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Electrode.ordinal()) {
+			return new ContainerMachineElectrode(player.inventory,
+					(TileMachineElectrode) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}
@@ -46,6 +56,14 @@ public class TFTGuiHandler implements IGuiHandler {
 			return new GuiMachineShelf(player.inventory,
 					(TileMachineComponentItemShelf) world
 							.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Tank.ordinal()) {
+			return new GuiMachineTank(player.inventory,
+					(TileMachineComponentTank) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Electrode.ordinal()) {
+			return new GuiMachineElectrode(player.inventory,
+					(TileMachineElectrode) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}

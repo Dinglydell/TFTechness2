@@ -300,9 +300,9 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 					&& inventory[Slots.ELECTRODE_A.ordinal()]
 							.isItemEqual(inventory[Slots.ELECTRODE_B.ordinal()])
 					&& inventory[Slots.ELECTRODE_A.ordinal()].getItem() == IEContent.itemGraphiteElectrode) {
-				cryoliteTank.setCondition(SolutionRecipe.electrodes);
+				cryoliteTank.addCondition(SolutionRecipe.electrodes);
 			} else {
-				cryoliteTank.setCondition(null);
+				cryoliteTank.removeCondition(SolutionRecipe.electrodes);
 			}
 			cryoliteTank.updateTank(getTemperature());
 			//proccessReaction();

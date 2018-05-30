@@ -3,9 +3,11 @@ package dinglydell.tftechness.fluid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -37,7 +39,7 @@ public class SolutionTank {
 	/** stored by moles */
 	protected Map<ItemMeta, Float> solutes;
 	protected final int capacity;
-	private Condition condition;
+	private Set<Condition> conditions = new HashSet<Condition>();
 
 	public SolutionTank(int capacity) {
 		fluids = new HashMap<Fluid, FluidStack>();
@@ -46,8 +48,12 @@ public class SolutionTank {
 		this.capacity = capacity;
 	}
 
-	public void setCondition(Condition condition) {
-		this.condition = condition;
+	public void addCondition(Condition condition) {
+		this.conditions.add(condition);
+	}
+
+	public void removeCondition(Condition condition) {
+		this.conditions.remove(condition);
 	}
 
 	public Collection<FluidStack> getFluids() {
@@ -288,8 +294,10 @@ public class SolutionTank {
 		}
 		int totalAmt = getContentAmount();
 		float volDens = TFTItemPropertyRegistry.getVolumeDensity(stack);
-		float dens = TFTItemPropertyRegistry.getDensity(stack);
-		float toFill = Math.min(amt, dens * capacity / volDens - amt);
+		//float dens = TFTItemPropertyRegistry.getDensity(stack);
+		float toFill = Math.max(0,
+				Math.min(amt, 0.001f * (capacity - getContentAmount())
+						/ volDens - amt));
 		if (doFill) {
 			ItemMeta im = new ItemMeta(stack);
 			if (!solids.containsKey(im)) {
@@ -460,7 +468,7 @@ public class SolutionTank {
 	}
 
 	public boolean hasCondition(Condition condition) {
-		return condition == null || this.condition == condition;
+		return this.conditions.contains(condition);
 	}
 
 	public int getFluidAmount(Fluid fluid) {
@@ -468,5 +476,30 @@ public class SolutionTank {
 			return fluids.get(fluid).amount;
 		}
 		return 0;
+	}
+
+	/** transfer some (10%) of our content into a neighbour tank */
+	public void equalise(SolutionTank tank) {
+		//transfer 10% of what we have into our neighbour
+		for (Entry<Fluid, FluidStack> f : fluids.entrySet()) {
+			FluidStack drain = f.getValue().copy();
+			drain.amount /= 10;
+			drain = drain(drain, true);
+			drain.amount -= tank.fill(drain, true);
+			fill(drain, true);
+
+		}
+
+		//and the solutes
+		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
+			float otherAmt = 0;
+			if (tank.solutes.containsKey(solute.getKey())) {
+				otherAmt = tank.solutes.get(solute.getKey());
+			}
+			float loss = solute.getValue() / 10f;
+			otherAmt += loss;
+			tank.solutes.put(solute.getKey(), loss);
+			solutes.put(solute.getKey(), solute.getValue() - loss);
+		}
 	}
 }

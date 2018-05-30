@@ -3,7 +3,6 @@ package dinglydell.tftechness.tileentities;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -23,10 +22,8 @@ import com.bioxx.tfc.api.Interfaces.ISmeltable;
 
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
-import dinglydell.tftechness.util.ItemUtil;
 
-public class TileMachineComponentItemShelf extends TileMachineComponent
-		implements IInventory {
+public class TileMachineComponentItemShelf extends TileMachineInventory {
 
 	private static final float SPECIFIC_HEAT = 1000;
 	/**
@@ -42,7 +39,9 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 	1 };
 
 	//private static final float MAX_COOK = 2f;
-	protected ItemStack[] inventory = new ItemStack[9];
+	public TileMachineComponentItemShelf() {
+		inventory = new ItemStack[9];
+	}
 
 	@Override
 	public void updateEntity() {
@@ -153,51 +152,6 @@ public class TileMachineComponentItemShelf extends TileMachineComponent
 				}
 			}
 		}
-	}
-
-	@Override
-	public int getSizeInventory() {
-		return inventory.length;
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return inventory[slot];
-	}
-
-	@Override
-	public ItemStack decrStackSize(int slot, int amt) {
-		if (inventory[slot] == null) {
-			return null;
-		}
-		if (inventory[slot].stackSize <= amt) {
-			ItemStack stack = inventory[slot];
-			inventory[slot] = null;
-			return stack;
-		}
-		inventory[slot].stackSize -= amt;
-		return ItemUtil.clone(inventory[slot], amt);
-	}
-
-	@Override
-	public ItemStack getStackInSlotOnClosing(int slot) {
-		return inventory[slot];
-	}
-
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-		inventory[slot] = stack;
-
-	}
-
-	@Override
-	public String getInventoryName() {
-		return null;
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() {
-		return false;
 	}
 
 	@Override

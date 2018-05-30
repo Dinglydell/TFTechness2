@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 
 public class ContainerMachine extends Container {
-	private TileMachineComponent tile;
+	protected TileMachineComponent tile;
 
 	public ContainerMachine(InventoryPlayer player, TileMachineComponent tile) {
 		this.tile = tile;
