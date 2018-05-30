@@ -294,9 +294,9 @@ public class SolutionTank {
 		}
 		int totalAmt = getContentAmount();
 		float volDens = TFTItemPropertyRegistry.getVolumeDensity(stack);
-		//float dens = TFTItemPropertyRegistry.getDensity(stack);
+		float dens = TFTItemPropertyRegistry.getDensity(stack);
 		float toFill = Math.max(0,
-				Math.min(amt, 0.001f * (capacity - getContentAmount())
+				Math.min(amt, 0.001f * dens * (capacity - getContentAmount())
 						/ volDens - amt));
 		if (doFill) {
 			ItemMeta im = new ItemMeta(stack);
