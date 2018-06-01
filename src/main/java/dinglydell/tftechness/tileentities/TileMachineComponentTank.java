@@ -97,8 +97,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-		// TODO Auto-generated method stub
-		return 0;
+		return tank.fill(resource, doFill);
 	}
 
 	@Override

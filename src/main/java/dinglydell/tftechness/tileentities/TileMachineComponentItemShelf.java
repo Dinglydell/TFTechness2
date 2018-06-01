@@ -1,13 +1,18 @@
 package dinglydell.tftechness.tileentities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 
 import com.bioxx.tfc.Core.TFC_Climate;
 import com.bioxx.tfc.Core.TFC_Core;
@@ -21,7 +26,9 @@ import com.bioxx.tfc.api.Interfaces.IFood;
 import com.bioxx.tfc.api.Interfaces.ISmeltable;
 
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
+import dinglydell.tftechness.item.TFTItemPropertyRegistry;
 
 public class TileMachineComponentItemShelf extends TileMachineInventory {
 
@@ -141,6 +148,48 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 							} else if (stack.getItem() instanceof ISmeltable) {
 								ISmeltable smelt = (ISmeltable) stack.getItem();
 								//TODO: molds or tanks and stuff like that
+								//MELT!
+								List<TileMachineComponentTank> neighbourTanks = new ArrayList<TileMachineComponentTank>();
+								for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) { // try and move the contents into neighbouring tanks
+									TileEntity tile = worldObj
+											.getTileEntity(xCoord + dir.offsetX,
+													yCoord + dir.offsetY,
+													zCoord + dir.offsetZ);
+									if (tile instanceof TileMachineComponentTank) {
+										neighbourTanks
+												.add((TileMachineComponentTank) tile);
+
+									}
+								}
+								FluidMoltenMetal molten = TFTItemPropertyRegistry
+										.getMolten(stack);
+								for (TileMachineComponentTank tank : neighbourTanks) { //spread out the molten metal
+
+									int amt = smelt.getMetalReturnAmount(stack)
+											/ neighbourTanks.size();
+									FluidStack moltenStack = molten
+											.createStack(smelt
+													.getMetalReturnAmount(stack)
+													/ neighbourTanks.size(),
+													temperature);
+									tank.fill(ForgeDirection.UNKNOWN,
+											moltenStack,
+											true);
+								}
+								if (neighbourTanks.size() != 0
+										&& smelt.getMetalReturnAmount(stack)
+												% neighbourTanks.size() != 0) { //add remainder
+									FluidStack moltenStack = molten
+											.createStack(smelt
+													.getMetalReturnAmount(stack)
+													% neighbourTanks.size(),
+													temperature);
+									neighbourTanks.get(0)
+											.fill(ForgeDirection.UNKNOWN,
+													moltenStack,
+													true);
+								}
+
 								inventory[i] = null;
 
 							} else {

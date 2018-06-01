@@ -289,9 +289,9 @@ public class SolutionTank {
 
 	/** Fill with a certain mass of an item */
 	public float fill(ItemStack stack, float amt, boolean doFill) {
-		if (!TFTItemPropertyRegistry.isPowder(stack)) {
-			return 0;
-		}
+		//if (!TFTItemPropertyRegistry.isPowder(stack)) {
+		//	return 0;
+		//}
 		int totalAmt = getContentAmount();
 		float volDens = TFTItemPropertyRegistry.getVolumeDensity(stack);
 		float dens = TFTItemPropertyRegistry.getDensity(stack);
