@@ -102,6 +102,9 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 									Metal m = MetalRegistry.instance
 											.getMetalFromString(fm
 													.getMetalName());
+									if (m == null) {
+										continue;
+									}
 									HeatIndex hi = HeatRegistry.getInstance()
 											.findMatchingIndex(new ItemStack(
 													m.ingot));
