@@ -506,4 +506,9 @@ public class SolutionTank {
 			solutes.put(solute.getKey(), solute.getValue() - loss);
 		}
 	}
+
+	/** Whether the tank has anything in liquid form of any kind */
+	public boolean containsAnyFluid() {
+		return !fluids.isEmpty();
+	}
 }
