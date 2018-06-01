@@ -6,3 +6,5 @@ item.nuggetMold.name=Nugget Mould
 metal.Aluminum.name=Aluminium
 
 item.lumberTreatedWood.name=Treated Timber
+
+info.machine.electrode.tooltip=Uses RF to electrolyse neighbouring tanks. I hear you can make aluminium this way.

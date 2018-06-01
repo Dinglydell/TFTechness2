@@ -30,6 +30,7 @@ import dinglydell.tftechness.network.PacketMachineComponent;
 public/* abstract */class TileMachineComponent extends TileEntity implements
 		ITileTemperature, IEnergyReceiver {
 	protected static final float AIR_CONDUCTIVITY = 0.001f;
+	protected static final float HEAT_FLOW_MODIFIER = 0.05f / 6;
 	private int masterX, masterY = -1, masterZ;
 	protected float temperature;
 	protected int rf;
@@ -180,12 +181,13 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				//ambientConductivity /= 2;
 				//}
 
-				temperature -= 1 / 6f * (temperature - ambientTemp) * 0.5f
-						* (getConductivity() + ambientConductivity);
+				temperature -= HEAT_FLOW_MODIFIER * (temperature - ambientTemp)
+						* 0.5f * (getConductivity() + ambientConductivity);
 			} else {
 				TileMachineComponent tc = (TileMachineComponent) tile;
-				float dTemp = 1 / 6f * (temperature - tc.getTemperature())
-						* 0.5f * (getConductivity() + tc.getConductivity());
+				float dTemp = HEAT_FLOW_MODIFIER
+						* (temperature - tc.getTemperature()) * 0.5f
+						* (getConductivity() + tc.getConductivity());
 				temperature -= dTemp;
 				tc.temperature += dTemp;
 

@@ -481,7 +481,9 @@ public class SolutionTank {
 	/** transfer some (10%) of our content into a neighbour tank */
 	public void equalise(SolutionTank tank) {
 		//transfer 10% of what we have into our neighbour
-		for (Entry<Fluid, FluidStack> f : fluids.entrySet()) {
+		HashMap<Fluid, FluidStack> fluidsCopy = new HashMap<Fluid, FluidStack>(
+				fluids);
+		for (Entry<Fluid, FluidStack> f : fluidsCopy.entrySet()) {
 			FluidStack drain = f.getValue().copy();
 			drain.amount /= 10;
 			drain = drain(drain, true);
@@ -491,14 +493,16 @@ public class SolutionTank {
 		}
 
 		//and the solutes
-		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
+		HashMap<ItemMeta, Float> solutesCopy = new HashMap<ItemMeta, Float>(
+				solutes);
+		for (Entry<ItemMeta, Float> solute : solutesCopy.entrySet()) {
 			float otherAmt = 0;
 			if (tank.solutes.containsKey(solute.getKey())) {
 				otherAmt = tank.solutes.get(solute.getKey());
 			}
 			float loss = solute.getValue() / 10f;
 			otherAmt += loss;
-			tank.solutes.put(solute.getKey(), loss);
+			tank.solutes.put(solute.getKey(), otherAmt);
 			solutes.put(solute.getKey(), solute.getValue() - loss);
 		}
 	}

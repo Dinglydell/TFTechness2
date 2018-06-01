@@ -7,6 +7,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -158,6 +159,16 @@ public class BlockTFTComponent extends BlockContainer {
 	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
 		TileMachineComponent tile = (TileMachineComponent) world
 				.getTileEntity(x, y, z);
+
+		if (tile instanceof IInventory) {
+			IInventory inv = (IInventory) tile;
+			for (int i = 0; i < inv.getSizeInventory(); i++) {
+				ItemStack item = inv.getStackInSlotOnClosing(i);
+				if (item != null) {
+					dropBlockAsItem(world, x, y, z, item);
+				}
+			}
+		}
 		ItemStack dropStack = new ItemStack(this, 1);
 		NBTTagCompound nbt = new NBTTagCompound();
 		tile.writeComponentPropertiesToNBT(nbt);

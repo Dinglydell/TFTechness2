@@ -132,6 +132,8 @@ info.machine.wall.tooltip=It's a wall.
 info.machine.heater.tooltip=Turns RF into heat.
 info.machine.shelf.tooltip=Can hold items. Perhaps it could even cook them?
 info.machine.cooler.tooltip=Uses RF to transfer heat from neighbour blocks into itself.
+info.machine.tank.tooltip=Stores...stuff. Maybe it can melt it?
+info.machine.electrode.tooltip=Uses RF to electrolyze neighbouring tanks.
 
 info.machine.property.conductivity=Thermal Conductivity:
 info.machine.property.tier=Wire Tier:
@@ -140,3 +142,5 @@ tile.wall.name=§7Machine Wall§r
 tile.heater.name=§7Machine Heating Element§r
 tile.shelf.name=§7Machine Item Shelf§r
 tile.cooler.name=§7Machine Cooling Element§r
+tile.tank.name=§7Machine Tank§r
+tile.electrode.name=§7Machine Electrode Box§r

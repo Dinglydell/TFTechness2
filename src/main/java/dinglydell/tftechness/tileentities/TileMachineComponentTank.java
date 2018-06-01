@@ -62,6 +62,13 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 					TileMachineComponentTank tileTank = (TileMachineComponentTank) tile;
 					tank.equalise(tileTank.tank);
+					//if (tank.hasCondition(SolutionRecipe.electrodes)) {// share conditions
+					//	tileTank.tank.addCondition(SolutionRecipe.electrodes);
+					//} else if (tileTank.tank
+					//		.hasCondition(SolutionRecipe.electrodes)) {
+					//	tank.addCondition(SolutionRecipe.electrodes);
+					//}
+
 				} else if (tile instanceof TileMachineElectrode) {
 					TileMachineElectrode tileElectrode = (TileMachineElectrode) tile;
 
