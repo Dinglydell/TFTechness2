@@ -190,6 +190,8 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 						* (getConductivity() + tc.getConductivity());
 				temperature -= dTemp;
 				tc.temperature += dTemp;
+				//temperature = 0;
+				//tc.temperature = 0;
 
 				float avgrf = (rf / (float) rfCapacity + tc.rf
 						/ (float) tc.rfCapacity) / 2;

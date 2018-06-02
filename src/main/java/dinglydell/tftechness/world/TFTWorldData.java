@@ -26,8 +26,11 @@ public class TFTWorldData extends WorldSavedData {
 	 * */
 	protected static final int baseGreenhouseEmission = 1;
 
-	/** how much infared each ppm of co2 absorbs */
-	protected static final float greenhouseAbsorbanceConstant = 0.0021731f;
+	/**
+	 * constant / greenhouseFactor is multiplied to energy leaving the system to
+	 * work out how much is re-emitted
+	 */
+	protected static final float greenhouseAbsorbanceConstant = 8.351695636635798f;
 	/** stefan-boltzmann constant * surface area of world */
 	protected static final int stefAreaConstant = (int) 2.9e7;
 	/** energy multiplied by this to be converted to temperature */
@@ -100,13 +103,12 @@ public class TFTWorldData extends WorldSavedData {
 
 		sunInput = planetCrossArea * sunIntensity;
 		// calculate amount of greenhouse gas required to keep the thing in equilibrium
-		greenhouseFactor = Math.max(0,
-				(1 - (1 - getAlbedo())
-						* sunIntensity
-						/ (4 * stefanBoltzConstant * (float) Math
-								.pow(temperatureOffset + baseTemperature, 4)))
-						/ greenhouseAbsorbanceConstant);
-
+		// g = (c * AoT^4 / Ein) ^ 2
+		greenhouseFactor = greenhouseAbsorbanceConstant * 4
+				* stefanBoltzConstant
+				* (float) Math.pow(temperatureOffset + baseTemperature, 4)
+				/ ((1 - getAlbedo()) * sunIntensity);
+		greenhouseFactor *= greenhouseFactor;
 		//}
 		//}
 	}
@@ -164,21 +166,22 @@ public class TFTWorldData extends WorldSavedData {
 		float energyIn = this.sunInput * (1 - getAlbedo());
 		// P = AoT^4
 		//temperatureOffset = 0;
-		float energyOut = (1 - greenhouseFactor * greenhouseAbsorbanceConstant)
-				* stefArea
-				* (float) Math.pow(temperatureOffset + baseTemperature, 4);
+		float energyOut = (float) ((float) Math.pow(temperatureOffset
+				+ baseTemperature, 4)
+				* stefArea * greenhouseAbsorbanceConstant / Math
+				.max(greenhouseAbsorbanceConstant,
+						(float) Math.sqrt(greenhouseFactor)));
 		temperatureOffset = Math.max(-baseTemperature, temperatureOffset
 				+ energyTemperatureConstant * (energyIn - energyOut));
 		if (world.provider.dimensionId != -1 && world.provider.dimensionId != 1) {
 			//	TFTechness2.logger.info("[" + dimProps.getName() + "]: "
 			//		+ temperatureOffset);
 		}
-
 		//todo: something slightly more complex here such that breaking 1 leaf doesn't permanently upset the equilibrium
 		int trees = Math.max(0, leafOffset - minLeaves);
 		float treeAbsorbance = trees * leafAbsorbanceConstant;
 		greenhouseFactor += baseGreenhouseEmission - treeAbsorbance;
-
+		this.markDirty();
 	}
 
 	public void emitGreenhouse(float amt) {
@@ -213,6 +216,7 @@ public class TFTWorldData extends WorldSavedData {
 
 	public void breakLeaf() {
 		leafOffset--;
+
 	}
 
 	public void makeTree(SaplingGrowTreeEvent event) {

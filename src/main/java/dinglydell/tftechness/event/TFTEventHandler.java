@@ -100,6 +100,7 @@ public class TFTEventHandler {
 		if (event.block == TFCBlocks.leaves || event.block == TFCBlocks.leaves2) {
 			TFTWorldData.get(event.world).breakLeaf();
 		}
+
 	}
 
 	@SubscribeEvent

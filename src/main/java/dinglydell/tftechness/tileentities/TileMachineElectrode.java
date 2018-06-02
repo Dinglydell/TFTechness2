@@ -3,6 +3,8 @@ package dinglydell.tftechness.tileentities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.IEContent;
 import dinglydell.tftechness.TFTechness2;
@@ -89,7 +91,7 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 	@Override
 	protected int spendRF(int amt) {
 		if (hasElectrodes()) {
-			return super.spendRF(amt);
+			return super.spendRF(amt / 2);
 		}
 		return 0;
 	}
@@ -109,4 +111,41 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 		return true;
 	}
 
+	@Override
+	public void readFromNBT(NBTTagCompound data) {
+
+		super.readFromNBT(data);
+		//inventory
+		NBTTagList invTag = data.getTagList("Items", 10);
+
+		for (int i = 0; i < invTag.tagCount(); ++i) {
+			NBTTagCompound itemTag = invTag.getCompoundTagAt(i);
+			byte b0 = itemTag.getByte("Slot");
+
+			if (b0 >= 0 && b0 < inventory.length) {
+				inventory[b0] = ItemStack.loadItemStackFromNBT(
+
+				itemTag);
+			}
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound data) {
+
+		super.writeToNBT(data);
+		//inventory
+		NBTTagList invTag = new NBTTagList();
+
+		for (int i = 0; i < inventory.length; ++i) {
+			if (inventory[i] != null) {
+				NBTTagCompound itemTag = new NBTTagCompound();
+				itemTag.setByte("Slot", (byte) i);
+				inventory[i].writeToNBT(itemTag);
+				invTag.appendTag(itemTag);
+			}
+		}
+
+		data.setTag("Items", invTag);
+	}
 }

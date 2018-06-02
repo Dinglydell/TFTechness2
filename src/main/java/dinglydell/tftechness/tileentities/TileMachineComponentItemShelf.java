@@ -128,6 +128,8 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 							//						float energy = change * index.specificHeat * itemMass;
 							temperature -= change * index.specificHeat
 									/ SPECIFIC_HEAT;
+							//temperature = 0;
+							//itemTemp = 0;
 						}
 						TFC_ItemHeat.setTemp(stack, itemTemp);
 						if (itemTemp > index.meltTemp) {
