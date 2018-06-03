@@ -61,6 +61,7 @@ public class SolutionTank {
 		return fluids.values();
 	}
 
+	/** The total volume (mB) that fluids take up in the tank. */
 	public int getFluidAmount() {
 		int amt = 0;
 		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
@@ -69,11 +70,11 @@ public class SolutionTank {
 		return amt;
 	}
 
+	/** The total volume (mB) that solids take up in the tank. */
 	public int getSolidAmount() {
 		int amt = 0;
 		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
-			ItemStack is = new ItemStack(solid.getKey().item, 1,
-					solid.getKey().meta);
+			ItemStack is = solid.getKey().stack;
 			amt += 1000 * solid.getValue()
 					/ TFTItemPropertyRegistry.getDensity(is)
 					* TFTItemPropertyRegistry.getVolumeDensity(is);
@@ -81,9 +82,25 @@ public class SolutionTank {
 		return amt;
 	}
 
-	/** Volume, in mB, of the contents of the tank (solids + fluids) */
+	/** The total volume (mB) that solutes take up in the tank. */
+	public int getSoluteAmount() {
+		int amt = 0;
+		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
+			ItemStack is = solute.getKey().stack;
+			// divide by mol/item, multiply by vol/item
+			amt += 1000 * solute.getValue()
+					/ TFTItemPropertyRegistry.getMoles(is)
+					* TFTItemPropertyRegistry.getVolumeDensity(is);
+		}
+		return amt;
+	}
+
+	/**
+	 * Volume, in mB, of the ALL of contents of the tank (solids + fluids +
+	 * solutes)
+	 */
 	public int getContentAmount() {
-		return getFluidAmount() + getSolidAmount();
+		return getFluidAmount() + getSolidAmount() + getSoluteAmount();
 
 	}
 
@@ -136,13 +153,7 @@ public class SolutionTank {
 		List<ItemMeta> delete = new ArrayList<ItemMeta>();
 		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
 			//dissolve soluble solids
-			float totalSol = 0;
-			for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
-				totalSol += TFTItemPropertyRegistry.getSolubilityIn(solid
-						.getKey().stack, fluid.getKey())
-						* fluid.getValue().amount;
-
-			}
+			float totalSol = getTotalSolubility(solid.getKey().stack);
 			if (totalSol != 0) {
 				if (!solutes.containsKey(solid.getKey())) {
 					solutes.put(solid.getKey(), 0f);
@@ -191,7 +202,6 @@ public class SolutionTank {
 			}
 		}
 
-		//TODO: precipitation of solutes & solidifying of liquids
 		for (ItemMeta m : delete) {
 			solids.remove(m);
 		}
@@ -218,8 +228,32 @@ public class SolutionTank {
 				}
 			}
 		}
+
 		for (Fluid f : fluidDelete) {
 			fluids.remove(f);
+		}
+
+		//precipitation of solute
+		Map<ItemMeta, Float> solutesCopy = new HashMap<ItemMeta, Float>(solutes);
+		for (Entry<ItemMeta, Float> sol : solutesCopy.entrySet()) {
+			float totalSol = getTotalSolubility(sol.getKey().stack);
+			if (sol.getValue() > totalSol) {
+				//precipitate
+				//float newSol = totalSol;
+				solutes.put(sol.getKey(), totalSol);
+				float diff = sol.getValue() - totalSol;
+				int molPerItem = TFTItemPropertyRegistry
+						.getMoles(sol.getKey().stack);
+				float kgPerItem = TFTItemPropertyRegistry.getDensity(sol
+						.getKey().stack);
+				float precipitateMass = kgPerItem * diff / molPerItem;
+
+				fill(sol.getKey().stack, precipitateMass, true);
+
+			}
+			if (totalSol == 0) {
+				solutes.remove(sol.getKey());
+			}
 		}
 
 		//do a reaction
@@ -275,6 +309,21 @@ public class SolutionTank {
 			//}
 		}
 
+	}
+
+	/**
+	 * returns the total amount of solute that can be dissolved in the fluids
+	 * present
+	 */
+	private float getTotalSolubility(ItemStack solute) {
+		float totalSol = 0;
+		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
+			totalSol += TFTItemPropertyRegistry.getSolubilityIn(solute,
+					fluid.getKey())
+					* fluid.getValue().amount;
+
+		}
+		return totalSol;
 	}
 
 	/** Fill the tank with a powdered item */

@@ -169,7 +169,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				Block b = worldObj.getBlock(x, y, z);
 				if (b instanceof IFluidBlock) {
 					Fluid f = ((IFluidBlock) b).getFluid();
-					ambientTemp = f.getTemperature();
+					ambientTemp = f.getTemperature() - 273;
 				} else {
 					ambientTemp = TFC_Climate.getHeightAdjustedTemp(worldObj,
 							x,

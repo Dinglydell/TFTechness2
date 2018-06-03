@@ -27,10 +27,13 @@ public abstract class ContainerMachineInventory extends ContainerMachine {
 			prev = stack.copy();
 			TFTechness2.logger.info(fromSlot);
 			if (slot.inventory == tile) {
-				mergeItemStack(stack,
-						tile.getSizeInventory(),
-						this.inventorySlots.size() - 1,
-						true);
+				if (player.inventory.addItemStackToInventory(stack)) {
+					return null;
+				}
+				//mergeItemStack(stack,
+				//		tile.getSizeInventory(),
+				//		this.inventorySlots.size() - 1,
+				//		true);
 			} else {
 
 				for (int i = 0; i < tile.getSizeInventory(); i++) {

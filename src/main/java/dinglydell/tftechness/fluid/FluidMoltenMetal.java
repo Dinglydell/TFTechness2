@@ -20,9 +20,10 @@ public class FluidMoltenMetal extends Fluid {
 		return metalName;
 	}
 
+	/** Create a fluidstack with a temperature in celsius */
 	public FluidStack createStack(int amount, float temperature) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setFloat("Temperature", temperature);
+		nbt.setFloat("Temperature", temperature + 273);
 		return new FluidStack(this, amount, nbt);
 	}
 
@@ -41,7 +42,7 @@ public class FluidMoltenMetal extends Fluid {
 			//TODO: proper default
 			setTemperature(1000, stack);
 		}
-		return stack.tag.getInteger("Temperature");
+		return stack.tag.getInteger("Temperature") - 273;
 	}
 
 	public void setTemperature(float temperature, FluidStack stack) {
@@ -50,7 +51,7 @@ public class FluidMoltenMetal extends Fluid {
 		if (nbt == null) {
 			nbt = new NBTTagCompound();
 		}
-		nbt.setFloat("Temperature", temperature);
+		nbt.setFloat("Temperature", temperature + 273);
 		stack.tag = nbt;
 
 	}
