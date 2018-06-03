@@ -43,6 +43,8 @@ Mid-term:
  -multiblock components that consider the atmospheric conditions of the planet its on when calculating heat loss to the environment
  -steam powered multiblock components?
  -target temperature in multiblocks
+ -materials with electrical resistance and/or a limited transfer rate?
+ -multiblocks capable of generating RF
 
 
  -Reintroduction of the cryothermic chamber (known to some as a "fridge")

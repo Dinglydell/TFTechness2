@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import blusunrize.immersiveengineering.common.IEContent;
+import blusunrize.immersiveengineering.common.items.ItemGraphiteElectrode;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.util.ItemUtil;
@@ -91,7 +92,13 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 	@Override
 	protected int spendRF(int amt) {
 		if (hasElectrodes()) {
-			return super.spendRF(amt / 2);
+			for (int i = 0; i < 2; i++) {
+				ItemGraphiteElectrode elec = (ItemGraphiteElectrode) inventory[i]
+						.getItem();
+				elec.damage(inventory[i], 1);
+
+			}
+			return super.spendRF((int) (amt * 0.75));
 		}
 		return 0;
 	}
