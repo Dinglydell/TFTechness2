@@ -56,7 +56,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				stack = null;
 			}
 		}
-		tank.updateTank(temperature);
+		temperature = tank.updateTank(temperature);
 		tank.removeCondition(SolutionRecipe.electrodes);
 		for (ForgeDirection dir : ForgeDirection.values()) {
 			if (dir == ForgeDirection.UNKNOWN) {

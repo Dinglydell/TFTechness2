@@ -194,7 +194,8 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 
 								inventory[i] = null;
 
-							} else if (output.getItem() != stack.getItem()) {
+							} else if (output != null && stack != null
+									&& output.getItem() != stack.getItem()) {
 								inventory[i] = output;
 							}
 						}

@@ -33,6 +33,12 @@ public class SolutionTank {
 	protected static final int SH_AIR = 1376;
 	//also simplified
 	protected static final float DENSITY_AIR = 1.2f;
+	/**
+	 * The amount (mB) of fluid that will melt/solidify per degree in
+	 * temperature difference between the ambient temperature and the melting
+	 * point
+	 */
+	private static final float MELT_CONSTANT = 10f;
 	protected Map<Fluid, FluidStack> fluids;
 	/** stored by mass kg */
 	protected Map<ItemMeta, Float> solids;
@@ -146,7 +152,8 @@ public class SolutionTank {
 		return SHMass;
 	}
 
-	public void updateTank(float temperature) {
+	/** Updates the tank and returns the new temperature */
+	public float updateTank(float temperature) {
 
 		// fluids solidifying and stuff
 		List<Fluid> fluidDelete = new ArrayList<Fluid>();
@@ -158,9 +165,15 @@ public class SolutionTank {
 				HeatIndex hi = HeatRegistry.getInstance()
 						.findMatchingIndex(solid);
 				if (temperature < hi.meltTemp) {
-					int amt = fluid.getValue().amount;
-					fluid.getValue().amount = 0;
-					fluidDelete.add(f);
+					float dT = hi.meltTemp - temperature;
+
+					int amt = Math.min((int) (dT * MELT_CONSTANT),
+							fluid.getValue().amount);
+					fluid.getValue().amount -= amt;
+					temperature += amt / MELT_CONSTANT;
+					if (fluid.getValue().amount <= 0) {
+						fluidDelete.add(f);
+					}
 					fill(solid,
 							TFTItemPropertyRegistry.getDensity(solid)
 									* (amt / 1000f)
@@ -213,17 +226,25 @@ public class SolutionTank {
 			HeatIndex hi = HeatRegistry.getInstance()
 					.findMatchingIndex(solid.getKey().stack);
 			if (hi != null && temperature > hi.meltTemp) {
+				float dT = temperature - hi.meltTemp;
 				float mass = solid.getValue();
-				solid.setValue(0f);
-				delete.add(solid.getKey());
+				float dens = TFTItemPropertyRegistry
+						.getDensity(solid.getKey().stack);
+				float volDens = TFTItemPropertyRegistry.getVolumeDensity(solid
+						.getKey().stack);
+				int fluidEq = (int) (mass / dens * volDens * 1000);
+				int fluidFill = Math.min(fluidEq, (int) (dT * MELT_CONSTANT));
+
+				temperature -= fluidFill / MELT_CONSTANT;
+				float dMass = fluidFill / (volDens * 1000) * dens;
+				solid.setValue(solid.getValue() - dMass);
+				if (solid.getValue() <= 0) {
+					delete.add(solid.getKey());
+				}
+
 				FluidMoltenMetal molten = TFTItemPropertyRegistry
 						.getMolten(solid.getKey().stack);
-				fill(molten.createStack((int) (mass
-						/ TFTItemPropertyRegistry.getDensity(solid.getKey().stack)
-						* TFTItemPropertyRegistry.getVolumeDensity(solid
-								.getKey().stack) * 1000),
-						temperature),
-						true);
+				fill(molten.createStack(fluidFill, temperature), true);
 				continue;
 			}
 		}
@@ -259,7 +280,7 @@ public class SolutionTank {
 		//TODO: improve performance on this check
 		SolutionRecipe recipe = SolutionRecipe.findRecipe(this);
 		if (recipe == null) {
-			return;
+			return temperature;
 		}
 		float rate = 0;
 		switch (recipe.inputState) {
@@ -307,7 +328,7 @@ public class SolutionTank {
 					temperature), true);
 			//}
 		}
-
+		return temperature;
 	}
 
 	/**
