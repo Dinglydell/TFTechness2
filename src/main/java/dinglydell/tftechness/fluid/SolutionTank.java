@@ -380,7 +380,7 @@ public class SolutionTank {
 	/** Fill the tank with some fluid */
 	public int fill(FluidStack stack, boolean doFill) {
 		int amt = getContentAmount();
-		int toFill = Math.min(stack.amount, capacity - amt);
+		int toFill = Math.max(0, Math.min(stack.amount, capacity - amt));
 		if (doFill) {
 			if (!fluids.containsKey(stack.getFluid())) {
 				FluidStack fs = stack.copy();

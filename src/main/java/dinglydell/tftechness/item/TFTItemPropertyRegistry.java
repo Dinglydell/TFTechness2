@@ -72,14 +72,17 @@ public class TFTItemPropertyRegistry {
 		solubilityMap.get(im).put(fluid, sol);
 	}
 
+	/** kg/item */
 	public static void registerDensity(ItemStack stack, float density) {
 		densityMap.put(new ItemMeta(stack), density);
 	}
 
+	/** m^3/item */
 	public static void registerVolume(ItemStack stack, float volume) {
 		volumeMap.put(new ItemMeta(stack), volume);
 	}
 
+	/** mol/item */
 	public static void registerNumMoles(ItemStack stack, int moles) {
 		molesMap.put(new ItemMeta(stack), moles);
 	}

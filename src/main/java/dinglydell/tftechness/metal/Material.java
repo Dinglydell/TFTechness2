@@ -127,27 +127,53 @@ public class Material {
 
 	private void registerItemProps() {
 		TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot),
-				TFTechness2.statMap.get(this.name).density);
+				TFTechness2.statMap.get(this.name).density
+						/ (float) TFTechness2.ingotsPerBlock);
+		TFTItemPropertyRegistry.registerVolume(new ItemStack(ingot),
+				1f / TFTechness2.ingotsPerBlock);
 		if (ingot2x != null) {
 			TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot2x),
-					TFTechness2.statMap.get(this.name).density * 2);
+					TFTechness2.statMap.get(this.name).density
+							/ (float) TFTechness2.ingotsPerBlock * 2);
+			TFTItemPropertyRegistry.registerVolume(new ItemStack(ingot2x),
+					2f / TFTechness2.ingotsPerBlock);
 		}
 		if (sheet != null) {
 			TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet),
-					TFTechness2.statMap.get(this.name).density * 2);
+					TFTechness2.statMap.get(this.name).density
+							/ (float) TFTechness2.ingotsPerBlock * 2);
+			TFTItemPropertyRegistry.registerVolume(new ItemStack(sheet),
+					2f / TFTechness2.ingotsPerBlock);
 		}
 		if (sheet2x != null) {
 			TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet2x),
-					TFTechness2.statMap.get(this.name).density * 4);
+					TFTechness2.statMap.get(this.name).density
+							/ (float) TFTechness2.ingotsPerBlock * 4);
+			TFTItemPropertyRegistry.registerVolume(new ItemStack(sheet2x),
+					4f / TFTechness2.ingotsPerBlock);
 		}
-
+		if (block != null) {
+			TFTItemPropertyRegistry.registerDensity(new ItemStack(block, 1,
+					blockMeta), TFTechness2.statMap.get(this.name).density);
+			TFTItemPropertyRegistry.registerVolume(new ItemStack(block, 1,
+					blockMeta), 1f);
+		}
 		TFTItemPropertyRegistry.registerDensity(new ItemStack(rod),
-				TFTechness2.statMap.get(this.name).density * 0.5f);
+				TFTechness2.statMap.get(this.name).density
+						/ (float) TFTechness2.ingotsPerBlock * 0.5f);
+		TFTItemPropertyRegistry.registerVolume(new ItemStack(rod),
+				0.5f / TFTechness2.ingotsPerBlock);
 		TFTItemPropertyRegistry.registerDensity(new ItemStack(nugget),
-				TFTechness2.statMap.get(this.name).density * 0.1f);
+				TFTechness2.statMap.get(this.name).density
+						/ (float) TFTechness2.ingotsPerBlock * 0.1f);
+		TFTItemPropertyRegistry.registerVolume(new ItemStack(nugget),
+				0.11f / TFTechness2.ingotsPerBlock);
 		if (unshaped != null) {
 			TFTItemPropertyRegistry.registerDensity(new ItemStack(unshaped),
-					TFTechness2.statMap.get(this.name).density);
+					TFTechness2.statMap.get(this.name).density
+							/ (float) TFTechness2.ingotsPerBlock);
+			TFTItemPropertyRegistry.registerVolume(new ItemStack(unshaped),
+					1f / TFTechness2.ingotsPerBlock);
 		}
 
 	}
