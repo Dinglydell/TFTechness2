@@ -74,10 +74,7 @@ public class SolutionTank {
 	public int getSolidAmount() {
 		int amt = 0;
 		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
-			ItemStack is = solid.getKey().stack;
-			amt += 1000 * solid.getValue()
-					/ TFTItemPropertyRegistry.getDensity(is)
-					* TFTItemPropertyRegistry.getVolumeDensity(is);
+			amt += getSolidVolume(solid.getKey());
 		}
 		return amt;
 	}
@@ -150,10 +147,39 @@ public class SolutionTank {
 	}
 
 	public void updateTank(float temperature) {
+
+		// fluids solidifying and stuff
+		List<Fluid> fluidDelete = new ArrayList<Fluid>();
+		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
+			if (fluid.getKey() instanceof FluidMoltenMetal) {
+				FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
+				f.setTemperature(temperature, fluid.getValue());
+				ItemStack solid = TFTItemPropertyRegistry.getSolid(f);
+				HeatIndex hi = HeatRegistry.getInstance()
+						.findMatchingIndex(solid);
+				if (temperature < hi.meltTemp) {
+					int amt = fluid.getValue().amount;
+					fluid.getValue().amount = 0;
+					fluidDelete.add(f);
+					fill(solid,
+							TFTItemPropertyRegistry.getDensity(solid)
+									* (amt / 1000f)
+									/ TFTItemPropertyRegistry
+											.getVolumeDensity(solid),
+							true);
+				}
+			}
+		}
+
+		for (Fluid f : fluidDelete) {
+			fluids.remove(f);
+		}
+
 		List<ItemMeta> delete = new ArrayList<ItemMeta>();
 		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
 			//dissolve soluble solids
 			float totalSol = getTotalSolubility(solid.getKey().stack);
+
 			if (totalSol != 0) {
 				if (!solutes.containsKey(solid.getKey())) {
 					solutes.put(solid.getKey(), 0f);
@@ -204,33 +230,6 @@ public class SolutionTank {
 
 		for (ItemMeta m : delete) {
 			solids.remove(m);
-		}
-
-		// fluids solidifying and stuff
-		List<Fluid> fluidDelete = new ArrayList<Fluid>();
-		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
-			if (fluid.getKey() instanceof FluidMoltenMetal) {
-				FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
-				f.setTemperature(temperature, fluid.getValue());
-				ItemStack solid = TFTItemPropertyRegistry.getSolid(f);
-				HeatIndex hi = HeatRegistry.getInstance()
-						.findMatchingIndex(solid);
-				if (temperature < hi.meltTemp) {
-					int amt = fluid.getValue().amount;
-					fluid.getValue().amount = 0;
-					fluidDelete.add(f);
-					fill(solid,
-							TFTItemPropertyRegistry.getDensity(solid)
-									* (amt / 1000f)
-									/ TFTItemPropertyRegistry
-											.getVolumeDensity(solid),
-							true);
-				}
-			}
-		}
-
-		for (Fluid f : fluidDelete) {
-			fluids.remove(f);
 		}
 
 		//precipitation of solute
@@ -491,6 +490,24 @@ public class SolutionTank {
 
 	}
 
+	public float getSolid(Item item) {
+		return getSolid(new ItemMeta(item, 0));
+	}
+
+	public float getSolid(ItemMeta itemMeta) {
+		if (solids.containsKey(itemMeta)) {
+			return solids.get(itemMeta);
+		}
+		return 0;
+	}
+
+	public float getSolidVolume(ItemMeta item) {
+		ItemStack is = item.stack;
+		return 1000 * solids.get(item) / TFTItemPropertyRegistry.getDensity(is)
+				* TFTItemPropertyRegistry.getVolumeDensity(is);
+
+	}
+
 	public float getSolute(Item item) {
 		return getSolute(new ItemMeta(item, 0));
 	}
@@ -559,5 +576,15 @@ public class SolutionTank {
 	/** Whether the tank has anything in liquid form of any kind */
 	public boolean containsAnyFluid() {
 		return !fluids.isEmpty();
+	}
+
+	public Set<ItemMeta> getSolids() {
+		return solids.keySet();
+
+	}
+
+	public Set<ItemMeta> getSolutes() {
+		return solutes.keySet();
+
 	}
 }

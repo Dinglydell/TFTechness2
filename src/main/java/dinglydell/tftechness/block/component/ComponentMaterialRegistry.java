@@ -28,7 +28,7 @@ public class ComponentMaterialRegistry {
 	//			conductivity, fullRecipe));
 	//}
 
-	public static ComponentMaterialRegistry registerMaterial(
+	public static ComponentMaterialRegistry registerMaterial(String name,
 			ItemStack primaryItem, ItemStack secondaryItem) {
 		//if (!validMaterials.containsKey(property)) {
 		//	validMaterials.put(property,
@@ -37,31 +37,31 @@ public class ComponentMaterialRegistry {
 		//}
 		//validMaterials.get(property)
 		//		.add(new ComponentMaterialRegistry(item, null, value, true));
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(
+		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
 				primaryItem, secondaryItem, true);
 		validMaterials.add(c);
 		return c;
 	}
 
-	public static ComponentMaterialRegistry registerMaterial(
+	public static ComponentMaterialRegistry registerMaterial(String name,
 			String primaryItem, ItemStack secondaryItem) {
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(
+		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
 				primaryItem, secondaryItem, true);
 		validMaterials.add(c);
 		return c;
 	}
 
-	public static ComponentMaterialRegistry registerMaterial(
+	public static ComponentMaterialRegistry registerMaterial(String name,
 			ItemStack primaryItem, String secondaryItem) {
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(
+		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
 				primaryItem, secondaryItem, true);
 		validMaterials.add(c);
 		return c;
 	}
 
-	public static ComponentMaterialRegistry registerMaterial(
+	public static ComponentMaterialRegistry registerMaterial(String name,
 			String primaryItem, String secondaryItem) {
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(
+		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
 				primaryItem, secondaryItem, true);
 		validMaterials.add(c);
 		return c;
@@ -197,10 +197,12 @@ public class ComponentMaterialRegistry {
 	private boolean fullRecipe;
 	public Object material;
 	public Object shelfMaterial;
+	public String name;
 	public Map<ComponentProperty, Object> validFor = new HashMap<ComponentProperty, Object>();
 
-	public ComponentMaterialRegistry(Object material, Object shelfMaterial,
-			boolean fullRecipe) {
+	public ComponentMaterialRegistry(String name, Object material,
+			Object shelfMaterial, boolean fullRecipe) {
+		this.name = name;
 		this.material = material;
 		this.shelfMaterial = shelfMaterial;
 		//this.value = value;

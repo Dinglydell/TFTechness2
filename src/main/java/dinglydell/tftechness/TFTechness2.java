@@ -1406,13 +1406,15 @@ public class TFTechness2 {
 		//false);
 
 		//register stone with the conductivity property
-		ComponentMaterialRegistry.registerMaterial("stoneBricks",
+		ComponentMaterialRegistry.registerMaterial("stone",
+				"stoneBricks",
 				new ItemStack(TFCItems.looseRock, 1,
 						OreDictionary.WILDCARD_VALUE))
 				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f);
 		for (Material m : materials) {
 			// register metal materials with conductivity property
-			ComponentMaterialRegistry.registerMaterial("block" + m.oreName,
+			ComponentMaterialRegistry.registerMaterial(m.name,
+					"block" + m.oreName,
 					"plate" + m.oreName)
 					.addProperty(ComponentProperty.CONDUCTIVITY,
 							statMap.get(m.name).conductivity);
@@ -1422,7 +1424,8 @@ public class TFTechness2 {
 		//wires
 		for (WireTier wire : WireTier.values()) {
 			//register a wire with wire tier property
-			ComponentMaterialRegistry.registerMaterial(wire.getWire(),
+			ComponentMaterialRegistry.registerMaterial(wire.name(),
+					wire.getWire(),
 					wire.getWire()).addProperty(ComponentProperty.WIRE_TIER,
 					wire);
 		}

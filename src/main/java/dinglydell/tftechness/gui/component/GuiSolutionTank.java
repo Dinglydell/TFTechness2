@@ -2,8 +2,12 @@ package dinglydell.tftechness.gui.component;
 
 import java.util.List;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraftforge.fluids.FluidStack;
 import dinglydell.tftechness.fluid.SolutionTank;
+import dinglydell.tftechness.item.ItemMeta;
 
 public class GuiSolutionTank extends Gui implements ITFTComponent {
 	private int x;
@@ -25,19 +29,63 @@ public class GuiSolutionTank extends Gui implements ITFTComponent {
 
 	@Override
 	public void addTooltip(List<String> tooltip) {
-		tooltip.add(name);
+		//tooltip.add(name);
 		tank.addTooltip(tooltip);
 
 	}
 
 	@Override
 	public void draw() {
-		//if (tank.getFluid() != null) {
-		//	int height = (int) (tank.getFluidAmount()
-		//			/ (float) tank.getCapacity() * this.height);
-		//	drawTexturedModelRectFromIcon(x, y + this.height - height, tank
-		//			.getFluid().getFluid().getIcon(), width, height);
-		//}
+		int dy = 0;
+		TextureManager texture = Minecraft.getMinecraft().getTextureManager();
+		//		tank.getSolute(item)
+		int dx = 0;
+		int iconSepX = 3;
+		int iconSepY = 3;
+		int iconWidth = 8;
+		int iconHeight = 8;
+		for (ItemMeta im : tank.getSolids()) {
+			float amt = tank.getSolidVolume(im);
+			//float total = amt * this.height;
+			//int height = (int) (total / tank.getCapacity());
+			//int mWidth = (int) ((total % tank.getCapacity())
+			//	/ tank.getCapacity() * width);
+			int numIcons = (int) (width * height / (iconSepX * iconSepY) * amt / tank
+					.getCapacity());
+			texture.bindTexture(texture.getResourceLocation(im.item
+					.getSpriteNumber()));
+			for (int i = 0; i < numIcons; i++) {
+
+				drawTexturedModelRectFromIcon(x + dx - 1,
+						y + dy + this.height - iconHeight + 1,
+						im.stack.getIconIndex(),
+						iconWidth,
+						iconHeight);
+				dx += iconSepX;
+				if (dx + iconWidth / 2 > width) {
+					dx = 0;
+					dy -= iconSepY;
+				}
+			}
+			//dy -= height;
+		}
+		for (FluidStack f : tank.getFluids()) {
+
+			int height = (int) (f.amount / (float) tank.getCapacity() * this.height);
+
+			texture.bindTexture(texture.getResourceLocation(f.getFluid()
+					.getSpriteNumber()));
+			//drawTexturedModalRect(x,
+			//		y + dy + this.height - height,
+			//		0,
+			//		0,
+			//		width,
+			//		height);
+			drawTexturedModelRectFromIcon(x, y + dy + this.height - height, f
+					.getFluid().getIcon(f), width, height);
+			dy -= height;
+
+		}
 	}
 
 	@Override
