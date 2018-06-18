@@ -69,7 +69,7 @@ public class GuiSolutionTank extends Gui implements ITFTComponent {
 			}
 			//dy -= height;
 		}
-		for (FluidStack f : tank.getFluids()) {
+		for (FluidStack f : tank.getDensitySortedFluids(-1)) {
 
 			int height = (int) (f.amount / (float) tank.getCapacity() * this.height);
 

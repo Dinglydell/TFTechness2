@@ -2,6 +2,8 @@ package dinglydell.tftechness.fluid;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -23,10 +26,11 @@ import com.bioxx.tfc.api.HeatRegistry;
 
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.item.ItemMeta;
-import dinglydell.tftechness.item.TFTItemPropertyRegistry;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.Condition;
+import dinglydell.tftechness.recipe.TFTAlloyRecipe;
 
 public class SolutionTank {
 	//very simplified since air has a varying SH
@@ -44,6 +48,9 @@ public class SolutionTank {
 	protected Map<ItemMeta, Float> solids;
 	/** stored by moles */
 	protected Map<ItemMeta, Float> solutes;
+
+	protected Map<Gas, GasStack> gases;
+
 	protected final int capacity;
 	private Set<Condition> conditions = new HashSet<Condition>();
 
@@ -51,6 +58,8 @@ public class SolutionTank {
 		fluids = new HashMap<Fluid, FluidStack>();
 		solids = new HashMap<ItemMeta, Float>();
 		solutes = new HashMap<ItemMeta, Float>();
+		gases = new HashMap<Gas, GasStack>();
+		gases.put(Gas.AIR, new GasStack(Gas.AIR, 1));
 		this.capacity = capacity;
 	}
 
@@ -64,7 +73,7 @@ public class SolutionTank {
 
 	public Collection<FluidStack> getFluids() {
 
-		return fluids.values();
+		return new ArrayList<FluidStack>(fluids.values());
 	}
 
 	/** The total volume (mB) that fluids take up in the tank. */
@@ -91,9 +100,8 @@ public class SolutionTank {
 		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
 			ItemStack is = solute.getKey().stack;
 			// divide by mol/item, multiply by vol/item
-			amt += 1000 * solute.getValue()
-					/ TFTItemPropertyRegistry.getMoles(is)
-					* TFTItemPropertyRegistry.getVolumeDensity(is);
+			amt += 1000 * solute.getValue() / TFTPropertyRegistry.getMoles(is)
+					* TFTPropertyRegistry.getVolumeDensity(is);
 		}
 		return amt;
 	}
@@ -134,9 +142,8 @@ public class SolutionTank {
 			if (hi == null) {
 				continue;
 			}
-			float mass = TFTItemPropertyRegistry.getDensity(is)
-					* solute.getValue()
-					/ (float) TFTItemPropertyRegistry.getMoles(is);
+			float mass = TFTPropertyRegistry.getDensity(is) * solute.getValue()
+					/ (float) TFTPropertyRegistry.getMoles(is);
 			SHMass += mass * hi.specificHeat * 1000;
 
 		}
@@ -161,7 +168,7 @@ public class SolutionTank {
 			if (fluid.getKey() instanceof FluidMoltenMetal) {
 				FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
 				f.setTemperature(temperature, fluid.getValue());
-				ItemStack solid = TFTItemPropertyRegistry.getSolid(f);
+				ItemStack solid = TFTPropertyRegistry.getSolid(f);
 				HeatIndex hi = HeatRegistry.getInstance()
 						.findMatchingIndex(solid);
 				if (temperature < hi.meltTemp) {
@@ -175,9 +182,9 @@ public class SolutionTank {
 						fluidDelete.add(f);
 					}
 					fill(solid,
-							TFTItemPropertyRegistry.getDensity(solid)
+							TFTPropertyRegistry.getDensity(solid)
 									* (amt / 1000f)
-									/ TFTItemPropertyRegistry
+									/ TFTPropertyRegistry
 											.getVolumeDensity(solid),
 							true);
 				}
@@ -198,10 +205,10 @@ public class SolutionTank {
 					solutes.put(solid.getKey(), 0f);
 				}
 				//how much (kg) to reach capacity
-				int molPerItem = TFTItemPropertyRegistry.getMoles(solid
-						.getKey().stack);
-				float kgPerItem = TFTItemPropertyRegistry.getDensity(solid
-						.getKey().stack);
+				int molPerItem = TFTPropertyRegistry
+						.getMoles(solid.getKey().stack);
+				float kgPerItem = TFTPropertyRegistry
+						.getDensity(solid.getKey().stack);
 				float maxAmt = Math
 						.min(solid.getValue(),
 								kgPerItem
@@ -228,9 +235,9 @@ public class SolutionTank {
 			if (hi != null && temperature > hi.meltTemp) {
 				float dT = temperature - hi.meltTemp;
 				float mass = solid.getValue();
-				float dens = TFTItemPropertyRegistry
+				float dens = TFTPropertyRegistry
 						.getDensity(solid.getKey().stack);
-				float volDens = TFTItemPropertyRegistry.getVolumeDensity(solid
+				float volDens = TFTPropertyRegistry.getVolumeDensity(solid
 						.getKey().stack);
 				int fluidEq = (int) (mass / dens * volDens * 1000);
 				int fluidFill = Math.min(fluidEq, (int) (dT * MELT_CONSTANT));
@@ -242,8 +249,8 @@ public class SolutionTank {
 					delete.add(solid.getKey());
 				}
 
-				FluidMoltenMetal molten = TFTItemPropertyRegistry
-						.getMolten(solid.getKey().stack);
+				FluidMoltenMetal molten = TFTPropertyRegistry.getMolten(solid
+						.getKey().stack);
 				fill(molten.createStack(fluidFill, temperature), true);
 				continue;
 			}
@@ -262,10 +269,10 @@ public class SolutionTank {
 				//float newSol = totalSol;
 				solutes.put(sol.getKey(), totalSol);
 				float diff = sol.getValue() - totalSol;
-				int molPerItem = TFTItemPropertyRegistry
+				int molPerItem = TFTPropertyRegistry
 						.getMoles(sol.getKey().stack);
-				float kgPerItem = TFTItemPropertyRegistry.getDensity(sol
-						.getKey().stack);
+				float kgPerItem = TFTPropertyRegistry
+						.getDensity(sol.getKey().stack);
 				float precipitateMass = kgPerItem * diff / molPerItem;
 
 				fill(sol.getKey().stack, precipitateMass, true);
@@ -276,6 +283,23 @@ public class SolutionTank {
 			}
 		}
 
+		//alloysh and shtuff
+		//TODO: improve performance on this check
+		for (TFTAlloyRecipe alloy : TFTAlloyRecipe.getAlloys()) {
+			boolean match = true;
+			for (FluidStack in : alloy.inputs) {
+				if (drain(in, false).amount < in.amount) {
+					match = false;
+					break;
+				}
+			}
+			if (match) {
+				for (FluidStack in : alloy.inputs) {
+					drain(in, true);
+				}
+				fill(alloy.output, true);
+			}
+		}
 		//do a reaction
 		//TODO: improve performance on this check
 		SolutionRecipe recipe = SolutionRecipe.findRecipe(this);
@@ -287,7 +311,7 @@ public class SolutionTank {
 		case gas:
 			break;
 		case liquid:
-			FluidMoltenMetal fluid = TFTItemPropertyRegistry
+			FluidMoltenMetal fluid = TFTPropertyRegistry
 					.getMolten(recipe.input);
 			FluidStack fs = fluids.get(fluid);
 			if (fs.amount >= recipe.inputQuantity) {
@@ -305,10 +329,10 @@ public class SolutionTank {
 		case solute:
 			ItemMeta im = new ItemMeta(recipe.input);
 			float amt = solutes.get(im);
-			if (amt >= recipe.inputQuantity) {
+			if (amt >= 0) {
 				rate = (amt / recipe.inputQuantity) / 10;
 				solutes.put(im, amt - recipe.inputQuantity * rate);
-				if (solutes.get(im) == 0) {
+				if (solutes.get(im) <= 0) {
 					solutes.remove(im);
 				}
 
@@ -322,10 +346,9 @@ public class SolutionTank {
 			//HeatIndex hi = HeatRegistry.getInstance()
 			//		.findMatchingIndex(recipe.output);
 			//if(hi.meltTemp > temperature){
-			FluidMoltenMetal output = TFTItemPropertyRegistry
-					.getMolten(recipe.output);
-			fill(output.createStack((int) (recipe.outputQuantity * rate),
-					temperature), true);
+			//FluidMoltenMetal output = TFTItemPropertyRegistry
+			//	.getMolten(recipe.output);
+			fill(recipe.output, recipe.outputQuantity * rate, true);
 			//}
 		}
 		return temperature;
@@ -338,7 +361,7 @@ public class SolutionTank {
 	private float getTotalSolubility(ItemStack solute) {
 		float totalSol = 0;
 		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
-			totalSol += TFTItemPropertyRegistry.getSolubilityIn(solute,
+			totalSol += TFTPropertyRegistry.getSolubilityIn(solute,
 					fluid.getKey())
 					* fluid.getValue().amount;
 
@@ -348,12 +371,32 @@ public class SolutionTank {
 
 	/** Fill the tank with a powdered item */
 	public int fill(ItemStack stack, boolean doFill) {
-		float dens = TFTItemPropertyRegistry.getDensity(stack);
+		float dens = TFTPropertyRegistry.getDensity(stack);
 		int amt = (int) (fill(stack, stack.stackSize * dens, false) / dens);
 		if (doFill) {
+			float vol = stack.stackSize
+					* TFTPropertyRegistry.getVolumeDensity(stack);
+			reduceGas(vol);
 			fill(stack, amt * dens, true);
 		}
 		return amt;
+	}
+
+	/** leaks a certain volume of gas (used when something is enters) */
+	private void reduceGas(float vol) {
+		float totalAmt = 0;
+		for (Entry<Gas, GasStack> g : gases.entrySet()) {
+			totalAmt += g.getValue().amount;
+		}
+		for (Entry<Gas, GasStack> g : gases.entrySet()) {
+			float volReduce = vol / totalAmt * g.getValue().amount;
+			float totalV = 0.001f * (getCapacity() - getContentAmount());
+			// this ensures the pressure and temperature will be constant if volume decreases
+			g.getValue().amount *= (totalV - volReduce) / totalV;
+			//float startP = g.getValue().getPressure();
+
+		}
+
 	}
 
 	/** Fill with a certain mass of an item */
@@ -362,8 +405,8 @@ public class SolutionTank {
 		//	return 0;
 		//}
 		int totalAmt = getContentAmount();
-		float volDens = TFTItemPropertyRegistry.getVolumeDensity(stack);
-		float dens = TFTItemPropertyRegistry.getDensity(stack);
+		float volDens = TFTPropertyRegistry.getVolumeDensity(stack);
+		float dens = TFTPropertyRegistry.getDensity(stack);
 		float toFill = Math.max(0,
 				Math.min(amt, 0.001f * dens * (capacity - getContentAmount())
 						/ volDens - amt));
@@ -379,6 +422,9 @@ public class SolutionTank {
 
 	/** Fill the tank with some fluid */
 	public int fill(FluidStack stack, boolean doFill) {
+		if (stack.amount == 0) {
+			return 0;
+		}
 		int amt = getContentAmount();
 		int toFill = Math.max(0, Math.min(stack.amount, capacity - amt));
 		if (doFill) {
@@ -394,11 +440,12 @@ public class SolutionTank {
 
 	public FluidStack drain(FluidStack stack, boolean doDrain) {
 		Fluid f = stack.getFluid();
+		FluidStack drainStack = stack.copy();
 		if (!fluids.containsKey(f)) {
-			return null;
+			drainStack.amount = 0;
+			return drainStack;
 		}
 
-		FluidStack drainStack = stack.copy();
 		FluidStack currentStack = fluids.get(f);
 		if (currentStack.amount < drainStack.amount) {
 			drainStack.amount = currentStack.amount;
@@ -413,8 +460,8 @@ public class SolutionTank {
 	}
 
 	public void addTooltip(List<String> infoList) {
-
-		infoList.add("Total Volume - " + getContentAmount() + "mB");
+		float totalV = getContentAmount();
+		infoList.add("Total Volume - " + totalV + "mB");
 		float fluidAmt = getFluidAmount(); // 1000f;
 
 		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
@@ -438,6 +485,11 @@ public class SolutionTank {
 					+ Math.round(1000 * solid.getValue())
 					/ 1000f
 					+ "kg");
+		}
+
+		for (Entry<Gas, GasStack> gas : gases.entrySet()) {
+			infoList.add(gas.getValue()
+					.getDisplayString(0.001f * (getCapacity() - totalV)));
 		}
 	}
 
@@ -524,8 +576,8 @@ public class SolutionTank {
 
 	public float getSolidVolume(ItemMeta item) {
 		ItemStack is = item.stack;
-		return 1000 * solids.get(item) / TFTItemPropertyRegistry.getDensity(is)
-				* TFTItemPropertyRegistry.getVolumeDensity(is);
+		return 1000 * solids.get(item) / TFTPropertyRegistry.getDensity(is)
+				* TFTPropertyRegistry.getVolumeDensity(is);
 
 	}
 
@@ -565,16 +617,47 @@ public class SolutionTank {
 		return 0;
 	}
 
-	/** transfer some (10%) of our content into a neighbour tank */
-	public void equalise(SolutionTank tank) {
+	/**
+	 * transfer some (10%) of our content into a neighbour tank
+	 * 
+	 * @param dir
+	 *            the direction the neighbour tank is in
+	 */
+	public void equalise(SolutionTank tank, ForgeDirection dir) {
 		//transfer 10% of what we have into our neighbour
 		HashMap<Fluid, FluidStack> fluidsCopy = new HashMap<Fluid, FluidStack>(
 				fluids);
-		for (Entry<Fluid, FluidStack> f : fluidsCopy.entrySet()) {
+		int drainAllocation = getFluidAmount();
+		if (dir != ForgeDirection.DOWN) {
+			drainAllocation /= 10;
+			if (dir == ForgeDirection.UP) {
+				drainAllocation /= 100;
+			}
+		}
+		List<Entry<Fluid, FluidStack>> drainOrder = new ArrayList<Entry<Fluid, FluidStack>>(
+				fluids.entrySet());
+		if (dir.offsetY != 0) {
+			final int offsetY = dir.offsetY;
+			Comparator<Entry<Fluid, FluidStack>> comparator = new Comparator<Entry<Fluid, FluidStack>>() {
+				@Override
+				public int compare(Entry<Fluid, FluidStack> left,
+						Entry<Fluid, FluidStack> right) {
+					return (int) (offsetY
+							* TFTPropertyRegistry.getDensity(left.getKey()) - offsetY
+							* TFTPropertyRegistry.getDensity(right.getKey()));
+				}
+			};
+
+			Collections.sort(drainOrder, comparator);
+		}
+
+		for (Entry<Fluid, FluidStack> f : drainOrder) {
 			FluidStack drain = f.getValue().copy();
-			drain.amount /= 10;
+			drain.amount = Math.min(drain.amount, drainAllocation);
+			drainAllocation -= drain.amount;
 			drain = drain(drain, true);
 			drain.amount -= tank.fill(drain, true);
+			drainAllocation += drain.amount;
 			fill(drain, true);
 
 		}
@@ -592,6 +675,30 @@ public class SolutionTank {
 			tank.solutes.put(solute.getKey(), otherAmt);
 			solutes.put(solute.getKey(), solute.getValue() - loss);
 		}
+	}
+
+	/**
+	 * Sorts fluids by density.
+	 * 
+	 * @param direction
+	 *            +ve for smallest to largest, -ve for largest to smallest
+	 */
+	public List<FluidStack> getDensitySortedFluids(int direction) {
+		List<FluidStack> drainOrder = new ArrayList<FluidStack>(fluids.values());
+		final int dir = direction;
+		Comparator<FluidStack> comparator = new Comparator<FluidStack>() {
+			@Override
+			public int compare(FluidStack left, FluidStack right) {
+				return (int) (dir
+						* TFTPropertyRegistry.getDensity(left.getFluid()) - dir
+						* TFTPropertyRegistry.getDensity(right.getFluid()));
+			}
+		};
+
+		Collections.sort(drainOrder, comparator);
+
+		return drainOrder;
+
 	}
 
 	/** Whether the tank has anything in liquid form of any kind */

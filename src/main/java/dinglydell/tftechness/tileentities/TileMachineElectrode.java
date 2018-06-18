@@ -96,7 +96,9 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 				ItemGraphiteElectrode elec = (ItemGraphiteElectrode) inventory[i]
 						.getItem();
 				elec.damage(inventory[i], 1);
-
+				if (elec.getDurabilityForDisplay(inventory[i]) >= 1) {
+					inventory[i] = null;
+				}
 			}
 			return super.spendRF((int) (amt * 0.75));
 		}

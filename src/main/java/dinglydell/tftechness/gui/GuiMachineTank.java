@@ -21,7 +21,7 @@ public class GuiMachineTank extends GuiMachine {
 	@Override
 	public void initGui() {
 		super.initGui();
-		components.add(new GuiSolutionTank(guiLeft + 69, guiTop + 9, 59, 48,
+		components.add(new GuiSolutionTank(guiLeft + 69, guiTop + 7, 59, 50,
 				"Solution", tile.getTank()));
 	}
 

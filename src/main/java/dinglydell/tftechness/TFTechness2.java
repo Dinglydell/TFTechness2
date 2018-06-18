@@ -27,6 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -69,6 +70,7 @@ import com.bioxx.tfc.Items.Pottery.ItemPotteryMold;
 import com.bioxx.tfc.Items.Tools.ItemCustomBucket;
 import com.bioxx.tfc.api.HeatIndex;
 import com.bioxx.tfc.api.HeatRegistry;
+import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
@@ -116,11 +118,12 @@ import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
 import dinglydell.tftechness.item.ItemBlockMachineComponent;
 import dinglydell.tftechness.item.ItemBlockTreatedBarrel;
-import dinglydell.tftechness.item.TFTItemPropertyRegistry;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
+import dinglydell.tftechness.metal.MetalSnatcher;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.network.MachineComponentPacketHandler;
@@ -130,6 +133,7 @@ import dinglydell.tftechness.network.TFTMachinePacketHandler;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.EnumState;
+import dinglydell.tftechness.recipe.TFTAlloyRecipe;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.render.RenderBlockTFT;
 import dinglydell.tftechness.render.RenderItemMetal;
@@ -332,32 +336,33 @@ public class TFTechness2 {
 		MetalStat steel = new MetalStat(0.35, 1540, 8000, 0.108f);
 
 		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000, 0.017f));
-		statMap.put("BismuthBronze", new MetalStat(0.35, 985, 963, 0.50445f));
-		statMap.put("BlackBronze", new MetalStat(0.35, 1070, 8626, 0.752f));
-		statMap.put("BlackSteel", blackSteel);
-		statMap.put("BlueSteel", blueSteel);
+		statMap.put("Bismuth Bronze", new MetalStat(0.35, 985, 963, 0.50445f));
+		statMap.put("Black Bronze", new MetalStat(0.35, 1070, 8626, 0.752f));
+		statMap.put("Black Steel", blackSteel);
+		statMap.put("Blue Steel", blueSteel);
 		statMap.put("Brass", new MetalStat(0.35, 930, 8500, 0.222f));
 		statMap.put("Bronze", new MetalStat(0.35, 950, 8523, 0.052f));
 		statMap.put("Copper", copper);
 		statMap.put("Gold", new MetalStat(0.6, 1060, 18000, 0.63f));
-		statMap.put("HCBlackSteel", blackSteel);
-		statMap.put("HCBlueSteel", blueSteel);
-		statMap.put("HCRedSteel", redSteel);
+		statMap.put("HC Black Steel", blackSteel);
+		statMap.put("HC Blue Steel", blueSteel);
+		statMap.put("HC Red Steel", redSteel);
 		statMap.put("Lead", new MetalStat(0.22, 328, 11000, 0.07f));
 		statMap.put("Nickel", new MetalStat(0.48, 1453, 8200, 0.18f));
-		statMap.put("PigIron", new MetalStat(0.35, 1500, 8100, 0.115f));
+		statMap.put("Pig Iron", new MetalStat(0.35, 1500, 8100, 0.115f));
 		statMap.put("Platinum", new MetalStat(0.35, 1730, 20000, 0.146f));
-		statMap.put("RedSteel", redSteel);
-		statMap.put("RoseGold", new MetalStat(0.35, 960, 16731, 0.6584f));
+		statMap.put("Red Steel", redSteel);
+		statMap.put("Rose Gold", new MetalStat(0.35, 960, 16731, 0.6584f));
 		statMap.put("Silver", new MetalStat(0.48, 961, 10000, 0.814f));
+		//statMap.put("Stirling Silver", new MetalStat(0.245, 893, 10370, 0.814f));
 		statMap.put("Steel", steel);
-		statMap.put("SterlingSilver", new MetalStat(0.35, 900, 9738, 0.8014f));
+		statMap.put("Sterling Silver", new MetalStat(0.35, 900, 9738, 0.8014f));
 		statMap.put("Tin", new MetalStat(0.14, 230, 7000, 0.13f));
 		// TFC uses copper heat properties for all unknown ingots
 		statMap.put("Unknown", copper);
-		statMap.put("WeakRedSteel", redSteel);
-		statMap.put("WeakBlueSteel", blueSteel);
-		statMap.put("WeakSteel", steel);
+		statMap.put("Weak Red Steel", redSteel);
+		statMap.put("Weak Blue Steel", blueSteel);
+		statMap.put("Weak Steel", steel);
 		statMap.put("Wrought Iron", new MetalStat(0.35, 1535, 7500, 0.118f));
 		statMap.put("Zinc", new MetalStat(0.21, 420, 7000, 0.232f));
 
@@ -408,18 +413,22 @@ public class TFTechness2 {
 
 	private void registerItemProps() {
 		ItemStack redstone = new ItemStack(Items.redstone);
-		TFTItemPropertyRegistry.registerPowder(redstone);
-		ItemStack alumina = new ItemStack(TFTItems.alumina);
-		TFTItemPropertyRegistry.registerPowder(alumina);
-		FluidMoltenMetal moltRed = TFTFluids.moltenMetal.get("Redstone");
-		TFTItemPropertyRegistry.registerSolute(alumina, moltRed, 250);
+		TFTPropertyRegistry.registerPowder(redstone);
+		TFTPropertyRegistry.registerDensity(redstone, 100);
 
-		TFTItemPropertyRegistry.registerMolten(redstone, moltRed);
-		TFTItemPropertyRegistry.registerMolten(alumina,
+		ItemStack alumina = new ItemStack(TFTItems.alumina);
+		TFTPropertyRegistry.registerPowder(alumina);
+		FluidMoltenMetal moltRed = TFTFluids.moltenMetal.get("Redstone");
+		TFTPropertyRegistry.registerSolute(alumina, moltRed, 250);
+
+		TFTPropertyRegistry.registerMolten(redstone, moltRed);
+		TFTPropertyRegistry.registerDensity(redstone, 10f);
+		TFTPropertyRegistry.registerVolume(redstone, 0.1f);
+		TFTPropertyRegistry.registerMolten(alumina,
 				TFTFluids.moltenMetal.get("Alumina"));
-		TFTItemPropertyRegistry.registerNumMoles(alumina, 250);
-		TFTItemPropertyRegistry.registerDensity(alumina, 255);
-		TFTItemPropertyRegistry.registerVolume(alumina, 0.085f);
+		TFTPropertyRegistry.registerNumMoles(alumina, 250);
+		TFTPropertyRegistry.registerDensity(alumina, 25.49f);
+		TFTPropertyRegistry.registerVolume(alumina, 0.006396f);
 	}
 
 	private void registerFluids() {
@@ -429,7 +438,7 @@ public class TFTechness2 {
 			TFTFluids.moltenMetal.put(m.name, f);
 			FluidRegistry.registerFluid(f);
 
-			TFTItemPropertyRegistry.registerMolten(new ItemStack(m.ingot), f);
+			m.registerMolten(f);
 		}
 
 		//TODO: make this less of an awkward special case
@@ -622,6 +631,7 @@ public class TFTechness2 {
 								Items.gold_nugget))
 
 				}));
+
 		//TODO: make this less of a hack
 		//HashSet<String> mats = new HashSet<String>();
 		materialMap = new HashMap<String, Material>();
@@ -631,7 +641,13 @@ public class TFTechness2 {
 				materialMap.put(m.oreName, m);
 			}
 		}
-
+		for (Metal m : MetalSnatcher.getMetals().values()) {
+			if (!materialMap.containsKey(m.name)) {
+				Material mat = new Material(m.name, 2, true);
+				materials.add(mat);
+				materialMap.put(mat.name, mat);
+			}
+		}
 		for (zmaster587.libVulpes.api.material.Material m : MaterialRegistry
 				.getAllMaterials()) {
 			if (!materialMap.containsKey(m.getUnlocalizedName())
@@ -744,7 +760,9 @@ public class TFTechness2 {
 		tfcKilnRecipes();
 		tfcBarrelRecipes();
 		for (Material m : materials) {
+
 			m.addMachineRecipes();
+
 			m.addCraftingRecipes();
 		}
 		addARRecipes();
@@ -887,6 +905,9 @@ public class TFTechness2 {
 
 		//alloys
 		for (Alloy alloy : AlloyManager.INSTANCE.alloys) {
+			if (alloy.alloyIngred.size() == 1) {
+				continue;
+			}
 			int gcd = 0;
 			if (alloy.outputType.name.equals("Bronze")) {
 				int x = 1;
@@ -907,6 +928,7 @@ public class TFTechness2 {
 			}
 
 			List<ItemStack> inputs = new ArrayList<ItemStack>();
+			List<FluidStack> inputFluids = new ArrayList<FluidStack>();
 			int total = 0;
 			for (AlloyMetal input : alloy.alloyIngred) {
 				int m = (int) (100 * input.metal) / gcd;
@@ -917,6 +939,9 @@ public class TFTechness2 {
 				}
 				total += m;
 				inputs.add(new ItemStack(input.metalType.ingot, m));
+				Fluid inputFluid = TFTPropertyRegistry
+						.getMolten(input.metalType);
+				inputFluids.add(new FluidStack(inputFluid, m));
 			}
 
 			//ItemStack first = inputs.remove(0);
@@ -926,6 +951,10 @@ public class TFTechness2 {
 						200,
 						512,
 						inputs.toArray());
+				FluidStack outputFluid = new FluidStack(
+						TFTPropertyRegistry.getMolten(alloy.outputType),
+						total);
+				TFTAlloyRecipe.addRecipe(outputFluid, inputFluids);
 			}
 		}
 
@@ -1377,9 +1406,10 @@ public class TFTechness2 {
 
 	private void addTFTRecipes() {
 		// Alumina (solute) -> Aluminium (l)
-		SolutionRecipe.addRecipe(new SolutionRecipe(new ItemStack(
-				TFTItems.ingots.get("Aluminum")), 20, EnumState.solute,
-				new ItemStack(TFTItems.alumina), 1, SolutionRecipe.electrodes));
+		SolutionRecipe
+				.addRecipe(new SolutionRecipe(new ItemStack(TFTItems.ingots
+						.get("Aluminum")), 2, EnumState.solute, new ItemStack(
+						TFTItems.alumina), 25, SolutionRecipe.electrodes));
 
 		//Alumina (l) -> Aluminium (l)
 		SolutionRecipe
@@ -1413,12 +1443,13 @@ public class TFTechness2 {
 				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f);
 		for (Material m : materials) {
 			// register metal materials with conductivity property
-			ComponentMaterialRegistry.registerMaterial(m.name,
-					"block" + m.oreName,
-					"plate" + m.oreName)
-					.addProperty(ComponentProperty.CONDUCTIVITY,
-							statMap.get(m.name).conductivity);
-
+			if (m.block != null) {
+				ComponentMaterialRegistry.registerMaterial(m.name,
+						"block" + m.oreName,
+						"plate" + m.oreName)
+						.addProperty(ComponentProperty.CONDUCTIVITY,
+								statMap.get(m.name).conductivity);
+			}
 		}
 
 		//wires

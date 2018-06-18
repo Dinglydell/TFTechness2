@@ -28,7 +28,7 @@ import com.bioxx.tfc.api.Interfaces.ISmeltable;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
-import dinglydell.tftechness.item.TFTItemPropertyRegistry;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 
 public class TileMachineComponentItemShelf extends TileMachineInventory {
 
@@ -163,7 +163,7 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 
 									}
 								}
-								FluidMoltenMetal molten = TFTItemPropertyRegistry
+								FluidMoltenMetal molten = TFTPropertyRegistry
 										.getMolten(stack);
 								for (TileMachineComponentTank tank : neighbourTanks) { //spread out the molten metal
 

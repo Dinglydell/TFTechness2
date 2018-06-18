@@ -18,7 +18,7 @@ public class TFTWorldData extends WorldSavedData {
 	protected static final long solarInput = (long) (1361 * 1.275e14);
 	protected static final int minLeaves = -100000;
 	/** Average temperature of the world with no warming effects */
-	protected static final int baseTemperature = 288;
+	public static final int baseTemperature = 288;
 	/**
 	 * passive greenhouse gas emissions from natural causes - required to
 	 * maintain equilibrium. This is equal to the default amount absorbed by

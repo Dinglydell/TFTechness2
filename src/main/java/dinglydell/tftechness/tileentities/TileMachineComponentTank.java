@@ -70,7 +70,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				if (tile instanceof TileMachineComponentTank) {
 
 					TileMachineComponentTank tileTank = (TileMachineComponentTank) tile;
-					tank.equalise(tileTank.tank);
+					tank.equalise(tileTank.tank, dir);
 					//if (tank.hasCondition(SolutionRecipe.electrodes)) {// share conditions
 					//	tileTank.tank.addCondition(SolutionRecipe.electrodes);
 					//} else if (tileTank.tank
@@ -96,6 +96,9 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 								continue;
 							}
 							for (FluidStack f : tank.getFluids()) {
+								if (f.amount == 0) {
+									continue;
+								}
 								if (f.getFluid() instanceof FluidMoltenMetal) {
 									FluidMoltenMetal fm = (FluidMoltenMetal) f
 											.getFluid();

@@ -42,7 +42,7 @@ Mid-term:
  -materials with electrical resistance and/or a limited transfer rate?
  -multiblocks capable of generating RF
  -gasses and pressure in a SolutionTank (with explosions!)
- -related to above, different materials providing different strength - such as having a max pressure property
+ -related to above, different materials providing different strength - such as having a max pressure difference property
  -make component blocks know what materials they're made of (for tooltip), and potential for a dynamic texture eventually
  -with this, probably make component properties stored as a material rather than a value, then have the code reference a material property registry to find out what value it has
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import dinglydell.tftechness.fluid.SolutionTank;
-import dinglydell.tftechness.item.TFTItemPropertyRegistry;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 
 public class SolutionRecipe {
 	public enum EnumState {
@@ -54,7 +54,7 @@ public class SolutionRecipe {
 		case gas:
 			return false;
 		case liquid:
-			return tank.contaisFluid(TFTItemPropertyRegistry.getMolten(input));
+			return tank.contaisFluid(TFTPropertyRegistry.getMolten(input));
 		case solid:
 			return tank.containsSolid(input);
 		case solute:

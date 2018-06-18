@@ -2,21 +2,26 @@ package dinglydell.tftechness.item;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
 import com.bioxx.tfc.Items.ItemTerra;
+import com.bioxx.tfc.api.HeatIndex;
+import com.bioxx.tfc.api.HeatRegistry;
+import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.Enums.EnumSize;
 import com.bioxx.tfc.api.Enums.EnumWeight;
 
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
+import dinglydell.tftechness.fluid.Gas;
 
 /**
- * Properties that are assigned to certain items for various processes. At the
- * moment, this is only used for the electrolyser.
+ * Properties that are assigned to certain items or fluids for various
+ * processes. At the moment, this is only used for the electrolyser.
  * */
-public class TFTItemPropertyRegistry {
+public class TFTPropertyRegistry {
 
 	/** Density of an item with no entry */
 	private static final float DEFAULT_DENSITY = 1;
@@ -53,8 +58,10 @@ public class TFTItemPropertyRegistry {
 	protected static Map<ItemMeta, Float> volumeMap = new HashMap<ItemMeta, Float>();
 
 	private static Map<ItemMeta, FluidMoltenMetal> moltenMap = new HashMap<ItemMeta, FluidMoltenMetal>();
+	private static Map<Fluid, Gas> fluidToGasMap = new HashMap<Fluid, Gas>();
 
 	private static Map<FluidMoltenMetal, ItemStack> solidMap = new HashMap<FluidMoltenMetal, ItemStack>();
+	private static Map<Gas, Fluid> gasToFluidMap = new HashMap<Gas, Fluid>();
 
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
@@ -116,8 +123,8 @@ public class TFTItemPropertyRegistry {
 	/** kg/item */
 	public static float getDensity(ItemStack stack) {
 		ItemMeta im = new ItemMeta(stack);
-		if (densityMap.containsKey(stack)) {
-			return densityMap.get(stack);
+		if (densityMap.containsKey(im)) {
+			return densityMap.get(im);
 		}
 		// try TFC weight
 		if (stack.getItem() instanceof ItemTerra) {
@@ -136,6 +143,13 @@ public class TFTItemPropertyRegistry {
 		}
 		return DEFAULT_DENSITY;
 
+	}
+
+	/** kg/m^3 */
+	public static float getDensity(Fluid fluid) {
+		ItemStack solid = getSolid(fluid);
+
+		return getDensity(solid) / getVolumeDensity(solid);
 	}
 
 	/** m^3/item */
@@ -186,15 +200,45 @@ public class TFTItemPropertyRegistry {
 		if (moltenMap.containsKey(im)) {
 			return moltenMap.get(im);
 		}
+		HeatIndex hi = HeatRegistry.getInstance().findMatchingIndex(stack);
+		if (hi == null) {
+			return null;
+		}
+		ItemStack out = hi.getOutput(new Random());
+		if (!out.isItemEqual(stack)) {
+			return getMolten(out);
+		}
+		///if (moltenMap.containsKey(ingot)) {
+		//	return moltenMap.get(ingot);
+		//}
 		return null;
 	}
 
-	public static ItemStack getSolid(FluidMoltenMetal f) {
+	public static ItemStack getSolid(Fluid f) {
 		if (solidMap.containsKey(f)) {
 			return solidMap.get(f);
 		}
 		return null;
 
+	}
+
+	public static FluidMoltenMetal getMolten(Metal metal) {
+		return getMolten(new ItemStack(metal.ingot));
+
+	}
+
+	public static Gas getGaseous(Fluid fluid) {
+		if (fluidToGasMap.containsKey(fluid)) {
+			return fluidToGasMap.get(fluid);
+		}
+		return null;
+	}
+
+	public static Fluid getLiquid(Gas gas) {
+		if (gasToFluidMap.containsKey(gas)) {
+			return gasToFluidMap.get(gas);
+		}
+		return null;
 	}
 
 }

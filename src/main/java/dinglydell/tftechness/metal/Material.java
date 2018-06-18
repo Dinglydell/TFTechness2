@@ -32,10 +32,11 @@ import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.item.ItemMetal;
 import dinglydell.tftechness.item.ItemMetalMold;
 import dinglydell.tftechness.item.ItemTFTMetalSheet;
-import dinglydell.tftechness.item.TFTItemPropertyRegistry;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.recipe.RemoveBatch;
@@ -112,7 +113,17 @@ public class Material {
 
 	public void initialise(RenderItemMetal render) {
 		if (isTFC) {
+
 			this.metal = MetalRegistry.instance.getMetalFromItem(ingot);
+			if (this.metal == null) {
+				this.metal = MetalRegistry.instance.getMetalFromString(name);
+				if (this.ingot == null) {
+					this.ingot = metal.ingot;
+				}
+				if (this.unshaped == null) {
+					this.unshaped = metal.meltedItem;
+				}
+			}
 		} else {
 			addUnshaped();
 			addIngots();
@@ -126,53 +137,56 @@ public class Material {
 	}
 
 	private void registerItemProps() {
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot),
+		if (ingot == null) {
+			TFTechness2.logger.warn("!");
+		}
+		TFTPropertyRegistry.registerDensity(new ItemStack(ingot),
 				TFTechness2.statMap.get(this.name).density
 						/ (float) TFTechness2.ingotsPerBlock);
-		TFTItemPropertyRegistry.registerVolume(new ItemStack(ingot),
+		TFTPropertyRegistry.registerVolume(new ItemStack(ingot),
 				1f / TFTechness2.ingotsPerBlock);
 		if (ingot2x != null) {
-			TFTItemPropertyRegistry.registerDensity(new ItemStack(ingot2x),
+			TFTPropertyRegistry.registerDensity(new ItemStack(ingot2x),
 					TFTechness2.statMap.get(this.name).density
 							/ (float) TFTechness2.ingotsPerBlock * 2);
-			TFTItemPropertyRegistry.registerVolume(new ItemStack(ingot2x),
+			TFTPropertyRegistry.registerVolume(new ItemStack(ingot2x),
 					2f / TFTechness2.ingotsPerBlock);
 		}
 		if (sheet != null) {
-			TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet),
+			TFTPropertyRegistry.registerDensity(new ItemStack(sheet),
 					TFTechness2.statMap.get(this.name).density
 							/ (float) TFTechness2.ingotsPerBlock * 2);
-			TFTItemPropertyRegistry.registerVolume(new ItemStack(sheet),
+			TFTPropertyRegistry.registerVolume(new ItemStack(sheet),
 					2f / TFTechness2.ingotsPerBlock);
 		}
 		if (sheet2x != null) {
-			TFTItemPropertyRegistry.registerDensity(new ItemStack(sheet2x),
+			TFTPropertyRegistry.registerDensity(new ItemStack(sheet2x),
 					TFTechness2.statMap.get(this.name).density
 							/ (float) TFTechness2.ingotsPerBlock * 4);
-			TFTItemPropertyRegistry.registerVolume(new ItemStack(sheet2x),
+			TFTPropertyRegistry.registerVolume(new ItemStack(sheet2x),
 					4f / TFTechness2.ingotsPerBlock);
 		}
 		if (block != null) {
-			TFTItemPropertyRegistry.registerDensity(new ItemStack(block, 1,
+			TFTPropertyRegistry.registerDensity(new ItemStack(block, 1,
 					blockMeta), TFTechness2.statMap.get(this.name).density);
-			TFTItemPropertyRegistry.registerVolume(new ItemStack(block, 1,
+			TFTPropertyRegistry.registerVolume(new ItemStack(block, 1,
 					blockMeta), 1f);
 		}
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(rod),
+		TFTPropertyRegistry.registerDensity(new ItemStack(rod),
 				TFTechness2.statMap.get(this.name).density
 						/ (float) TFTechness2.ingotsPerBlock * 0.5f);
-		TFTItemPropertyRegistry.registerVolume(new ItemStack(rod),
+		TFTPropertyRegistry.registerVolume(new ItemStack(rod),
 				0.5f / TFTechness2.ingotsPerBlock);
-		TFTItemPropertyRegistry.registerDensity(new ItemStack(nugget),
+		TFTPropertyRegistry.registerDensity(new ItemStack(nugget),
 				TFTechness2.statMap.get(this.name).density
 						/ (float) TFTechness2.ingotsPerBlock * 0.1f);
-		TFTItemPropertyRegistry.registerVolume(new ItemStack(nugget),
+		TFTPropertyRegistry.registerVolume(new ItemStack(nugget),
 				0.11f / TFTechness2.ingotsPerBlock);
 		if (unshaped != null) {
-			TFTItemPropertyRegistry.registerDensity(new ItemStack(unshaped),
+			TFTPropertyRegistry.registerDensity(new ItemStack(unshaped),
 					TFTechness2.statMap.get(this.name).density
 							/ (float) TFTechness2.ingotsPerBlock);
-			TFTItemPropertyRegistry.registerVolume(new ItemStack(unshaped),
+			TFTPropertyRegistry.registerVolume(new ItemStack(unshaped),
 					1f / TFTechness2.ingotsPerBlock);
 		}
 
@@ -416,7 +430,9 @@ public class Material {
 	}
 
 	public void addMachineRecipes() {
-
+		if (sheet == null) {
+			return;
+		}
 		MetalPressRecipe.removeRecipes(new ItemStack(sheet));
 		//sheet
 		MetalPressRecipe.addRecipe(new ItemStack(sheet, 1), new ItemStack(
@@ -456,6 +472,29 @@ public class Material {
 			manager.addWeldRecipe(new AnvilRecipe(new ItemStack(sheet),
 					new ItemStack(sheet), req, new ItemStack(sheet2x, 1)));
 
+		}
+	}
+
+	public void registerMolten(FluidMoltenMetal f) {
+		TFTPropertyRegistry.registerMolten(new ItemStack(ingot), f);
+		//	TFTItemPropertyRegistry.registerMolten(new ItemStack(unshaped), f);
+		if (ingot2x != null) {
+			TFTPropertyRegistry.registerMolten(new ItemStack(ingot2x), f);
+		}
+		if (sheet != null) {
+			TFTPropertyRegistry.registerMolten(new ItemStack(sheet), f);
+		}
+		if (sheet2x != null) {
+			TFTPropertyRegistry.registerMolten(new ItemStack(sheet2x), f);
+		}
+		if (block != null) {
+			TFTPropertyRegistry.registerMolten(new ItemStack(block, 1,
+					blockMeta), f);
+		}
+		TFTPropertyRegistry.registerMolten(new ItemStack(rod), f);
+		TFTPropertyRegistry.registerMolten(new ItemStack(nugget), f);
+		if (unshaped != null) {
+			TFTPropertyRegistry.registerMolten(new ItemStack(unshaped), f);
 		}
 	}
 
