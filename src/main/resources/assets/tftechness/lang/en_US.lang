@@ -89,6 +89,14 @@ metal.Iridium.name=Iridium
 metal.TitaniumAluminide.name=Titanium Aluminide
 metal.TitaniumIridium.name=Titanium Iridium
 metal.Gold.name=Gold
+metal.Nickel.name=Nickel
+
+
+metal.stone.name=Stone
+
+metal.lv.name=LV Wire Coil
+metal.mv.name=MV Wire Coil
+metal.hv.name=HV Wire Coil
 
 
 tile.Machine.name=TFTMachine
@@ -136,7 +144,9 @@ info.machine.tank.tooltip=Stores...stuff. Maybe it can melt it?
 info.machine.electrode.tooltip=Uses RF to electrolyze neighboring tanks.
 
 info.machine.property.conductivity=Thermal Conductivity:
+info.machine.property.specificHeat=Specific Heat:
 info.machine.property.tier=Wire Tier:
+
 
 tile.wall.name=§7Machine Wall§r
 tile.heater.name=§7Machine Heating Element§r

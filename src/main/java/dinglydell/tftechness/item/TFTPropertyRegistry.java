@@ -63,6 +63,8 @@ public class TFTPropertyRegistry {
 	private static Map<FluidMoltenMetal, ItemStack> solidMap = new HashMap<FluidMoltenMetal, ItemStack>();
 	private static Map<Gas, Fluid> gasToFluidMap = new HashMap<Gas, Fluid>();
 
+	private static Map<Fluid, Float> fluidMolesMap = new HashMap<Fluid, Float>();
+
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
 	}
@@ -92,6 +94,16 @@ public class TFTPropertyRegistry {
 	/** mol/item */
 	public static void registerNumMoles(ItemStack stack, int moles) {
 		molesMap.put(new ItemMeta(stack), moles);
+	}
+
+	/** mol/mB */
+	public static void registerNumMoles(Fluid fluid, float moles) {
+		fluidMolesMap.put(fluid, moles);
+	}
+
+	public static void registerBoil(Fluid fluid, Gas gas) {
+		fluidToGasMap.put(fluid, gas);
+		gasToFluidMap.put(gas, fluid);
 	}
 
 	public static void registerMolten(ItemStack stack, FluidMoltenMetal molten) {
@@ -239,6 +251,15 @@ public class TFTPropertyRegistry {
 			return gasToFluidMap.get(gas);
 		}
 		return null;
+	}
+
+	/** mol/mB */
+	public static float getMoles(Fluid f) {
+		if (fluidMolesMap.containsKey(f)) {
+			return fluidMolesMap.get(f);
+		}
+		return 1f;
+
 	}
 
 }

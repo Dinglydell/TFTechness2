@@ -244,16 +244,17 @@ public class BlockTFTComponent extends BlockContainer {
 	}
 
 	public static ItemStack getBlockWithNBT(Component component,
-			List<ComponentMaterialRegistry> materials) {
+			List<ComponentMaterial> materials) {
 		ItemStack is = new ItemStack(TFTBlocks.components.get(component));//component.ordinal());
 		NBTTagCompound nbt = new NBTTagCompound();
 
 		//		Map<ComponentProperty, Object> propValues = new HashMap<ComponentProperty, Object>();
 		for (int i = 0; i < component.propertySets.size(); i++) {
-			ComponentProperty[] propSet = component.propertySets.get(i);
-			ComponentMaterialRegistry material = materials.get(i);
+			ComponentProperty[] propSet = component.propertySets.get(i).properties;
+			ComponentMaterial material = materials.get(i);
 			for (ComponentProperty prop : propSet) {
-				prop.setNBT(nbt, material.validFor.get(prop));
+				nbt.setString(prop.name, material.name);
+				//prop.setNBT(nbt, material.validFor.get(prop));
 			}
 
 		}

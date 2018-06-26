@@ -26,13 +26,30 @@ public class StringUtil {
 			"G",
 			"T",
 			"P" };
+	private static final String[] smallSiPrefixes = new String[] { "m",
+			"\u03bc",
+			"n",
+			"p",
+			"f" };
 
 	/**
 	 * Returns a value with an SI prefix eg. 1000 -> 1k
 	 * */
 	public static String prefixify(double value) {
+
 		if (value < 1000) {
-			return "" + value;
+			if (value >= 1) {
+				return (new DecimalFormat("###.##").format(value));
+			}
+			for (String prefix : smallSiPrefixes) {
+				//value = Math.round(value);
+				value *= 1000f;
+				if (value >= 1) {
+					return (new DecimalFormat("###.##").format(value)) + prefix;
+				}
+			}
+			return value + smallSiPrefixes[smallSiPrefixes.length - 1];
+
 		}
 
 		for (String prefix : siPrefixes) {

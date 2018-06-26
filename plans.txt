@@ -33,6 +33,7 @@ Mid-term:
 
 -Automated anvil - either metal press or its own machine(s)
 
+-rewrite tank such that fluids have varying pressure - so they don't have a fixed density to solve issues such as aluminium not being formed because it causes the thing to go over capacity
 
  -multiblock components with melting/deformation temperatures - eg a silver based wall component may be a great conductor but will melt if you heat it too much
  -multiblock components with an additional material for the "coating" of the block - this will determine the conductivity with the air as opposed to other machine blocks

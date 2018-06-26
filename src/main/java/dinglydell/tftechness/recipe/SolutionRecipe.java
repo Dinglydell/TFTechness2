@@ -18,11 +18,11 @@ public class SolutionRecipe {
 	public final Condition condition;
 	public final EnumState inputState;
 	public final ItemStack input;
-	/** mb */
-	public final int outputQuantity;
+	/** kg */
+	public final float outputQuantity;
 	public final int inputQuantity;
 
-	public SolutionRecipe(ItemStack output, int outputQuantity,
+	public SolutionRecipe(ItemStack output, float outputQuantity,
 			EnumState inputState, ItemStack input, int inputQuantity,
 			Condition condition) {
 		this.output = output;

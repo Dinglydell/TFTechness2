@@ -1,7 +1,9 @@
 package dinglydell.tftechness.tileentities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +25,9 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.block.component.Component;
+import dinglydell.tftechness.block.component.ComponentMaterial;
+import dinglydell.tftechness.block.component.property.ComponentProperty;
+import dinglydell.tftechness.block.component.property.ComponentPropertySet;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.gui.component.ITileTemperature;
 import dinglydell.tftechness.network.PacketMachineComponent;
@@ -30,16 +35,18 @@ import dinglydell.tftechness.network.PacketMachineComponent;
 public/* abstract */class TileMachineComponent extends TileEntity implements
 		ITileTemperature, IEnergyReceiver {
 	protected static final float AIR_CONDUCTIVITY = 0.001f;
-	protected static final float HEAT_FLOW_MODIFIER = 0.05f / 6;
+	protected static final float HEAT_FLOW_MODIFIER = 0.5f;// / 6;
 	private int masterX, masterY = -1, masterZ;
 	protected float temperature;
 	protected int rf;
 	//default capacity is 1s of HV power
 	protected int rfCapacity = 20 * 4096;
-	protected float conductivity = 0.5f;
+	//protected float conductivity = 0.5f;
 
 	//private ItemStack[] inventory;
 	protected Component component;
+	/** The materials our properties come from */
+	protected Map<ComponentProperty, ComponentMaterial> materials = new HashMap<ComponentProperty, ComponentMaterial>();
 
 	//protected SolutionTank internalTank;
 
@@ -57,11 +64,11 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		return this;
 	}
 
-	public TileMachineComponent setConductivity(float conductivity) {
-		this.conductivity = conductivity;
-
-		return this;
-	}
+	//public TileMachineComponent setConductivity(float conductivity) {
+	//	this.conductivity = conductivity;
+	//
+	//	return this;
+	//}
 
 	public void CheckForMaster() {
 		CheckForMaster(null);
@@ -182,14 +189,17 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				//}
 
 				temperature -= HEAT_FLOW_MODIFIER * (temperature - ambientTemp)
-						* 0.5f * (getConductivity() + ambientConductivity);
+						* 0.5f * (getConductivity() + ambientConductivity)
+						/ getSpecificHeat();
 			} else {
 				TileMachineComponent tc = (TileMachineComponent) tile;
-				float dTemp = HEAT_FLOW_MODIFIER
+				float dE = HEAT_FLOW_MODIFIER
 						* (temperature - tc.getTemperature()) * 0.5f
 						* (getConductivity() + tc.getConductivity());
-				temperature -= dTemp;
-				tc.temperature += dTemp;
+				//TODO: probably want to change this
+				float mass = 1;
+				temperature -= dE / (mass * getSpecificHeat());
+				tc.temperature += dE / (mass * tc.getSpecificHeat());
 				//temperature = 0;
 				//tc.temperature = 0;
 
@@ -208,7 +218,16 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	}
 
 	public float getConductivity() {
-		return conductivity;
+		return (Float) materials.get(ComponentProperty.CONDUCTIVITY).validFor
+				.get(ComponentProperty.CONDUCTIVITY);
+	}
+
+	public float getSpecificHeat() {
+		if (!materials.containsKey(ComponentProperty.SPECIFIC_HEAT)) {
+			return 1000f;
+		}
+		return (Float) materials.get(ComponentProperty.SPECIFIC_HEAT).validFor
+				.get(ComponentProperty.SPECIFIC_HEAT);
 	}
 
 	@Override
@@ -220,8 +239,9 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 		data.setFloat("Temperature", temperature);
 		data.setInteger("rf", rf);
-
-		writeComponentPropertiesToNBT(data);
+		NBTTagCompound propData = new NBTTagCompound();
+		writeComponentPropertiesToNBT(propData);
+		data.setTag("properties", propData);
 	}
 
 	/**
@@ -229,7 +249,27 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	 * temperature or other tileentity data
 	 */
 	public void writeComponentPropertiesToNBT(NBTTagCompound data) {
-		component.writePropertiesToNBT(this, data);
+
+		for (ComponentPropertySet propSet : component.propertySets) {
+			for (ComponentProperty prop : propSet.properties) {
+				if (!materials.containsKey(prop)) {
+					continue;
+				}
+				data.setString(prop.name, materials.get(prop).name);
+			}
+		}
+
+		//component.writePropertiesToNBT(this, data);/
+	}
+
+	private void readPropertiesFromNBT(NBTTagCompound data) {
+		NBTTagCompound propData = data.getCompoundTag("properties");
+		for (ComponentPropertySet propSet : component.propertySets) {
+			for (ComponentProperty prop : propSet.properties) {
+				setProperty(prop, propData);
+			}
+		}
+
 	}
 
 	@Override
@@ -241,7 +281,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 		temperature = data.getFloat("Temperature");
 
-		component.readPropertiesFromNBT(this, data);
+		readPropertiesFromNBT(data);
 		rf = data.getInteger("rf");
 	}
 
@@ -426,6 +466,15 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	public void initialiseComponent() {
 		setPlacedSide(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
 		this.sendServerToClientMessage();
+	}
+
+	public void setProperty(ComponentProperty prop, NBTTagCompound data) {
+		if (!data.hasKey(prop.name)) {
+			return;
+		}
+		materials.put(prop,
+				ComponentMaterial.getMaterial(data.getString(prop.name)));
+
 	}
 
 }

@@ -1,7 +1,10 @@
 package dinglydell.tftechness.fluid;
 
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.util.StringUtil;
 import dinglydell.tftechness.world.TFTWorldData;
 
@@ -55,6 +58,23 @@ public class GasStack {
 		;
 		return StatCollector.translateToLocal("gas." + gas.gasName) + ": "
 				+ StringUtil.prefixify(p) + "Pa";
+	}
+
+	public float condenseFactor() {
+		return gas.getBoilingPoint() - temperature;
+	}
+
+	public FluidStack condense(float rate) {
+
+		Fluid f = TFTPropertyRegistry.getLiquid(gas);
+		float nmb = TFTPropertyRegistry.getMoles(f);
+		int mbGain = (int) Math.min(rate, amount / nmb);
+		float moleChange = mbGain * nmb;
+		amount -= moleChange;
+		if (f instanceof FluidMoltenMetal) {
+			return ((FluidMoltenMetal) f).createStack(mbGain, temperature);
+		}
+		return new FluidStack(f, mbGain);
 	}
 
 }

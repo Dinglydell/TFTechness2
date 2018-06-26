@@ -2,19 +2,17 @@ package dinglydell.tftechness.block.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
 
-public class ComponentMaterialRegistry {
+public class ComponentMaterial {
 	//private static Set<ComponentMaterialRegistry<Float>> validBaseMaterials = new HashSet<ComponentMaterialRegistry<Float>>();
 
-	private static Set<ComponentMaterialRegistry> validMaterials = new HashSet<ComponentMaterialRegistry>();
+	private static Map<String, ComponentMaterial> validMaterials = new HashMap<String, ComponentMaterial>();
 
 	//public static void registerBaseMaterial(String oreName,
 	//		String shelfMaterial, float conductivity, boolean fullRecipe) {
@@ -28,7 +26,7 @@ public class ComponentMaterialRegistry {
 	//			conductivity, fullRecipe));
 	//}
 
-	public static ComponentMaterialRegistry registerMaterial(String name,
+	public static ComponentMaterial registerMaterial(String name,
 			ItemStack primaryItem, ItemStack secondaryItem) {
 		//if (!validMaterials.containsKey(property)) {
 		//	validMaterials.put(property,
@@ -37,33 +35,33 @@ public class ComponentMaterialRegistry {
 		//}
 		//validMaterials.get(property)
 		//		.add(new ComponentMaterialRegistry(item, null, value, true));
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
-				primaryItem, secondaryItem, true);
-		validMaterials.add(c);
+		ComponentMaterial c = new ComponentMaterial(name, primaryItem,
+				secondaryItem, true);
+		validMaterials.put(c.name, c);
 		return c;
 	}
 
-	public static ComponentMaterialRegistry registerMaterial(String name,
+	public static ComponentMaterial registerMaterial(String name,
 			String primaryItem, ItemStack secondaryItem) {
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
-				primaryItem, secondaryItem, true);
-		validMaterials.add(c);
+		ComponentMaterial c = new ComponentMaterial(name, primaryItem,
+				secondaryItem, true);
+		validMaterials.put(c.name, c);
 		return c;
 	}
 
-	public static ComponentMaterialRegistry registerMaterial(String name,
+	public static ComponentMaterial registerMaterial(String name,
 			ItemStack primaryItem, String secondaryItem) {
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
-				primaryItem, secondaryItem, true);
-		validMaterials.add(c);
+		ComponentMaterial c = new ComponentMaterial(name, primaryItem,
+				secondaryItem, true);
+		validMaterials.put(c.name, c);
 		return c;
 	}
 
-	public static ComponentMaterialRegistry registerMaterial(String name,
+	public static ComponentMaterial registerMaterial(String name,
 			String primaryItem, String secondaryItem) {
-		ComponentMaterialRegistry c = new ComponentMaterialRegistry(name,
-				primaryItem, secondaryItem, true);
-		validMaterials.add(c);
+		ComponentMaterial c = new ComponentMaterial(name, primaryItem,
+				secondaryItem, true);
+		validMaterials.put(c.name, c);
 		return c;
 	}
 
@@ -78,11 +76,14 @@ public class ComponentMaterialRegistry {
 	//	validBaseMaterials.add(new ComponentMaterialRegistry(item,
 	//			shelfMaterial, conductivity, fullRecipe));
 	//}
+	public static ComponentMaterial getMaterial(String name) {
+		return validMaterials.get(name);
+	}
 
 	public static void registerRecipes() {
 		for (Component component : Component.components) {
 			registerComponentRecipes(component,
-					new ArrayList<ComponentMaterialRegistry>(),
+					new ArrayList<ComponentMaterial>(),
 					0);
 		}
 
@@ -136,7 +137,7 @@ public class ComponentMaterialRegistry {
 	}
 
 	private static void registerComponentRecipes(Component component,
-			List<ComponentMaterialRegistry> materials, int iterationIndex) {
+			List<ComponentMaterial> materials, int iterationIndex) {
 		//build a list of materials for each propset
 
 		//		List<List<ComponentMaterialRegistry>> materials = new ArrayList<List<ComponentMaterialRegistry>>();
@@ -160,9 +161,9 @@ public class ComponentMaterialRegistry {
 		//	materials.add(setMaterials);
 		//}
 		ComponentProperty[] propSet = component.propertySets
-				.get(iterationIndex);
+				.get(iterationIndex).properties;
 		//List<ComponentMaterialRegistry> setMaterials = new ArrayList<ComponentMaterialRegistry>();
-		for (ComponentMaterialRegistry material : validMaterials) {
+		for (ComponentMaterial material : validMaterials.values()) {
 			boolean valid = true;
 			for (ComponentProperty prop : propSet) { // check that the material is valid for these properties
 				if (!material.validFor.containsKey(prop)) {
@@ -173,7 +174,7 @@ public class ComponentMaterialRegistry {
 			if (valid) {
 				//setMaterials.add(material);
 				//copy list
-				List<ComponentMaterialRegistry> mats = new ArrayList<ComponentMaterialRegistry>(
+				List<ComponentMaterial> mats = new ArrayList<ComponentMaterial>(
 						materials);
 				//add my material
 				mats.add(material);
@@ -200,7 +201,7 @@ public class ComponentMaterialRegistry {
 	public String name;
 	public Map<ComponentProperty, Object> validFor = new HashMap<ComponentProperty, Object>();
 
-	public ComponentMaterialRegistry(String name, Object material,
+	public ComponentMaterial(String name, Object material,
 			Object shelfMaterial, boolean fullRecipe) {
 		this.name = name;
 		this.material = material;
@@ -209,7 +210,7 @@ public class ComponentMaterialRegistry {
 		this.fullRecipe = fullRecipe;
 	}
 
-	public <T> ComponentMaterialRegistry addProperty(ComponentProperty<T> prop,
+	public <T> ComponentMaterial addProperty(ComponentProperty<T> prop,
 			T propValue) {
 		validFor.put(prop, propValue);
 

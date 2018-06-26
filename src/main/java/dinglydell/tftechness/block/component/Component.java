@@ -15,6 +15,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import scala.actors.threadpool.Arrays;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
+import dinglydell.tftechness.block.component.property.ComponentPropertySet;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 
 public class Component {
@@ -29,7 +30,8 @@ public class Component {
 	protected List<String> tooltips = new ArrayList<String>();
 
 	//TODO: make a ComponentPropertySet class, which contains the array of properties as well as data such as whether these properties should use the primary or secondary material
-	protected List<ComponentProperty[]> propertySets = new ArrayList<ComponentProperty[]>();
+	/** The list of sets of properties that come from the same material */
+	public List<ComponentPropertySet> propertySets = new ArrayList<ComponentPropertySet>();
 	private IIcon[] icons;
 	private Object[] recipe;
 	private Class<? extends TileMachineComponent> type;
@@ -51,7 +53,9 @@ public class Component {
 
 		iconStrs.add(TFTechness2.MODID + ":machine/" + name.toLowerCase());
 		//universal
-		registerPropertySet(new ComponentProperty[] { ComponentProperty.CONDUCTIVITY });
+		registerPropertySet(ComponentPropertySet.registerSet("base",
+				new ComponentProperty[] { ComponentProperty.CONDUCTIVITY,
+						ComponentProperty.SPECIFIC_HEAT }));
 	}
 
 	//public Component(String name, String tooltip, Object... recipe) {
@@ -71,8 +75,8 @@ public class Component {
 	}
 
 	/** Registers a set of properties given by a single material */
-	public Component registerPropertySet(ComponentProperty[] property) {
-		propertySets.add(property);
+	public Component registerPropertySet(ComponentPropertySet set) {
+		propertySets.add(set);
 
 		return this;
 	}
@@ -85,8 +89,8 @@ public class Component {
 		if (nbt == null) {
 			return;
 		}
-		for (ComponentProperty[] props : propertySets) {
-			for (ComponentProperty prop : props) {
+		for (ComponentPropertySet set : propertySets) {
+			for (ComponentProperty prop : set.properties) {
 				list.add(EnumChatFormatting.DARK_AQUA.toString()
 						+ StatCollector
 								.translateToLocal("info.machine.property."
@@ -99,7 +103,7 @@ public class Component {
 	}
 
 	//TODO: secondary materials for properties
-	public IRecipe getRecipe(List<ComponentMaterialRegistry> materials) {
+	public IRecipe getRecipe(List<ComponentMaterial> materials) {
 		//propertySets
 		ItemStack wall = BlockTFTComponent.getBlockWithNBT(this, materials);
 		List<Object> specificRecipe = new ArrayList<Object>();
@@ -107,7 +111,7 @@ public class Component {
 		specificRecipe.addAll(Arrays.asList(recipe));
 		int offset = (int) 'a';
 		for (int i = 0; i < materials.size(); i++) {
-			ComponentMaterialRegistry m = materials.get(i);
+			ComponentMaterial m = materials.get(i);
 
 			specificRecipe.add((char) (offset + i));
 			specificRecipe.add(m.shelfMaterial);
@@ -144,28 +148,30 @@ public class Component {
 		return null;
 	}
 
-	public void readPropertiesFromNBT(TileMachineComponent tile,
-			NBTTagCompound nbt) {
-		for (ComponentProperty[] propSet : propertySets) {
-			for (ComponentProperty prop : propSet) {
-				prop.setTileEntityValues(tile, nbt);
-			}
-		}
-	}
+	//public void readPropertiesFromNBT(TileMachineComponent tile,
+	//		NBTTagCompound nbt) {
+	//	for (ComponentPropertySet propSet : propertySets) {
+	//		for (ComponentProperty prop : propSet.properties) {
+	//			prop.setTileEntityValues(tile, nbt);
+	//		}
+	//	}
+	//}
 
-	public void writePropertiesToNBT(TileMachineComponent tile,
-			NBTTagCompound nbt) {
-		for (ComponentProperty[] propSet : propertySets) {
-			for (ComponentProperty prop : propSet) {
-				prop.writeNBTFromTileEntityValues(tile, nbt);
-			}
-		}
-	}
+	//public void writePropertiesToNBT(TileMachineComponent tile,
+	//		NBTTagCompound nbt) {
+	//	for (ComponentPropertySet propSet : propertySets) {
+	//		tile.writeComponentSetToNBT(nbt, propSet);
+	//		//for (ComponentProperty prop : propSet) {
+	//		//prop.writeNBTFromTileEntityValues(tile, nbt);
+	//		//}
+	//	}
+	//}
 
 	public void setTileEntityValues(TileMachineComponent tile, ItemStack stack) {
-		for (ComponentProperty[] propSet : propertySets) {
-			for (ComponentProperty prop : propSet) {
-				prop.setTileEntityValues(tile, stack.getTagCompound());
+		for (ComponentPropertySet propSet : propertySets) {
+			for (ComponentProperty prop : propSet.properties) {
+				tile.setProperty(prop, stack.getTagCompound());
+				//prop.setTileEntityValues(tile, stack.getTagCompound());
 			}
 		}
 	}

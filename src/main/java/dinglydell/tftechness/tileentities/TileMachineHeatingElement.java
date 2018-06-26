@@ -11,7 +11,7 @@ public class TileMachineHeatingElement extends TileMachineRF {
 	@Override
 	protected int spendRF(int spend) {
 
-		temperature += spend * RF_TO_TEMP * tier.efficiency;
+		temperature += spend / getSpecificHeat() * getWireTier().efficiency;
 		return spend;
 	}
 }

@@ -106,21 +106,23 @@ import dinglydell.tftechness.block.TFTOre;
 import dinglydell.tftechness.block.TFTOreRegistry;
 import dinglydell.tftechness.block.component.BlockTFTComponent;
 import dinglydell.tftechness.block.component.Component;
-import dinglydell.tftechness.block.component.ComponentMaterialRegistry;
+import dinglydell.tftechness.block.component.ComponentMaterial;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
+import dinglydell.tftechness.block.component.property.ComponentPropertySet;
 import dinglydell.tftechness.config.TFTConfig;
 import dinglydell.tftechness.crop.CropIndexStack;
 import dinglydell.tftechness.crop.TFTCropManager;
 import dinglydell.tftechness.event.TFTDamageHandler;
 import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
+import dinglydell.tftechness.fluid.Gas;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
 import dinglydell.tftechness.item.ItemBlockMachineComponent;
 import dinglydell.tftechness.item.ItemBlockTreatedBarrel;
-import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalSnatcher;
@@ -201,12 +203,11 @@ public class TFTechness2 {
 				new Object[] { " a ", "aAa", " a " }));
 
 		//heater (b is wire coil)
-		Component
-				.registerComponent(new Component("heater",
-						TileMachineHeatingElement.class, new Object[] { " b ",
-								"bAb",
-								" b " })
-						.registerPropertySet(new ComponentProperty[] { ComponentProperty.WIRE_TIER }));
+		Component.registerComponent(new Component("heater",
+				TileMachineHeatingElement.class, new Object[] { " b ",
+						"bAb",
+						" b " })
+				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 		// item shelf
 		Component.registerComponent(new Component("shelf",
@@ -214,13 +215,12 @@ public class TFTechness2 {
 				new Object[] { "aa", "aa" }));
 
 		// cooler (b is wire coil)
-		Component
-				.registerComponent(new Component("cooler",
-						TileMachineCoolingElement.class, new Object[] { " a ",
-								"bAb",
-								" b " })
-						.registerPropertySet(new ComponentProperty[] { ComponentProperty.WIRE_TIER })
-						.registerAdditionalIcon("cool"));
+		Component.registerComponent(new Component("cooler",
+				TileMachineCoolingElement.class, new Object[] { " a ",
+						"bAb",
+						" b " })
+				.registerPropertySet(ComponentPropertySet.WIRE_TIER)
+				.registerAdditionalIcon("cool"));
 
 		//Tank
 		Component.registerComponent(new Component("tank",
@@ -229,12 +229,10 @@ public class TFTechness2 {
 						" a " }));
 
 		//Electrode
-		Component
-				.registerComponent(new Component("electrode",
-						TileMachineElectrode.class, new Object[] { "a a",
-								"b b",
-								"a a" })
-						.registerPropertySet(new ComponentProperty[] { ComponentProperty.WIRE_TIER }));
+		Component.registerComponent(new Component("electrode",
+				TileMachineElectrode.class,
+				new Object[] { "a a", "b b", "a a" })
+				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 	}
 
@@ -429,6 +427,9 @@ public class TFTechness2 {
 		TFTPropertyRegistry.registerNumMoles(alumina, 250);
 		TFTPropertyRegistry.registerDensity(alumina, 25.49f);
 		TFTPropertyRegistry.registerVolume(alumina, 0.006396f);
+
+		TFTPropertyRegistry.registerNumMoles(TFCFluids.FRESHWATER, 55.5f);
+		TFTPropertyRegistry.registerBoil(TFCFluids.FRESHWATER, Gas.STEAM);
 	}
 
 	private void registerFluids() {
@@ -952,8 +953,7 @@ public class TFTechness2 {
 						512,
 						inputs.toArray());
 				FluidStack outputFluid = new FluidStack(
-						TFTPropertyRegistry.getMolten(alloy.outputType),
-						total);
+						TFTPropertyRegistry.getMolten(alloy.outputType), total);
 				TFTAlloyRecipe.addRecipe(outputFluid, inputFluids);
 			}
 		}
@@ -1408,14 +1408,16 @@ public class TFTechness2 {
 		// Alumina (solute) -> Aluminium (l)
 		SolutionRecipe
 				.addRecipe(new SolutionRecipe(new ItemStack(TFTItems.ingots
-						.get("Aluminum")), 2, EnumState.solute, new ItemStack(
-						TFTItems.alumina), 25, SolutionRecipe.electrodes));
+						.get("Aluminum")), 1.35f, EnumState.solute,
+						new ItemStack(TFTItems.alumina), 25,
+						SolutionRecipe.electrodes));
 
 		//Alumina (l) -> Aluminium (l)
 		SolutionRecipe
 				.addRecipe(new SolutionRecipe(new ItemStack(TFTItems.ingots
-						.get("Aluminum")), 1, EnumState.liquid, new ItemStack(
-						TFTItems.alumina), 17, SolutionRecipe.electrodes));
+						.get("Aluminum")), 1.35f, EnumState.liquid,
+						new ItemStack(TFTItems.alumina), 25,
+						SolutionRecipe.electrodes));
 
 		//treated plank -> treated lumber
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(
@@ -1436,32 +1438,37 @@ public class TFTechness2 {
 		//false);
 
 		//register stone with the conductivity property
-		ComponentMaterialRegistry.registerMaterial("stone",
-				"stoneBricks",
-				new ItemStack(TFCItems.looseRock, 1,
-						OreDictionary.WILDCARD_VALUE))
-				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f);
+		ComponentMaterial
+				.registerMaterial("stone",
+						"stoneBricks",
+						new ItemStack(TFCItems.looseRock, 1,
+								OreDictionary.WILDCARD_VALUE))
+				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f)
+				.addProperty(ComponentProperty.SPECIFIC_HEAT, 790f);
 		for (Material m : materials) {
 			// register metal materials with conductivity property
 			if (m.block != null) {
-				ComponentMaterialRegistry.registerMaterial(m.name,
-						"block" + m.oreName,
-						"plate" + m.oreName)
+				ComponentMaterial
+						.registerMaterial(m.name,
+								"block" + m.oreName,
+								"plate" + m.oreName)
 						.addProperty(ComponentProperty.CONDUCTIVITY,
-								statMap.get(m.name).conductivity);
+								statMap.get(m.name).conductivity)
+						.addProperty(ComponentProperty.SPECIFIC_HEAT,
+								statMap.get(m.name).getSISpecificHeat());
 			}
 		}
 
 		//wires
 		for (WireTier wire : WireTier.values()) {
 			//register a wire with wire tier property
-			ComponentMaterialRegistry.registerMaterial(wire.name(),
+			ComponentMaterial.registerMaterial(wire.name(),
 					wire.getWire(),
 					wire.getWire()).addProperty(ComponentProperty.WIRE_TIER,
 					wire);
 		}
 
-		ComponentMaterialRegistry.registerRecipes();
+		ComponentMaterial.registerRecipes();
 	}
 
 	private void tfcHeatRecipes() {

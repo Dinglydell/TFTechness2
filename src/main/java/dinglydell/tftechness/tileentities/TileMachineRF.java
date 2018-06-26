@@ -3,6 +3,7 @@ package dinglydell.tftechness.tileentities;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import blusunrize.immersiveengineering.common.IEContent;
+import dinglydell.tftechness.block.component.property.ComponentProperty;
 
 public abstract class TileMachineRF extends TileMachineComponent {
 	public enum WireTier {
@@ -21,22 +22,22 @@ public abstract class TileMachineRF extends TileMachineComponent {
 		}
 	}
 
-	protected WireTier tier = WireTier.lv;
+	//protected WireTier tier = WireTier.lv;
 
 	private int rfRate;
 
-	public TileMachineRF setWireTier(WireTier tier) {
-		this.tier = tier;
-		//default consuming machine capacity is 20 seconds of power
-		this.setRFCapacity(tier.transferRate * 400);
-		return this;
-	}
+	//public TileMachineRF setWireTier(WireTier tier) {
+	//	this.tier = tier;
+	//	//default consuming machine capacity is 20 seconds of power
+	//	this.setRFCapacity(tier.transferRate * 400);
+	//	return this;
+	//}
 
 	@Override
 	public void writeServerToClientMessage(NBTTagCompound nbt) {
 
 		super.writeServerToClientMessage(nbt);
-		nbt.setInteger("tier", tier.ordinal());
+		//nbt.setInteger("tier", tier.ordinal());
 		nbt.setInteger("rfRate", rfRate);
 
 	}
@@ -45,7 +46,7 @@ public abstract class TileMachineRF extends TileMachineComponent {
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 
 		super.readServerToClientMessage(nbt);
-		tier = WireTier.values()[nbt.getInteger("tier")];
+		//tier = WireTier.values()[nbt.getInteger("tier")];
 		rfRate = nbt.getInteger("rfRate");
 	}
 
@@ -59,7 +60,7 @@ public abstract class TileMachineRF extends TileMachineComponent {
 			if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) != 0) {
 				rfRate = 0;
 			} else {
-				rfRate = spendRF(Math.min(rf, tier.transferRate));
+				rfRate = spendRF(Math.min(rf, getWireTier().transferRate));
 				rf -= rfRate;
 			}
 
@@ -73,6 +74,10 @@ public abstract class TileMachineRF extends TileMachineComponent {
 	}
 
 	public WireTier getWireTier() {
-		return this.tier;
+		if (!materials.containsKey(ComponentProperty.WIRE_TIER)) {
+			return WireTier.lv;
+		}
+		return (WireTier) materials.get(ComponentProperty.WIRE_TIER).validFor
+				.get(ComponentProperty.WIRE_TIER);
 	}
 }

@@ -50,7 +50,7 @@ public class OreDict {
 			}
 
 		}
-		return items.get(0);
+		return items.size() == 0 ? null : items.get(0);
 	}
 
 	/** Returns the list of orenames associated with this stack */

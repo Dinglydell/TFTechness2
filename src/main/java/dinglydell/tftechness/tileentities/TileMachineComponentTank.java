@@ -20,13 +20,14 @@ import com.bioxx.tfc.api.TFC_ItemHeat;
 
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
+import dinglydell.tftechness.fluid.ITESolutionTank;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 
 public class TileMachineComponentTank extends TileMachineInventory implements
-		IFluidHandler {
-	protected SolutionTank tank = new SolutionTank(1000);
+		IFluidHandler, ITESolutionTank {
+	protected SolutionTank tank = new SolutionTank(this, 1000);
 	private ItemStack stack;
 
 	@Override
@@ -265,5 +266,57 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				yCoord,
 				zCoord);
 		return true;
+	}
+
+	@Override
+	public int attemptOverflow(int overVol, boolean doOverflow) {
+		//try down frist
+		TileEntity tile = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+		int transfered = 0;
+		if (tile instanceof TileMachineComponentTank) {
+			TileMachineComponentTank tt = (TileMachineComponentTank) tile;
+			transfered += tank.transferFluidTo(tt.tank,
+					overVol,
+					ForgeDirection.DOWN,
+					doOverflow);
+
+		}
+		if (transfered >= overVol) {
+			return transfered;
+		}
+		//try NESW
+		//average to go to each direction
+		int amt = (overVol - transfered) / 4;
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			if (dir.offsetY != 0) {
+				continue;
+			}
+			tile = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord, zCoord
+					+ dir.offsetZ);
+			if (tile instanceof TileMachineComponentTank) {
+				TileMachineComponentTank tt = (TileMachineComponentTank) tile;
+				transfered += tank.transferFluidTo(tt.tank,
+						amt,
+						dir,
+						doOverflow);
+			}
+		}
+		if (transfered >= overVol) {
+			return transfered;
+		}
+
+		//try UP
+		tile = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+
+		if (tile instanceof TileMachineComponentTank) {
+			TileMachineComponentTank tt = (TileMachineComponentTank) tile;
+			transfered += tank.transferFluidTo(tt.tank,
+					overVol,
+					ForgeDirection.UP,
+					doOverflow);
+
+		}
+
+		return transfered;
 	}
 }

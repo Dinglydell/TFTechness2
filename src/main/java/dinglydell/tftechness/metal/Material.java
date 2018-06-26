@@ -36,12 +36,13 @@ import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.item.ItemMetal;
 import dinglydell.tftechness.item.ItemMetalMold;
 import dinglydell.tftechness.item.ItemTFTMetalSheet;
-import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.render.RenderItemMetal;
+import dinglydell.tftechness.util.OreDict;
 import dinglydell.tftechness.util.StringUtil;
 
 public class Material {
@@ -97,6 +98,7 @@ public class Material {
 		this.oreName = name;
 		this.tier = tier;
 		//this.nugget = nugget;
+
 		if (isTFC) {
 			//no! don't look!
 			try {
@@ -129,6 +131,14 @@ public class Material {
 			addIngots();
 			registerMetal();
 			addSheets();
+		}
+		if (block == null) {
+			ItemStack b = OreDict.getOreItem("block" + this.oreName);
+			if (b != null) {
+				block = Block.getBlockFromItem(b.getItem());
+				blockMeta = b.getItemDamage();
+			}
+
 		}
 		addMolds();
 		addNuggets();

@@ -127,7 +127,7 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 							itemTemp += change;
 							//						float energy = change * index.specificHeat * itemMass;
 							temperature -= change * index.specificHeat
-									/ SPECIFIC_HEAT;
+									/ getSpecificHeat();
 							//temperature = 0;
 							//itemTemp = 0;
 						}
