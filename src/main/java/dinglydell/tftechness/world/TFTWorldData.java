@@ -48,6 +48,7 @@ public class TFTWorldData extends WorldSavedData {
 	private static final int SUN_TEMP = 5800;
 	/** used to convert AR distance-to-sun into meters */
 	private static final float distanceConstant = 20245874168.102461820689347048944f;
+	public static final float MASS_TO_PPM = 7.7186614932663209867803988886333e-5f;
 
 	/** roughly equivalent to concentration of CO2 in PPM */
 	protected float greenhouseFactor = 180;

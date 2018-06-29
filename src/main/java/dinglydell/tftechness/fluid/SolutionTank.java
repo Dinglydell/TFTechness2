@@ -249,7 +249,7 @@ public class SolutionTank {
 				float dMass = fluidFill / (volDens * 1000) * dens;
 				solid.setValue(solid.getValue() - dMass);
 				float actualFill = fill(molten.createStack(fluidFill,
-						temperature), true);
+						temperature), ForgeDirection.UNKNOWN, true);
 				temperature -= actualFill / MELT_CONSTANT;
 				if (actualFill < fluidFill) {
 					solid.setValue(solid.getValue() + dMass - actualFill
@@ -299,7 +299,7 @@ public class SolutionTank {
 
 			float cond = gas.condenseFactor();
 			if (cond > 0) {
-				fill(gas.condense(MELT_CONSTANT), true);
+				fill(gas.condense(MELT_CONSTANT), ForgeDirection.UNKNOWN, true);
 			}
 		}
 
@@ -317,7 +317,7 @@ public class SolutionTank {
 				for (FluidStack in : alloy.inputs) {
 					drain(in, true);
 				}
-				fill(alloy.output, true);
+				fill(alloy.output, ForgeDirection.UNKNOWN, true);
 			}
 		}
 		//do a reaction
@@ -336,7 +336,12 @@ public class SolutionTank {
 			FluidStack fs = fluids.get(fluid);
 			if (fs.amount >= recipe.inputQuantity) {
 				rate = (fs.amount / recipe.inputQuantity) / 10;
-				fs.amount -= recipe.inputQuantity * rate;
+				float filled = fill(recipe.output,
+						recipe.outputQuantity * rate,
+						true);
+				float actualRate = filled / recipe.outputQuantity;
+
+				fs.amount -= recipe.inputQuantity * actualRate;
 
 				if (fs.amount == 0) {
 					fluids.remove(fluid);
@@ -351,7 +356,12 @@ public class SolutionTank {
 			float amt = solutes.get(im);
 			if (amt >= 0) {
 				rate = (amt / recipe.inputQuantity) / 10;
-				solutes.put(im, amt - recipe.inputQuantity * rate);
+
+				float filled = fill(recipe.output,
+						recipe.outputQuantity * rate,
+						true);
+				float actualRate = filled / recipe.outputQuantity;
+				solutes.put(im, amt - recipe.inputQuantity * actualRate);
 				if (solutes.get(im) <= 0) {
 					solutes.remove(im);
 				}
@@ -361,15 +371,6 @@ public class SolutionTank {
 		default:
 			break;
 
-		}
-		if (rate != 0) {
-			//HeatIndex hi = HeatRegistry.getInstance()
-			//		.findMatchingIndex(recipe.output);
-			//if(hi.meltTemp > temperature){
-			//FluidMoltenMetal output = TFTItemPropertyRegistry
-			//	.getMolten(recipe.output);
-			fill(recipe.output, recipe.outputQuantity * rate, true);
-			//}
 		}
 		return temperature;
 	}
@@ -423,6 +424,9 @@ public class SolutionTank {
 			float totalV = 0.001f * (getCapacity() - getContentAmount());
 			// this ensures the pressure and temperature will be constant if volume decreases
 			g.getValue().amount *= (totalV - volReduce) / totalV;
+			if (totalV == 0 || totalAmt == 0) {
+				g.getValue().amount = 0;
+			}
 			//float startP = g.getValue().getPressure();
 
 		}
@@ -440,13 +444,15 @@ public class SolutionTank {
 		int totalV = getContentAmount();
 		float maxFill = (0.001f * dens * (capacity - totalV) / volDens);
 		float amtVol = (amt / dens * volDens * 1000f);
-		int overVol = (int) (totalV + amtVol - getCapacity());
+		int overVol = (int) Math.ceil(totalV + amtVol - getCapacity());
 		if (maxFill < amt) {
 
-			overVol = tile.attemptOverflow(overVol, doFill);
+			overVol = tile.attemptOverflow(overVol,
+					ForgeDirection.UNKNOWN,
+					doFill);
 		}
-		float toFill = 0.001f * (overVol + getCapacity() - totalV) / volDens
-				* dens;
+		float toFill = Math.min(amt, 0.001f
+				* (overVol + getCapacity() - totalV) / volDens * dens);
 		if (doFill) {
 			ItemMeta im = new ItemMeta(stack);
 			if (!solids.containsKey(im)) {
@@ -458,12 +464,17 @@ public class SolutionTank {
 	}
 
 	/** Fill the tank with some fluid */
-	public int fill(FluidStack stack, boolean doFill) {
+	public int fill(FluidStack stack, ForgeDirection from, boolean doFill) {
 		if (stack.amount == 0) {
 			return 0;
 		}
 		int amt = getContentAmount();
-		int toFill = Math.max(0, Math.min(stack.amount, capacity - amt));
+		int overFill = amt + stack.amount - capacity;
+		//int toFill = Math.max(0, Math.min(stack.amount, capacity - amt));
+		if (overFill > 0) {
+			overFill = tile.attemptOverflow(overFill, from, true);
+		}
+		int toFill = overFill + capacity - amt;
 		if (doFill) {
 			if (!fluids.containsKey(stack.getFluid())) {
 				FluidStack fs = stack.copy();
@@ -538,6 +549,7 @@ public class SolutionTank {
 		fluids.clear();
 		solids.clear();
 		solutes.clear();
+		gases.clear();
 
 		NBTTagList fluidTags = tag.getTagList("Fluids",
 				Constants.NBT.TAG_COMPOUND);
@@ -567,6 +579,16 @@ public class SolutionTank {
 			solutes.put(im, solute.getFloat("amt"));
 
 		}
+
+		NBTTagList gasTags = tag
+				.getTagList("Gases", Constants.NBT.TAG_COMPOUND);
+		for (int i = 0; i < gasTags.tagCount(); i++) {
+			NBTTagCompound gas = gasTags.getCompoundTagAt(i);
+			GasStack gs = GasStack.loadGasStackFromNBT(gas);
+			if (gs != null) {
+				gases.put(gs.getGas(), gs);
+			}
+		}
 	}
 
 	public NBTTagCompound writeToNBT() {
@@ -588,6 +610,14 @@ public class SolutionTank {
 
 		}
 		tag.setTag("Solutes", soluteTags);
+
+		//gas
+		NBTTagList gasTags = new NBTTagList();
+		for (GasStack gs : gases.values()) {
+			gasTags.appendTag(gs.writeToNBT(new NBTTagCompound()));
+		}
+		tag.setTag("Gases", gasTags);
+
 		return tag;
 	}
 
@@ -693,9 +723,9 @@ public class SolutionTank {
 			drain.amount = Math.min(drain.amount, drainAllocation);
 			drainAllocation -= drain.amount;
 			drain = drain(drain, true);
-			drain.amount -= tank.fill(drain, true);
+			drain.amount -= tank.fill(drain, dir.getOpposite(), true);
 			drainAllocation += drain.amount;
-			fill(drain, true);
+			fill(drain, dir, true);
 
 		}
 
@@ -720,18 +750,10 @@ public class SolutionTank {
 				//replace volume with a fluid
 
 				int toReplace = (int) volumeLoss;
+				toReplace = tile.attemptOverflow(toReplace,
+						ForgeDirection.UNKNOWN,
+						true);
 
-				for (int i = 0; i < otherOrder.size() && toReplace > 0; i++) {
-					FluidStack replace = otherOrder.get(i).copy();
-					replace.amount = toReplace;
-					FluidStack drained = tank.drain(replace, true);
-					int filled = fill(drained, true);
-					if (filled != drained.amount) {
-						TFTechness2.logger
-								.error("Issue when transfering solute! Fluid transfer mismatch.");
-					}
-					toReplace -= drained.amount;
-				}
 				if (toReplace > 0) {
 					volumeLoss = (int) volumeLoss - toReplace;
 				}
@@ -742,6 +764,93 @@ public class SolutionTank {
 			tank.solutes.put(solute.getKey(), otherAmt);
 
 		}
+
+		//gasy gases
+		HashMap<Gas, GasStack> gasesCopy = new HashMap<Gas, GasStack>(gases);
+		float vol = 0.001f * (getCapacity() - getContentAmount());
+		//double otherPressure = tank.getTotalPressure();
+		//double myPressure = getTotalPressure();
+		float otherVol = 0.001f * (tank.getCapacity() - tank.getContentAmount());
+		float totalVol = vol + otherVol;
+		for (GasStack gas : gasesCopy.values()) {
+			//double mf = gas.getPressure(vol) / myPressure;
+			//double otherPressure = tank.getPressure(gas.getGas(), otherVol);
+			//double myPressure = gas.getPressure(vol);
+
+			//double dP = myPressure - otherPressure;
+			double totalAmt = gas.amount + tank.getGasAmount(gas.getGas());
+			double eqAmt = vol * totalAmt / totalVol;
+			double dN = (gas.amount - eqAmt) / 2;
+
+			GasStack drainStack = drain(gas.getGas(), dN, true);
+			tank.fill(drainStack);
+
+		}
+	}
+
+	private void fill(GasStack gas) {
+		if (gases.containsKey(gas.getGas())) {
+			GasStack existing = gases.get(gas.getGas());
+			float newT = (float) ((existing.getTemperature() * existing.amount + gas
+					.getTemperature() * gas.amount) / (existing.amount + gas.amount));
+			existing.setTemperature(newT);
+			existing.amount += gas.amount;
+		} else {
+			gases.put(gas.getGas(), gas.copy());
+		}
+
+	}
+
+	public GasStack drain(Gas gas, double amt, boolean doDrain) {
+		if (!gases.containsKey(gas)) {
+			return null;
+		}
+		GasStack drainStack = gases.get(gas).copy();
+		drainStack.amount = Math.min(drainStack.amount, amt);
+		if (doDrain) {
+			gases.get(gas).amount -= drainStack.amount;
+		}
+		return drainStack;
+	}
+
+	private double getGasAmount(Gas gas) {
+		if (gases.containsKey(gas)) {
+			return gases.get(gas).amount;
+		}
+		return 0;
+	}
+
+	private float getTemperature(Gas gas) {
+		if (gases.containsKey(gas)) {
+			//float vol = 0.001f * (getCapacity() - getContentAmount());
+			return gases.get(gas).getTemperature();
+		}
+
+		return tile.getTemperature();
+	}
+
+	/** volume provided to save performance on repeated checks */
+	private double getPressure(Gas gas, float vol) {
+
+		if (gases.containsKey(gas)) {
+			//float vol = 0.001f * (getCapacity() - getContentAmount());
+			return gases.get(gas).getPressure(vol);
+		}
+
+		return 0;
+	}
+
+	public double getPressure(Gas gas) {
+		return getPressure(gas, 0.001f * (getCapacity() - getContentAmount()));
+	}
+
+	public double getTotalPressure() {
+		double p = 0;
+		float vol = 0.001f * (getCapacity() - getContentAmount());
+		for (GasStack gas : gases.values()) {
+			p += gas.getPressure(vol);
+		}
+		return p;
 	}
 
 	/**
@@ -793,9 +902,13 @@ public class SolutionTank {
 			drainStack = drain(drainStack, doTransfer);
 			int amt = drainStack.amount;
 
-			amt = tank.fill(drainStack, doTransfer);
+			amt = tank.fill(drainStack, dir.getOpposite(), doTransfer);
+			if (doTransfer) {
+				drainStack.amount -= amt;
+				fill(drainStack, dir.getOpposite(), doTransfer);
+			}
 			transfered += amt;
-			if (overVol >= transfered) {
+			if (transfered >= overVol) {
 				return transfered;
 			}
 		}

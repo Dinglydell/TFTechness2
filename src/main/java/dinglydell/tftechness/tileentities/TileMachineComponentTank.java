@@ -166,7 +166,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-		return tank.fill(resource, doFill);
+		return tank.fill(resource, from, doFill);
 	}
 
 	@Override
@@ -269,18 +269,16 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	}
 
 	@Override
-	public int attemptOverflow(int overVol, boolean doOverflow) {
-		//try down frist
-		TileEntity tile = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-		int transfered = 0;
-		if (tile instanceof TileMachineComponentTank) {
-			TileMachineComponentTank tt = (TileMachineComponentTank) tile;
-			transfered += tank.transferFluidTo(tt.tank,
-					overVol,
-					ForgeDirection.DOWN,
-					doOverflow);
+	public int attemptOverflow(int overVol, ForgeDirection from,
+			boolean doOverflow) {
 
-		}
+		int transfered = 0;
+		//try down frist
+		transfered += attemptOverflowInDirection(ForgeDirection.DOWN,
+				overVol,
+				from,
+				doOverflow);
+
 		if (transfered >= overVol) {
 			return transfered;
 		}
@@ -291,32 +289,37 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 			if (dir.offsetY != 0) {
 				continue;
 			}
-			tile = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord, zCoord
-					+ dir.offsetZ);
-			if (tile instanceof TileMachineComponentTank) {
-				TileMachineComponentTank tt = (TileMachineComponentTank) tile;
-				transfered += tank.transferFluidTo(tt.tank,
-						amt,
-						dir,
-						doOverflow);
-			}
+			transfered += attemptOverflowInDirection(dir, amt, from, doOverflow);
 		}
 		if (transfered >= overVol) {
 			return transfered;
 		}
 
 		//try UP
-		tile = worldObj.getTileEntity(xCoord, yCoord + 1, zCoord);
+		transfered += attemptOverflowInDirection(ForgeDirection.UP,
+				overVol,
+				from,
+				doOverflow);
 
+		return transfered;
+	}
+
+	private int attemptOverflowInDirection(ForgeDirection to, int overVol,
+			ForgeDirection from, boolean doOverflow) {
+		if (to == from) {
+			return 0;
+		}
+		TileEntity tile = worldObj.getTileEntity(xCoord + to.offsetX, yCoord
+				+ to.offsetY, zCoord + to.offsetZ);
 		if (tile instanceof TileMachineComponentTank) {
 			TileMachineComponentTank tt = (TileMachineComponentTank) tile;
-			transfered += tank.transferFluidTo(tt.tank,
+			return tank.transferFluidTo(tt.tank,
 					overVol,
-					ForgeDirection.UP,
+					ForgeDirection.DOWN,
 					doOverflow);
 
 		}
+		return 0;
 
-		return transfered;
 	}
 }

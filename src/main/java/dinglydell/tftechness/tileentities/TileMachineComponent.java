@@ -30,11 +30,13 @@ import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.block.component.property.ComponentPropertySet;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.gui.component.ITileTemperature;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.network.PacketMachineComponent;
 
 public/* abstract */class TileMachineComponent extends TileEntity implements
 		ITileTemperature, IEnergyReceiver {
 	protected static final float AIR_CONDUCTIVITY = 0.001f;
+	//protected static final float FLUID_CONDUCTIVITY = 0.01f;
 	protected static final float HEAT_FLOW_MODIFIER = 0.5f;// / 6;
 	private int masterX, masterY = -1, masterZ;
 	protected float temperature;
@@ -174,16 +176,21 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 			if (tile == null || !(tile instanceof TileMachineComponent)) {
 				float ambientTemp;
 				Block b = worldObj.getBlock(x, y, z);
+				float ambientConductivity = AIR_CONDUCTIVITY;
 				if (b instanceof IFluidBlock) {
 					Fluid f = ((IFluidBlock) b).getFluid();
 					ambientTemp = f.getTemperature() - 273;
+
+					ambientConductivity = TFTPropertyRegistry
+							.getConductivity(f);
+					;
 				} else {
 					ambientTemp = TFC_Climate.getHeightAdjustedTemp(worldObj,
 							x,
 							y,
 							z);
 				}
-				float ambientConductivity = AIR_CONDUCTIVITY;
+
 				//if (!b.isAir(worldObj, x, y, z)) { //TODO: different blocks with different conductivity levels?
 				//ambientConductivity /= 2;
 				//}
@@ -466,6 +473,11 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	public void initialiseComponent() {
 		setPlacedSide(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
 		this.sendServerToClientMessage();
+
+		this.temperature = TFC_Climate.getHeightAdjustedTemp(worldObj,
+				xCoord,
+				yCoord,
+				zCoord);
 	}
 
 	public void setProperty(ComponentProperty prop, NBTTagCompound data) {

@@ -1,5 +1,7 @@
 package dinglydell.tftechness.gui.component;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
@@ -99,7 +101,16 @@ public class GuiTemperature extends GuiButton {
 		} else {
 			temp = tile.getTemperature();
 		}
-		tooltip.add((Math.round(temp)) + TFTechness2.degrees + "C");
+		String roundedTemp = null;
+		if (temp >= 100 || temp <= -100) {
+			roundedTemp = "" + Math.round(temp);
+		} else {
+
+			roundedTemp = (new BigDecimal(temp)).round(new MathContext(3))
+					.toString();
+		}
+
+		tooltip.add((roundedTemp) + TFTechness2.degrees + "C");
 		tooltip.add(TFC_ItemHeat.getHeatColor(temp, Float.MAX_VALUE));
 
 	}

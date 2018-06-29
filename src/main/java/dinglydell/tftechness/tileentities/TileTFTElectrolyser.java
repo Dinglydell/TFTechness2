@@ -22,19 +22,20 @@ import com.bioxx.tfc.api.TFC_ItemHeat;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.FluidTankMetal;
+import dinglydell.tftechness.fluid.ITESolutionTank;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.gui.component.ITileTemperature;
-import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.item.TFTItems;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.multiblock.IMultiblockTFT;
 import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 
 public class TileTFTElectrolyser extends TileTFTMachineBase implements
-		IFluidHandler, ITileTemperature {
+		IFluidHandler, ITileTemperature, ITESolutionTank {
 	public enum Slots {
 		ELECTRODE_A, ELECTRODE_B, INPUT, MOLD
 	}
@@ -56,7 +57,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	protected int oldTemp = 0;
 	protected int targetTemperature = 1010;
 
-	protected SolutionTank cryoliteTank = new SolutionTank(
+	protected SolutionTank cryoliteTank = new SolutionTank(this,
 			MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));
 	protected FluidTankMetal aluminiumTank = new FluidTankMetal(
 			MAX_ALUMINIUM_CAPACITY * 1000,
@@ -453,7 +454,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack stack, boolean doFill) {
-		return cryoliteTank.fill(stack, doFill);
+		return cryoliteTank.fill(stack, from, doFill);
 	}
 
 	@Override
@@ -469,7 +470,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		return cryoliteTank.fill(new FluidStack(fluid, 1), false) != 0;
+		return cryoliteTank.fill(new FluidStack(fluid, 1), from, false) != 0;
 	}
 
 	@Override
@@ -489,6 +490,19 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 
 	public FluidTankMetal getAluminiumTank() {
 		return aluminiumTank;
+	}
+
+	@Override
+	public int attemptOverflow(int overVol, ForgeDirection from,
+			boolean doOverflow) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public SolutionTank getTank() {
+		// TODO Auto-generated method stub
+		return cryoliteTank;
 	}
 
 }

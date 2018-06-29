@@ -1,5 +1,7 @@
 package dinglydell.tftechness.fluid;
 
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,7 +21,7 @@ public class GasStack {
 	/** The temperature of the gas in celsius */
 	private float temperature;
 
-	public GasStack(Gas gas, float amount, float temperature) {
+	public GasStack(Gas gas, double amount, float temperature) {
 		this.gas = gas;
 		this.amount = amount;
 		this.temperature = temperature;
@@ -41,6 +43,9 @@ public class GasStack {
 	 *            The volume, in m^3, that the gas takes up
 	 * */
 	public double getPressure(double volume) {
+		if (volume == 0) {
+			return 0f;
+		}
 		return amount * (temperature - TFTechness2.ABSOLUTE_ZERO)
 				* GAS_CONSTANT / volume;
 	}
@@ -75,6 +80,30 @@ public class GasStack {
 			return ((FluidMoltenMetal) f).createStack(mbGain, temperature);
 		}
 		return new FluidStack(f, mbGain);
+	}
+
+	public NBTBase writeToNBT(NBTTagCompound nbt) {
+		nbt.setString("name", gas.gasName);
+		nbt.setDouble("moles", amount);
+		nbt.setFloat("temperature", temperature);
+		return nbt;
+	}
+
+	public Gas getGas() {
+
+		return gas;
+	}
+
+	public static GasStack loadGasStackFromNBT(NBTTagCompound nbt) {
+
+		Gas g = Gas.gasRegistry.get(nbt.getString("name"));
+		return new GasStack(g, nbt.getDouble("moles"),
+				nbt.getFloat("temperature"));
+	}
+
+	public GasStack copy() {
+
+		return new GasStack(gas, amount, temperature);
 	}
 
 }

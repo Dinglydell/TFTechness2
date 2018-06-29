@@ -430,6 +430,22 @@ public class TFTechness2 {
 
 		TFTPropertyRegistry.registerNumMoles(TFCFluids.FRESHWATER, 55.5f);
 		TFTPropertyRegistry.registerBoil(TFCFluids.FRESHWATER, Gas.STEAM);
+		TFTPropertyRegistry.registerConductivity(TFCFluids.FRESHWATER, 0.01f);
+
+		//carbon
+
+		TFTPropertyRegistry.registerCarbonContentByMass(new ItemStack(
+				TFCItems.coal), 192f);
+		TFTPropertyRegistry.registerCarbonContentByMass(TFTMeta.charcoal, 192f);
+
+		TFTPropertyRegistry.registerCarbonContentByMass(TFTMeta.ieCoalCoke,
+				180f);
+		TFTPropertyRegistry
+				.registerCarbonContentByMass(TFTMeta.ieCoalCokeBlock, 180f * 9);
+		for (ItemStack log : OreDictionary.getOres("logWood")) {
+			TFTPropertyRegistry.registerCarbonContentByMass(log, 57f);
+		}
+
 	}
 
 	private void registerFluids() {

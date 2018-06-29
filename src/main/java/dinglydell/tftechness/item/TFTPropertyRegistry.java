@@ -16,6 +16,7 @@ import com.bioxx.tfc.api.Enums.EnumWeight;
 
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.Gas;
+import dinglydell.tftechness.world.TFTWorldData;
 
 /**
  * Properties that are assigned to certain items or fluids for various
@@ -44,6 +45,8 @@ public class TFTPropertyRegistry {
 
 	private static final float DEFAULT_VOLUME = 0.1f;
 
+	private static final float DEFAULT_FLUID_CONDUCTIVITY = 0.001f;
+
 	protected static Map<ItemMeta, Boolean> powders = new HashMap<ItemMeta, Boolean>();
 
 	/** mol m^-3 */
@@ -64,6 +67,14 @@ public class TFTPropertyRegistry {
 	private static Map<Gas, Fluid> gasToFluidMap = new HashMap<Gas, Fluid>();
 
 	private static Map<Fluid, Float> fluidMolesMap = new HashMap<Fluid, Float>();
+
+	/**
+	 * The amount this item will contribute to the greenhouse factor when it is
+	 * combusted
+	 */
+	protected static Map<ItemMeta, Float> carbonContent = new HashMap<ItemMeta, Float>();
+
+	private static Map<Fluid, Float> fluidConductivity = new HashMap<Fluid, Float>();
 
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
@@ -260,6 +271,35 @@ public class TFTPropertyRegistry {
 		}
 		return 1f;
 
+	}
+
+	public static void registerCarbonContentByMass(ItemStack stack, float mass) {
+
+		registerCarbonContent(stack, mass * TFTWorldData.MASS_TO_PPM);
+	}
+
+	/** increase in ppm in atmos as a result of this emission */
+	public static void registerCarbonContent(ItemStack stack, float amt) {
+		carbonContent.put(new ItemMeta(stack), amt);
+	}
+
+	public static float getCarbonContent(ItemStack stack) {
+		ItemMeta im = new ItemMeta(stack);
+		if (carbonContent.containsKey(im)) {
+			return carbonContent.get(im);
+		}
+		return 0;
+	}
+
+	public static void registerConductivity(Fluid f, float value) {
+		fluidConductivity.put(f, value);
+	}
+
+	public static float getConductivity(Fluid f) {
+		if (fluidConductivity.containsKey(f)) {
+			return fluidConductivity.get(f);
+		}
+		return DEFAULT_FLUID_CONDUCTIVITY;
 	}
 
 }
