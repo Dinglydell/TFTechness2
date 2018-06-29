@@ -19,11 +19,13 @@ import com.bioxx.tfc.api.TFCItems;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.ITESolutionTank;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.recipe.SolutionRecipe;
+import dinglydell.tftechness.world.TFTWorldData;
 
 public class TileMachineComponentTank extends TileMachineInventory implements
 		IFluidHandler, ITESolutionTank {
@@ -148,6 +150,31 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				}
 			}
 		}
+
+		double pressure = tank.getTotalPressure();
+		double pressureDiff = Math.abs(pressure
+				- TFTWorldData.get(worldObj).getAtmosphericPressure(yCoord));
+		if (pressureDiff > getMaxPressure()) {
+			float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
+			TFTechness2.logger.info("Pressure difference: " + pressureDiff);
+			TFTechness2.logger.info("BANG! " + strength);
+
+			worldObj.createExplosion(null,
+					xCoord,
+					yCoord,
+					zCoord,
+					Math.max(2, strength),
+					true);
+
+		}
+	}
+
+	private double getMaxPressure() {
+		if (!materials.containsKey(ComponentProperty.MAXIMUM_PRESSURE)) {
+			return 1e6f;
+		}
+		return (Float) materials.get(ComponentProperty.MAXIMUM_PRESSURE).validFor
+				.get(ComponentProperty.MAXIMUM_PRESSURE);
 	}
 
 	@Override

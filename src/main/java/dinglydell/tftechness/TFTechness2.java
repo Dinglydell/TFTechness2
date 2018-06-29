@@ -327,65 +327,75 @@ public class TFTechness2 {
 
 		// Stock TFC
 		// For multiple metals with the same stat entry
-		MetalStat blackSteel = new MetalStat(0.35, 1485, 8982, 0.113f);
-		MetalStat blueSteel = new MetalStat(0.35, 1540, 8775, 0.115f);
-		MetalStat copper = new MetalStat(0.35, 1080, 8960, 0.772f);
-		MetalStat redSteel = new MetalStat(0.35, 1540, 9837, 0.115f);
-		MetalStat steel = new MetalStat(0.35, 1540, 8000, 0.108f);
+		MetalStat blackSteel = new MetalStat(0.35, 1485, 8982, 0.113f, 7.6e8f);
+		MetalStat blueSteel = new MetalStat(0.35, 1540, 8775, 0.115f, 8e8f);
+		MetalStat copper = new MetalStat(0.35, 1080, 8960, 0.772f, 7e7f);
+		MetalStat redSteel = new MetalStat(0.35, 1540, 9837, 0.115f, 8e8f);
+		MetalStat steel = new MetalStat(0.35, 1540, 8000, 0.108f, 2.5e8f);
 
-		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000, 0.017f));
-		statMap.put("Bismuth Bronze", new MetalStat(0.35, 985, 963, 0.50445f));
-		statMap.put("Black Bronze", new MetalStat(0.35, 1070, 8626, 0.752f));
+		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000, 0.017f, 4e6f));
+		statMap.put("Bismuth Bronze", new MetalStat(0.35, 985, 963, 0.50445f,
+				4e6f));
+		statMap.put("Black Bronze", new MetalStat(0.35, 1070, 8626, 0.752f,
+				6.5e7f));
 		statMap.put("Black Steel", blackSteel);
 		statMap.put("Blue Steel", blueSteel);
-		statMap.put("Brass", new MetalStat(0.35, 930, 8500, 0.222f));
-		statMap.put("Bronze", new MetalStat(0.35, 950, 8523, 0.052f));
+		statMap.put("Brass", new MetalStat(0.35, 930, 8500, 0.222f, 1.24e8f));
+		statMap.put("Bronze", new MetalStat(0.35, 950, 8523, 0.052f, 1.38e8f));
 		statMap.put("Copper", copper);
-		statMap.put("Gold", new MetalStat(0.6, 1060, 18000, 0.63f));
+		statMap.put("Gold", new MetalStat(0.6, 1060, 18000, 0.63f, 1.15e8f));
 		statMap.put("HC Black Steel", blackSteel);
 		statMap.put("HC Blue Steel", blueSteel);
 		statMap.put("HC Red Steel", redSteel);
-		statMap.put("Lead", new MetalStat(0.22, 328, 11000, 0.07f));
-		statMap.put("Nickel", new MetalStat(0.48, 1453, 8200, 0.18f));
-		statMap.put("Pig Iron", new MetalStat(0.35, 1500, 8100, 0.115f));
-		statMap.put("Platinum", new MetalStat(0.35, 1730, 20000, 0.146f));
+		statMap.put("Lead", new MetalStat(0.22, 328, 11000, 0.07f, 1e7f));
+		statMap.put("Nickel", new MetalStat(0.48, 1453, 8200, 0.18f, 7e7f));
+		statMap.put("Pig Iron", new MetalStat(0.35, 1500, 8100, 0.115f, 1.3e8f));
+		statMap.put("Platinum", new MetalStat(0.35, 1730, 20000, 0.146f,
+				1.25e8f));
 		statMap.put("Red Steel", redSteel);
-		statMap.put("Rose Gold", new MetalStat(0.35, 960, 16731, 0.6584f));
-		statMap.put("Silver", new MetalStat(0.48, 961, 10000, 0.814f));
+		statMap.put("Rose Gold", new MetalStat(0.35, 960, 16731, 0.6584f,
+				1.06e8f));
+		statMap.put("Silver", new MetalStat(0.48, 961, 10000, 0.814f, 5e7f));
 		//statMap.put("Stirling Silver", new MetalStat(0.245, 893, 10370, 0.814f));
 		statMap.put("Steel", steel);
-		statMap.put("Sterling Silver", new MetalStat(0.35, 900, 9738, 0.8014f));
-		statMap.put("Tin", new MetalStat(0.14, 230, 7000, 0.13f));
+		statMap.put("Sterling Silver", new MetalStat(0.35, 900, 9738, 0.8014f,
+				1.24e8f));
+		statMap.put("Tin", new MetalStat(0.14, 230, 7000, 0.13f, 5e6f));
 		// TFC uses copper heat properties for all unknown ingots
 		statMap.put("Unknown", copper);
 		statMap.put("Weak Red Steel", redSteel);
 		statMap.put("Weak Blue Steel", blueSteel);
 		statMap.put("Weak Steel", steel);
-		statMap.put("Wrought Iron", new MetalStat(0.35, 1535, 7500, 0.118f));
-		statMap.put("Zinc", new MetalStat(0.21, 420, 7000, 0.232f));
+		statMap.put("Wrought Iron", new MetalStat(0.35, 1535, 7500, 0.118f,
+				1.59e8f));
+		statMap.put("Zinc", new MetalStat(0.21, 420, 7000, 0.232f, 7.5e7f));
 
 		// IE
-		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870, 0.0424f));
-		statMap.put("Electrum", new MetalStat(0.181, 650, 14460, 0.9f));
+		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870, 0.0424f,
+				1.44e8f));
+		statMap.put("Electrum", new MetalStat(0.181, 650, 14460, 0.9f, 8.5e7f));
 		//the world shudders in silence as a thousand dictionaries crumble in despair
-		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700, 0.408f));
+		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700, 0.408f, 4e7f));
 
 		//AdvancedRocketry
-		statMap.put("Titanium", new MetalStat(0.54, 1668, 4110, 0.042f));
+		statMap.put("Titanium", new MetalStat(0.54, 1668, 4110, 0.042f, 7.8e8f));
 		statMap.put("TitaniumAluminide", new MetalStat(0.79, 1460, 3123,
-				0.2982f));
-		statMap.put("Iridium", new MetalStat(0.31, 2446, 20000, 0.294f));
+				0.2982f, 8.97e8f));
+		statMap.put("Iridium", new MetalStat(0.31, 2446, 20000, 0.294f, 2e8f));
 		// could not find any real data on this
-		statMap.put("TitaniumIridium", new MetalStat(0.43, 2057, 12055, 0.168f));
+		statMap.put("TitaniumIridium", new MetalStat(0.43, 2057, 12055, 0.168f,
+				7e8f));
 
 		// TFT
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
-		statMap.put("Uranium", new MetalStat(0.12, 1132, 19100, 0.048f));
-		statMap.put("DullElectrum", new MetalStat(0.181, 650, 14460, 0.722f));
+		statMap.put("Uranium",
+				new MetalStat(0.12, 1132, 19100, 0.048f, 2.95e8f));
+		statMap.put("DullElectrum", new MetalStat(0.181, 650, 14460, 0.722f,
+				8.3e7f));
 
 		//non-metals
-		statMap.put("Redstone", new MetalStat(1.136, 1000, 3000, 0.5f));
-		statMap.put("Alumina", new MetalStat(0.451, 2072, 3900, 0.05f));
+		statMap.put("Redstone", new MetalStat(1.136, 1000, 3000, 0.5f, 2e4f));
+		statMap.put("Alumina", new MetalStat(0.451, 2072, 3900, 0.05f, 6.9e7f));
 	}
 
 	@EventHandler
@@ -1452,15 +1462,18 @@ public class TFTechness2 {
 		//ComponentMaterialRegistry.registerBaseMaterial("stoneBricks",
 		//	0.01f,
 		//false);
-
+		//TODO: make this less hacky? make it so the property stored is yield strength and that's translated to max pressure for display on a per component basis
+		float tankThickness = 0.01f;
 		//register stone with the conductivity property
 		ComponentMaterial
 				.registerMaterial("stone",
 						"stoneBricks",
-						new ItemStack(TFCItems.looseRock, 1,
+						new ItemStack(TFCItems.stoneBrick, 1,
 								OreDictionary.WILDCARD_VALUE))
 				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f)
-				.addProperty(ComponentProperty.SPECIFIC_HEAT, 790f);
+				.addProperty(ComponentProperty.SPECIFIC_HEAT, 790f)
+				.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
+						tankThickness * 4.8e7f);
 		for (Material m : materials) {
 			// register metal materials with conductivity property
 			if (m.block != null) {
@@ -1471,7 +1484,9 @@ public class TFTechness2 {
 						.addProperty(ComponentProperty.CONDUCTIVITY,
 								statMap.get(m.name).conductivity)
 						.addProperty(ComponentProperty.SPECIFIC_HEAT,
-								statMap.get(m.name).getSISpecificHeat());
+								statMap.get(m.name).getSISpecificHeat())
+						.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
+								tankThickness * statMap.get(m.name).yieldStress);
 			}
 		}
 

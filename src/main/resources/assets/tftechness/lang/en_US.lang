@@ -98,6 +98,8 @@ metal.lv.name=LV Wire Coil
 metal.mv.name=MV Wire Coil
 metal.hv.name=HV Wire Coil
 
+gas.air=Air
+gas.steam=Steam
 
 tile.Machine.name=TFTMachine
 
@@ -146,6 +148,7 @@ info.machine.electrode.tooltip=Uses RF to electrolyze neighboring tanks.
 info.machine.property.conductivity=Thermal Conductivity:
 info.machine.property.specificHeat=Specific Heat:
 info.machine.property.tier=Wire Tier:
+info.machine.property.maxPressure=Maximum Pressure:
 
 
 tile.wall.name=§7Machine Wall§r

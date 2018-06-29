@@ -225,4 +225,9 @@ public class TFTWorldData extends WorldSavedData {
 		leafOffset += 32;
 
 	}
+
+	/** Returns the atmospheric pressure of the planet in Pa */
+	public float getAtmosphericPressure(int y) {
+		return dimProps.getAtmosphereDensityAtHeight(y) * 1e5f;
+	}
 }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Gas {
 	public static Map<String, Gas> gasRegistry = new HashMap<String, Gas>();
-	public static Gas AIR = new Gas("air", -273);
+	public static Gas AIR = new Gas("air", -274);
 	public static Gas STEAM = new Gas("steam", 100);
 
 	public String gasName;

@@ -20,6 +20,11 @@ public abstract class ComponentProperty<T> {
 	/** The specific heat of a component - measured in J/(kgK) */
 	public static ComponentProperty SPECIFIC_HEAT = new ComponentPropertyFloat(
 			"specificHeat", "J/(kgK)");
+	/**
+	 * The highest level of pressure this component can contain.
+	 */
+	public static ComponentProperty MAXIMUM_PRESSURE = new ComponentPropertyFloat(
+			"maxPressure", "Pa");
 
 	public final String name;
 

@@ -465,7 +465,7 @@ public class SolutionTank {
 
 	/** Fill the tank with some fluid */
 	public int fill(FluidStack stack, ForgeDirection from, boolean doFill) {
-		if (stack.amount == 0) {
+		if (stack == null || stack.amount == 0) {
 			return 0;
 		}
 		int amt = getContentAmount();
@@ -509,7 +509,7 @@ public class SolutionTank {
 
 	public void addTooltip(List<String> infoList) {
 		float totalV = getContentAmount();
-		infoList.add("Total Volume - " + totalV + "mB");
+		infoList.add("Total Non-Gas Volume - " + totalV + "mB");
 		float fluidAmt = getFluidAmount(); // 1000f;
 
 		for (Entry<Fluid, FluidStack> fluid : fluids.entrySet()) {
@@ -772,19 +772,28 @@ public class SolutionTank {
 		//double myPressure = getTotalPressure();
 		float otherVol = 0.001f * (tank.getCapacity() - tank.getContentAmount());
 		float totalVol = vol + otherVol;
-		for (GasStack gas : gasesCopy.values()) {
-			//double mf = gas.getPressure(vol) / myPressure;
-			//double otherPressure = tank.getPressure(gas.getGas(), otherVol);
-			//double myPressure = gas.getPressure(vol);
+		if (vol != 0 && otherVol != 0) {
+			for (GasStack gas : gasesCopy.values()) {
+				//double mf = gas.getPressure(vol) / myPressure;
+				//double otherPressure = tank.getPressure(gas.getGas(), otherVol);
+				//double myPressure = gas.getPressure(vol);
 
-			//double dP = myPressure - otherPressure;
-			double totalAmt = gas.amount + tank.getGasAmount(gas.getGas());
-			double eqAmt = vol * totalAmt / totalVol;
-			double dN = (gas.amount - eqAmt) / 2;
+				//double dP = myPressure - otherPressure;
+				double otherAmt = tank.getGasAmount(gas.getGas());
+				double totalAmt = gas.amount + otherAmt;
+				double Tavg = (gas.amount * gas.getTemperature() + otherAmt
+						* tank.getTemperature(gas.getGas()))
+						/ totalAmt;
+				double eqAmt = (Tavg - TFTechness2.ABSOLUTE_ZERO)
+						* vol
+						* totalAmt
+						/ (totalVol * (gas.getTemperature() - TFTechness2.ABSOLUTE_ZERO));
+				double dN = (gas.amount - eqAmt) / 2;
 
-			GasStack drainStack = drain(gas.getGas(), dN, true);
-			tank.fill(drainStack);
+				GasStack drainStack = drain(gas.getGas(), dN, true);
+				tank.fill(drainStack);
 
+			}
 		}
 	}
 

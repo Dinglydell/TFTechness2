@@ -79,6 +79,9 @@ public class GasStack {
 		if (f instanceof FluidMoltenMetal) {
 			return ((FluidMoltenMetal) f).createStack(mbGain, temperature);
 		}
+		if (f == null) {
+			return null;
+		}
 		return new FluidStack(f, mbGain);
 	}
 

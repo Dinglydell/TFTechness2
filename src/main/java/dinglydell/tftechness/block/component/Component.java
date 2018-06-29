@@ -55,7 +55,8 @@ public class Component {
 		//universal
 		registerPropertySet(ComponentPropertySet.registerSet("base",
 				new ComponentProperty[] { ComponentProperty.CONDUCTIVITY,
-						ComponentProperty.SPECIFIC_HEAT }));
+						ComponentProperty.SPECIFIC_HEAT,
+						ComponentProperty.MAXIMUM_PRESSURE }));
 	}
 
 	//public Component(String name, String tooltip, Object... recipe) {
