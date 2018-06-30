@@ -506,6 +506,10 @@ public class Material {
 		if (unshaped != null) {
 			TFTPropertyRegistry.registerMolten(new ItemStack(unshaped), f);
 		}
+
+		//SH
+		TFTPropertyRegistry.registerSpecificHeat(f,
+				TFTechness2.statMap.get(name).getSISpecificHeat());
 	}
 
 }

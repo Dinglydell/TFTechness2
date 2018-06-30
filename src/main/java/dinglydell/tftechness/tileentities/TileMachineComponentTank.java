@@ -54,7 +54,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 
 		if (stack != null) {
-			stack.stackSize -= tank.fill(stack, true);
+			stack = tank.fill(stack, true);
 			if (stack.stackSize == 0) {
 				stack = null;
 			}
@@ -152,8 +152,16 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 
 		double pressure = tank.getTotalPressure();
-		double pressureDiff = Math.abs(pressure
-				- TFTWorldData.get(worldObj).getAtmosphericPressure(yCoord));
+
+		double pressureDiff;
+		if (pressure == -1) {
+			pressureDiff = 0;
+		} else {
+			pressureDiff = Math
+					.abs(pressure
+							- TFTWorldData.get(worldObj)
+									.getAtmosphericPressure(yCoord));
+		}
 		if (pressureDiff > getMaxPressure()) {
 			float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
 			TFTechness2.logger.info("Pressure difference: " + pressureDiff);
@@ -167,6 +175,12 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 					true);
 
 		}
+	}
+
+	@Override
+	public float getSpecificHeat() {
+
+		return super.getSpecificHeat() + tank.getSHMass();
 	}
 
 	private double getMaxPressure() {

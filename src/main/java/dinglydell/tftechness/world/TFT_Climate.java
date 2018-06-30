@@ -1,6 +1,7 @@
 package dinglydell.tftechness.world;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import net.minecraft.world.World;
 
@@ -16,11 +17,11 @@ public class TFT_Climate {
 			InvocationTargetException {
 		TFTWorldData data = TFTWorldData.get(world);
 		if (data.isEarth() && TFC_Climate.getCacheManager(world) != null) {
-			//Method zFactor = TFC_Climate.class.getMethod("getZFactor",
-			//int.class);
-			//zFactor.setAccessible(true);
-			//float zMod = (Float) zFactor.invoke(null, z);
-			float zMod = 0.5f;
+			Method zFactor = TFC_Climate.class.getDeclaredMethod("getZFactor",
+					int.class);
+			zFactor.setAccessible(true);
+			float zMod = (Float) zFactor.invoke(null, z);
+			//float zMod = 0.5f;
 			float zTemp = zMod * TFC_Climate.getMaxTemperature() - 20
 					+ ((zMod - 0.5f) * 10);
 
@@ -30,15 +31,15 @@ public class TFT_Climate {
 			int month = TFC_Time.getSeasonFromDayOfYear(day, z);
 			int lastMonth = TFC_Time.getSeasonFromDayOfYear(day
 					- TFC_Time.daysInMonth, z);
-			//Method monthTempMethod = TFC_Climate.class
-			//		.getMethod("getMonthTemp", int.class, int.class);
-			//monthTempMethod.setAccessible(true);
-			//float monthTemp = (Float) monthTempMethod.invoke(null, month, z);
-			//float lastMonthTemp = (Float) monthTempMethod.invoke(null,
-			//		lastMonth,
-			//		z);
-			float monthTemp = 1;
-			float lastMonthTemp = 0;
+			Method monthTempMethod = TFC_Climate.class
+					.getDeclaredMethod("getMonthTemp", int.class, int.class);
+			monthTempMethod.setAccessible(true);
+			float monthTemp = (Float) monthTempMethod.invoke(null, month, z);
+			float lastMonthTemp = (Float) monthTempMethod.invoke(null,
+					lastMonth,
+					z);
+			//float monthTemp = 1;
+			//float lastMonthTemp = 0;
 
 			int dayOfMonth = TFC_Time.getDayOfMonthFromDayOfYear(day);
 

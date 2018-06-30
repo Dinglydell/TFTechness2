@@ -438,9 +438,10 @@ public class TFTechness2 {
 		TFTPropertyRegistry.registerDensity(alumina, 25.49f);
 		TFTPropertyRegistry.registerVolume(alumina, 0.006396f);
 
-		TFTPropertyRegistry.registerNumMoles(TFCFluids.FRESHWATER, 55.5f);
+		TFTPropertyRegistry.registerNumMoles(TFCFluids.FRESHWATER, 1000f / 18f);
 		TFTPropertyRegistry.registerBoil(TFCFluids.FRESHWATER, Gas.STEAM);
 		TFTPropertyRegistry.registerConductivity(TFCFluids.FRESHWATER, 0.01f);
+		TFTPropertyRegistry.registerSpecificHeat(TFCFluids.FRESHWATER, 4118);
 
 		//carbon
 
@@ -466,6 +467,7 @@ public class TFTechness2 {
 			FluidRegistry.registerFluid(f);
 
 			m.registerMolten(f);
+
 		}
 
 		//TODO: make this less of an awkward special case

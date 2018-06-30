@@ -19,6 +19,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.bioxx.tfc.api.HeatIndex;
@@ -31,6 +32,7 @@ import dinglydell.tftechness.metal.MetalStat;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.Condition;
 import dinglydell.tftechness.recipe.TFTAlloyRecipe;
+import dinglydell.tftechness.util.StringUtil;
 
 public class SolutionTank {
 	//very simplified since air has a varying SH
@@ -135,6 +137,7 @@ public class SolutionTank {
 				SHMass += fluid.getValue().amount * 0.001f * stat.density
 						* stat.getSISpecificHeat();
 			}
+			//TFTPropertyRegistry.getSpecificHeat(fluid);
 		}
 		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
 
@@ -190,6 +193,23 @@ public class SolutionTank {
 											.getVolumeDensity(solid),
 							true);
 				}
+			}
+
+			Gas g = TFTPropertyRegistry.getGaseous(fluid.getKey());
+			if (g != null && temperature >= g.getBoilingPoint()) {
+				float dT = temperature - g.getBoilingPoint();
+				float molPerMb = TFTPropertyRegistry.getMoles(fluid.getKey());
+
+				int fluidEvapourate = Math.min(fluid.getValue().amount,
+						(int) (dT * MELT_CONSTANT));
+				fluid.getValue().amount -= fluidEvapourate;
+				temperature -= fluidEvapourate / MELT_CONSTANT;
+
+				if (fluid.getValue().amount <= 0) {
+					fluidDelete.add(fluid.getKey());
+				}
+				float molAmt = fluidEvapourate * molPerMb;
+				fill(new GasStack(g, molAmt, temperature));
 			}
 		}
 
@@ -400,22 +420,40 @@ public class SolutionTank {
 		return totalSol;
 	}
 
-	/** Fill the tank with a powdered item */
-	public int fill(ItemStack stack, boolean doFill) {
+	/** Fill the tank with an item */
+	public ItemStack fill(ItemStack stack, boolean doFill) {
+		if (FluidContainerRegistry.isContainer(stack)) {
+			ItemStack empty = FluidContainerRegistry.drainFluidContainer(stack);
+			if (empty == null) {
+				return stack;
+			}
+			FluidStack fluid = FluidContainerRegistry
+					.getFluidForFilledItem(stack);
+			reduceGas(fluid.amount * 0.001f);
+			fill(fluid, ForgeDirection.UNKNOWN, true);
+			return empty;
+		}
 		float dens = TFTPropertyRegistry.getDensity(stack);
 		int amt = (int) (fill(stack, stack.stackSize * dens, false) / dens);
-		if (doFill) {
+		if (doFill && amt != 0) {
 			float vol = stack.stackSize
 					* TFTPropertyRegistry.getVolumeDensity(stack);
 			reduceGas(vol);
 			fill(stack, amt * dens, true);
 		}
-		return amt;
+		ItemStack result = stack.copy();
+		result.stackSize = amt;
+		return result;
 	}
 
-	/** leaks a certain volume of gas (used when something is enters) */
+	/**
+	 * leaks a certain volume of gas (used when something is enters)
+	 * 
+	 * @param vol
+	 *            Volume in m^3
+	 * */
 	private void reduceGas(float vol) {
-		float totalAmt = 0;
+		double totalAmt = 0;
 		for (Entry<Gas, GasStack> g : gases.entrySet()) {
 			totalAmt += g.getValue().amount;
 		}
@@ -534,7 +572,8 @@ public class SolutionTank {
 					/ 1000f
 					+ "kg");
 		}
-
+		infoList.add("Gases (" + StringUtil.prefixify(getTotalPressure())
+				+ "Pa" + ")");
 		for (Entry<Gas, GasStack> gas : gases.entrySet()) {
 			infoList.add(gas.getValue()
 					.getDisplayString(0.001f * (getCapacity() - totalV)));
@@ -789,15 +828,19 @@ public class SolutionTank {
 						* totalAmt
 						/ (totalVol * (gas.getTemperature() - TFTechness2.ABSOLUTE_ZERO));
 				double dN = (gas.amount - eqAmt) / 2;
-
-				GasStack drainStack = drain(gas.getGas(), dN, true);
-				tank.fill(drainStack);
+				if (dN > 0) {
+					GasStack drainStack = drain(gas.getGas(), dN, true);
+					tank.fill(drainStack);
+				}
 
 			}
 		}
 	}
 
 	private void fill(GasStack gas) {
+		if (gas.amount == 0) {
+			return;
+		}
 		if (gases.containsKey(gas.getGas())) {
 			GasStack existing = gases.get(gas.getGas());
 			float newT = (float) ((existing.getTemperature() * existing.amount + gas
@@ -856,6 +899,9 @@ public class SolutionTank {
 	public double getTotalPressure() {
 		double p = 0;
 		float vol = 0.001f * (getCapacity() - getContentAmount());
+		if (vol == 0) {
+			return -1;
+		}
 		for (GasStack gas : gases.values()) {
 			p += gas.getPressure(vol);
 		}

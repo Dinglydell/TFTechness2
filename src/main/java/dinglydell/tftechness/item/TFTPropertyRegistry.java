@@ -76,6 +76,8 @@ public class TFTPropertyRegistry {
 
 	private static Map<Fluid, Float> fluidConductivity = new HashMap<Fluid, Float>();
 
+	private static Map<Fluid, Float> fluidSH = new HashMap<Fluid, Float>();
+
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
 	}
@@ -300,6 +302,17 @@ public class TFTPropertyRegistry {
 			return fluidConductivity.get(f);
 		}
 		return DEFAULT_FLUID_CONDUCTIVITY;
+	}
+
+	public static float getSpecificHeat(Fluid f) {
+		if (fluidSH.containsKey(f)) {
+			return fluidSH.get(f);
+		}
+		return 0;
+	}
+
+	public static void registerSpecificHeat(Fluid f, float value) {
+		fluidSH.put(f, value);
 	}
 
 }

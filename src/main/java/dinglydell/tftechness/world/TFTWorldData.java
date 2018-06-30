@@ -63,6 +63,7 @@ public class TFTWorldData extends WorldSavedData {
 	private float sunInput;
 	/** stefan-boltzmann constant * surface area of planet */
 	private float stefArea;
+	private float sunIntensity;
 
 	//private static float getTemp0(World world, int day, int hour, int x, int z,
 	//		boolean bio) {
@@ -72,10 +73,7 @@ public class TFTWorldData extends WorldSavedData {
 	public TFTWorldData(World world) {
 		super(DATA_NAME);
 		this.world = world;
-		//if (world.provider.dimensionId != 0) {
-		//not the overworld!
-		this.dimProps = (DimensionProperties) AdvancedRocketryAPI.dimensionManager
-				.getDimensionProperties(world.provider.dimensionId);
+		setWorld(world);
 		temperatureOffset = dimProps.averageTemperature * 2.88f
 				- baseTemperature;
 		//greenhouseFactor = dimProps.getAtmosphereDensity() * 2;
@@ -84,25 +82,6 @@ public class TFTWorldData extends WorldSavedData {
 		TFTechness2.logger.info("[" + dimProps.getName() + " - rotation ]: "
 				+ dimProps.rotationalPhi);
 
-		float sunR = SUN_RADIUS
-				* (dimProps.getStar().getDisplayRadius() / 200f);
-		float sunSA = sunR * sunR;
-		float sunTemp = SUN_TEMP * dimProps.getStar().getTemperature() / 100;
-		float sunPower = stefanBoltzConstant * sunSA * sunTemp * sunTemp
-				* sunTemp * sunTemp;
-		float distToSun = (float) Math.pow(Math.E,
-				dimProps.getSolarOrbitalDistance() * 0.02f)
-				* distanceConstant;
-		float sunIntensity = sunPower / (distToSun * distToSun);
-		// radius of planet assumes all planets are of equal density
-		float radius = dimProps.getGravitationalMultiplier() * EARTH_RADIUS;
-
-		//float sunInput = getAlbedo() * sunIntensity * (float) Math.PI * radius * radius;
-
-		float planetCrossArea = (float) Math.PI * radius * radius;
-		stefArea = stefanBoltzConstant * 4 * planetCrossArea;
-
-		sunInput = planetCrossArea * sunIntensity;
 		// calculate amount of greenhouse gas required to keep the thing in equilibrium
 		// g = (c * AoT^4 / Ein) ^ 2
 		greenhouseFactor = greenhouseAbsorbanceConstant * 4
@@ -112,6 +91,11 @@ public class TFTWorldData extends WorldSavedData {
 		greenhouseFactor *= greenhouseFactor;
 		//}
 		//}
+	}
+
+	public TFTWorldData(String str) {
+		super(str);
+		TFTechness2.logger.info(str);
 	}
 
 	@Override
@@ -153,14 +137,43 @@ public class TFTWorldData extends WorldSavedData {
 
 	public static TFTWorldData get(World world) {
 		MapStorage storage = world.perWorldStorage;
-		TFTWorldData instance = (TFTWorldData) storage
-				.loadData(TFTWorldData.class, DATA_NAME);
+		TFTWorldData instance = ((TFTWorldData) storage
+				.loadData(TFTWorldData.class, DATA_NAME));
 
 		if (instance == null) {
 			instance = new TFTWorldData(world);
 			storage.setData(DATA_NAME, instance);
+		} else {
+			instance.setWorld(world);
 		}
 		return instance;
+	}
+
+	private TFTWorldData setWorld(World world) {
+		this.world = world;
+		this.dimProps = (DimensionProperties) AdvancedRocketryAPI.dimensionManager
+				.getDimensionProperties(world.provider.dimensionId);
+
+		float sunR = SUN_RADIUS
+				* (dimProps.getStar().getDisplayRadius() / 200f);
+		float sunSA = sunR * sunR;
+		float sunTemp = SUN_TEMP * dimProps.getStar().getTemperature() / 100;
+		float sunPower = stefanBoltzConstant * sunSA * sunTemp * sunTemp
+				* sunTemp * sunTemp;
+		float distToSun = (float) Math.pow(Math.E,
+				dimProps.getSolarOrbitalDistance() * 0.02f)
+				* distanceConstant;
+		sunIntensity = sunPower / (distToSun * distToSun);
+		// radius of planet assumes all planets are of equal density
+		float radius = dimProps.getGravitationalMultiplier() * EARTH_RADIUS;
+
+		//float sunInput = getAlbedo() * sunIntensity * (float) Math.PI * radius * radius;
+
+		float planetCrossArea = (float) Math.PI * radius * radius;
+		stefArea = stefanBoltzConstant * 4 * planetCrossArea;
+
+		sunInput = planetCrossArea * sunIntensity;
+		return this;
 	}
 
 	public void tick(WorldTickEvent event) {
