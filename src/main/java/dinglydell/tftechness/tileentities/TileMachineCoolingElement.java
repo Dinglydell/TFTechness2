@@ -9,7 +9,7 @@ import dinglydell.tftechness.TFTechness2;
 
 public class TileMachineCoolingElement extends TileMachineRF {
 
-	private static final float RF_TO_COOLANT = 0.005f;
+	private static final float RF_TO_COOLANT = 0.01f;
 	/** The heat transfered into the cooler is then multipled by this */
 	private static final float EXCESS_HEAT_MULTIPLIER = 1.1f;
 	/** if true, the machine will attempt to cool machines on this side */
@@ -89,11 +89,13 @@ public class TileMachineCoolingElement extends TileMachineRF {
 			if (tile != null && tile instanceof TileMachineComponent) {
 				TileMachineComponent tc = (TileMachineComponent) tile;
 				float oldTemp = tc.temperature;
+
 				float dE = spend * RF_TO_COOLANT * getWireTier().efficiency;
 				tc.temperature = Math.max(TFTechness2.ABSOLUTE_ZERO,
 						tc.temperature - dE / tc.getSpecificHeat());
 				dE = (oldTemp - tc.temperature) * tc.getSpecificHeat();
 				temperature += EXCESS_HEAT_MULTIPLIER * dE / getSpecificHeat();
+
 			}
 		}
 		//temperature = Math.max(TFTechness2.ABSOLUTE_ZERO, temperature - spend
@@ -109,7 +111,7 @@ public class TileMachineCoolingElement extends TileMachineRF {
 	}
 
 	@Override
-	public IIcon getIcon(IIcon[][] icons, int side) {
+	public IIcon getIcon(int side) {
 		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 		return component.getIcon(isSideCool[(6 + side - meta) % 6] ? 1 : 0);
 	}

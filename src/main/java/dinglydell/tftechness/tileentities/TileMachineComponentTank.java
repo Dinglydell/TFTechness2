@@ -21,6 +21,7 @@ import com.bioxx.tfc.api.TFC_ItemHeat;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
+import dinglydell.tftechness.fluid.FluidStackFloat;
 import dinglydell.tftechness.fluid.ITESolutionTank;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
@@ -31,12 +32,14 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		IFluidHandler, ITESolutionTank {
 	protected SolutionTank tank = new SolutionTank(this, 1000);
 	private ItemStack stack;
+	protected boolean isSealed;
 
 	@Override
 	public void writeToNBT(NBTTagCompound data) {
 		super.writeToNBT(data);
 
 		data.setTag("Tank", tank.writeToNBT());
+		data.setBoolean("Sealed", isSealed);
 	}
 
 	@Override
@@ -44,6 +47,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		super.readFromNBT(data);
 
 		tank.readFromNBT(data.getCompoundTag("Tank"));
+		isSealed = data.getBoolean("Sealed");
 	}
 
 	@Override
@@ -61,13 +65,15 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 		temperature = tank.updateTank(temperature);
 		tank.removeCondition(SolutionRecipe.electrodes);
-		for (ForgeDirection dir : ForgeDirection.values()) {
-			if (dir == ForgeDirection.UNKNOWN) {
-				continue;
-			}
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			int x = xCoord + dir.offsetX;
 			int y = yCoord + dir.offsetY;
 			int z = zCoord + dir.offsetZ;
+			if (!isSealed
+					&& worldObj.getBlock(x, y, z).isAir(worldObj, x, y, z)) {
+				tank.equaliseGas(0.01f, 1, TFTWorldData.get(worldObj)
+						.getAtmosphericComposition(y));
+			}
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			if (tile != null) {
 				if (tile instanceof TileMachineComponentTank) {
@@ -98,7 +104,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 							if (stack == null) {
 								continue;
 							}
-							for (FluidStack f : tank.getFluids()) {
+							for (FluidStackFloat f : tank.getFluids()) {
 								if (f.amount == 0) {
 									continue;
 								}
@@ -123,7 +129,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 										tileShelf.setInventorySlotContents(i,
 												mold);
 										TFC_ItemHeat.setTemp(mold, temperature);
-										tank.drain(fm.createStack(1,
+										tank.drain(new FluidStackFloat(fm, 1,
 												temperature), true);
 									} else if (stack.getItem() == m.meltedItem
 											&& stack.getItemDamage() > 0) {
@@ -140,7 +146,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 										stack.setItemDamage(stack
 												.getItemDamage() - 1);
 										TFC_ItemHeat.setTemp(stack, newTemp);
-										tank.drain(fm.createStack(1,
+										tank.drain(new FluidStackFloat(fm, 1,
 												temperature), true);
 									}
 								}
@@ -150,29 +156,23 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				}
 			}
 		}
-
+		double atmosPressure = TFTWorldData.get(worldObj)
+				.getAtmosphericPressure(yCoord);
 		double pressure = tank.getTotalPressure();
 
-		double pressureDiff;
-		if (pressure == -1) {
-			pressureDiff = 0;
-		} else {
-			pressureDiff = Math
-					.abs(pressure
-							- TFTWorldData.get(worldObj)
-									.getAtmosphericPressure(yCoord));
-		}
+		double pressureDiff = Math.abs(pressure - atmosPressure);
 		if (pressureDiff > getMaxPressure()) {
 			float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
 			TFTechness2.logger.info("Pressure difference: " + pressureDiff);
-			TFTechness2.logger.info("BANG! " + strength);
+			TFTechness2.logger.info("BANG! " + strength + "(x: " + xCoord
+					+ ", y: " + yCoord + ", z: " + zCoord + ")");
 
-			worldObj.createExplosion(null,
-					xCoord,
-					yCoord,
-					zCoord,
-					Math.max(2, strength),
-					true);
+			//worldObj.createExplosion(null,
+			//		xCoord,
+			//		yCoord,
+			//		zCoord,
+			//		Math.max(2, strength),
+			//		true);
 
 		}
 	}
@@ -183,7 +183,8 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		return super.getSpecificHeat() + tank.getSHMass();
 	}
 
-	private double getMaxPressure() {
+	@Override
+	public double getMaxPressure() {
 		if (!materials.containsKey(ComponentProperty.MAXIMUM_PRESSURE)) {
 			return 1e6f;
 		}
@@ -196,6 +197,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		super.writeServerToClientMessage(nbt);
 
 		nbt.setTag("Tank", tank.writeToNBT());
+		nbt.setBoolean("isSealed", isSealed);
 	}
 
 	@Override
@@ -203,6 +205,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		super.readServerToClientMessage(nbt);
 		tank.readFromNBT(nbt.getCompoundTag("Tank"));
+		isSealed = nbt.getBoolean("isSealed");
 	}
 
 	@Override
@@ -310,10 +313,10 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	}
 
 	@Override
-	public int attemptOverflow(int overVol, ForgeDirection from,
+	public float attemptOverflow(float overVol, ForgeDirection from,
 			boolean doOverflow) {
 
-		int transfered = 0;
+		float transfered = 0;
 		//try down frist
 		transfered += attemptOverflowInDirection(ForgeDirection.DOWN,
 				overVol,
@@ -325,7 +328,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 		//try NESW
 		//average to go to each direction
-		int amt = (overVol - transfered) / 4;
+		float amt = (overVol - transfered) / 4;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			if (dir.offsetY != 0) {
 				continue;
@@ -345,7 +348,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		return transfered;
 	}
 
-	private int attemptOverflowInDirection(ForgeDirection to, int overVol,
+	private float attemptOverflowInDirection(ForgeDirection to, float overVol,
 			ForgeDirection from, boolean doOverflow) {
 		if (to == from) {
 			return 0;
@@ -362,5 +365,37 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 		return 0;
 
+	}
+
+	@Override
+	public double getAtmosphericPressure() {
+
+		return TFTWorldData.get(worldObj).getAtmosphericPressure(yCoord);
+	}
+
+	public void toggleSeal() {
+		this.isSealed = !this.isSealed;
+
+		this.sendClientToServerMessage();
+
+	}
+
+	public boolean isSealed() {
+
+		return isSealed;
+	}
+
+	@Override
+	public void writeClientToServerMessage(NBTTagCompound nbt) {
+
+		super.writeClientToServerMessage(nbt);
+
+		nbt.setBoolean("isSealed", isSealed);
+	}
+
+	@Override
+	public void readClientToServerMessage(NBTTagCompound nbt) {
+		super.readClientToServerMessage(nbt);
+		isSealed = nbt.getBoolean("isSealed");
 	}
 }

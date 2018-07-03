@@ -210,7 +210,7 @@ public class BlockTFTComponent extends BlockContainer {
 	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		TileMachineComponent tile = (TileMachineComponent) world
 				.getTileEntity(x, y, z);
-		return tile.getIcon(icons, side);
+		return tile.getIcon(side);
 	}
 
 	@Override

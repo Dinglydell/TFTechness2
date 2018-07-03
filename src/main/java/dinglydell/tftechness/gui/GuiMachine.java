@@ -69,9 +69,11 @@ public class GuiMachine extends GuiContainer {
 		super.drawScreen(x, y, p_73863_3_);
 		List<String> tooltip = new ArrayList<String>();
 		for (Object b : buttonList) {
-			GuiTemperature ob = ((GuiTemperature) b);
-			if (ob.isHovering(x, y)) {
-				ob.addTooltip(tooltip);
+			if (b instanceof GuiTemperature) {
+				GuiTemperature ob = ((GuiTemperature) b);
+				if (ob.isHovering(x, y)) {
+					ob.addTooltip(tooltip);
+				}
 			}
 		}
 		for (ITFTComponent c : components) {

@@ -50,6 +50,7 @@ Mid-term:
  -compound registry - every item is registered with what compounds it contains - these compounds are composed of elements
  -reactions in the solution tank would be based on what can be done with existing elements and compounds in the tank (possibly using enthalpy and/or entropy)
  -densities of stuff in solution tank that varies with state
+ -use vapour pressures for fluids boiling
 
  -SolutionTank with alloy mixing!
 

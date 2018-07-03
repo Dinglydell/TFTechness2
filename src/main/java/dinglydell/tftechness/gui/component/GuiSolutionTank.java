@@ -5,7 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraftforge.fluids.FluidStack;
+import dinglydell.tftechness.fluid.FluidStackFloat;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.item.ItemMeta;
 
@@ -69,7 +69,7 @@ public class GuiSolutionTank extends Gui implements ITFTComponent {
 			}
 			//dy -= height;
 		}
-		for (FluidStack f : tank.getDensitySortedFluids(-1)) {
+		for (FluidStackFloat f : tank.getDensitySortedFluids(-1)) {
 
 			int height = (int) (f.amount / (float) tank.getCapacity() * this.height);
 
@@ -82,7 +82,7 @@ public class GuiSolutionTank extends Gui implements ITFTComponent {
 			//		width,
 			//		height);
 			drawTexturedModelRectFromIcon(x, y + dy + this.height - height, f
-					.getFluid().getIcon(f), width, height);
+					.getFluid().getIcon(f.getStack()), width, height);
 			dy -= height;
 
 		}

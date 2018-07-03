@@ -115,6 +115,7 @@ import dinglydell.tftechness.crop.TFTCropManager;
 import dinglydell.tftechness.event.TFTDamageHandler;
 import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
+import dinglydell.tftechness.fluid.FluidStackFloat;
 import dinglydell.tftechness.fluid.Gas;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
@@ -165,6 +166,7 @@ public class TFTechness2 {
 	public static final String degrees = "\u00b0";
 	public static Map<String, MetalStat> statMap = new HashMap();
 	public static final float ABSOLUTE_ZERO = -273f;
+	public static final float STANDARD_PRESSURE = 1e5f;
 	public static org.apache.logging.log4j.Logger logger = LogManager
 			.getLogger("TFTechness");
 	public static List<Material> materials;
@@ -957,7 +959,7 @@ public class TFTechness2 {
 			}
 
 			List<ItemStack> inputs = new ArrayList<ItemStack>();
-			List<FluidStack> inputFluids = new ArrayList<FluidStack>();
+			List<FluidStackFloat> inputFluids = new ArrayList<FluidStackFloat>();
 			int total = 0;
 			for (AlloyMetal input : alloy.alloyIngred) {
 				int m = (int) (100 * input.metal) / gcd;
@@ -970,7 +972,7 @@ public class TFTechness2 {
 				inputs.add(new ItemStack(input.metalType.ingot, m));
 				Fluid inputFluid = TFTPropertyRegistry
 						.getMolten(input.metalType);
-				inputFluids.add(new FluidStack(inputFluid, m));
+				inputFluids.add(new FluidStackFloat(inputFluid, m, 0));
 			}
 
 			//ItemStack first = inputs.remove(0);
@@ -980,8 +982,9 @@ public class TFTechness2 {
 						200,
 						512,
 						inputs.toArray());
-				FluidStack outputFluid = new FluidStack(
-						TFTPropertyRegistry.getMolten(alloy.outputType), total);
+				FluidStackFloat outputFluid = new FluidStackFloat(
+						TFTPropertyRegistry.getMolten(alloy.outputType), total,
+						0);
 				TFTAlloyRecipe.addRecipe(outputFluid, inputFluids);
 			}
 		}

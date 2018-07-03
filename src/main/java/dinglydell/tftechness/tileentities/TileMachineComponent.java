@@ -225,6 +225,9 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	}
 
 	public float getConductivity() {
+		if (!materials.containsKey(ComponentProperty.CONDUCTIVITY)) {
+			return 0.5f;
+		}
 		return (Float) materials.get(ComponentProperty.CONDUCTIVITY).validFor
 				.get(ComponentProperty.CONDUCTIVITY);
 	}
@@ -383,7 +386,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		return true;
 	}
 
-	public void sendClientToServerMessage(NBTTagCompound nbt) {
+	public void sendClientToServerMessage() {
 		TFTechness2.snw.sendToServer(new PacketMachineComponent(this,
 				Side.CLIENT));
 
@@ -461,7 +464,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	}
 
-	public IIcon getIcon(IIcon[][] icons, int side) {
+	public IIcon getIcon(int side) {
 		//if (this.blockMetadata == -1) {
 		//	return icons[0][0];
 		//}

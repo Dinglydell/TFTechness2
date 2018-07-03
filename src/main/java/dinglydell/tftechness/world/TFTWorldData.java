@@ -1,14 +1,21 @@
 package dinglydell.tftechness.world;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import zmaster587.advancedRocketry.api.AdvancedRocketryAPI;
+import zmaster587.advancedRocketry.api.IAtmosphere;
 import zmaster587.advancedRocketry.dimension.DimensionProperties;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.fluid.Gas;
+import dinglydell.tftechness.fluid.GasStack;
 
 //Highly experimental, mostly proof of concept at the moment
 public class TFTWorldData extends WorldSavedData {
@@ -64,11 +71,27 @@ public class TFTWorldData extends WorldSavedData {
 	/** stefan-boltzmann constant * surface area of planet */
 	private float stefArea;
 	private float sunIntensity;
+	/** Maps atmosphere to its gas composition */
+	public static Map<IAtmosphere, Map<Gas, Float>> atmospheres = new HashMap<IAtmosphere, Map<Gas, Float>>();
 
 	//private static float getTemp0(World world, int day, int hour, int x, int z,
 	//		boolean bio) {
 	//	return TFT_Climate.;
 	//}
+	public static void registerAtmosphereComposition(IAtmosphere atmosphere,
+			Map<Gas, Float> composition) {
+		Map<Gas, Float> baseComposition = new HashMap<Gas, Float>();
+		float total = 0;
+		for (Entry<Gas, Float> g : composition.entrySet()) {
+			total += g.getValue();
+
+		}
+		for (Entry<Gas, Float> g : composition.entrySet()) {
+			baseComposition.put(g.getKey(), g.getValue() / total);
+
+		}
+		atmospheres.put(atmosphere, baseComposition);
+	}
 
 	public TFTWorldData(World world) {
 		super(DATA_NAME);
@@ -242,5 +265,30 @@ public class TFTWorldData extends WorldSavedData {
 	/** Returns the atmospheric pressure of the planet in Pa */
 	public float getAtmosphericPressure(int y) {
 		return dimProps.getAtmosphereDensityAtHeight(y) * 1e5f;
+	}
+
+	public Map<Gas, GasStack> getAtmosphericComposition(int y) {
+		float p = getAtmosphericPressure(y);
+		float T = temperatureOffset + baseTemperature;
+		double n = p / (GasStack.GAS_CONSTANT * T);
+		IAtmosphere atmos = dimProps.getAtmosphere();
+		Map<Gas, Float> compRatio;
+		if (atmospheres.containsKey(atmos)) {
+			compRatio = atmospheres.get(atmos);
+
+		} else {
+			compRatio = new HashMap<Gas, Float>();
+			if (atmos.isBreathable()) {
+				compRatio.put(Gas.AIR, 1f);
+			}
+		}
+		Map<Gas, GasStack> comp = new HashMap<Gas, GasStack>();
+		for (Entry<Gas, Float> c : compRatio.entrySet()) {
+			comp.put(c.getKey(), new GasStack(c.getKey(), n * c.getValue(), T
+					+ TFTechness2.ABSOLUTE_ZERO));
+		}
+
+		return comp;
+
 	}
 }

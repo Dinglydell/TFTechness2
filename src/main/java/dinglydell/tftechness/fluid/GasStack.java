@@ -4,7 +4,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.util.StringUtil;
@@ -12,7 +11,7 @@ import dinglydell.tftechness.world.TFTWorldData;
 
 /** Like a FluidStack, but specifically for gases */
 public class GasStack {
-	public static final float STANDARD_PRESSURE = 1e5f;
+
 	public static final float GAS_CONSTANT = 8.31f;
 
 	private Gas gas;
@@ -30,7 +29,7 @@ public class GasStack {
 	/** Creates a gas stack under standard conditions (100KPa, 15 degrees) */
 	public GasStack(Gas gas, float volume) {
 		this.gas = gas;
-		this.amount = STANDARD_PRESSURE * volume
+		this.amount = TFTechness2.STANDARD_PRESSURE * volume
 				/ (GAS_CONSTANT * TFTWorldData.baseTemperature);
 		this.temperature = TFTWorldData.baseTemperature
 				+ TFTechness2.ABSOLUTE_ZERO;
@@ -65,24 +64,23 @@ public class GasStack {
 				+ StringUtil.prefixify(p) + "Pa";
 	}
 
-	public float condenseFactor() {
-		return gas.getBoilingPoint() - temperature;
+	public double condenseFactor(double vol) {
+
+		return getPressure(vol) - gas.getVapourPressure(temperature);
 	}
 
-	public FluidStack condense(float rate) {
+	public FluidStackFloat condense(double rate) {
 
 		Fluid f = TFTPropertyRegistry.getLiquid(gas);
 		float nmb = TFTPropertyRegistry.getMoles(f);
-		int mbGain = (int) Math.min(rate, amount / nmb);
+		float mbGain = (float) Math.min(rate, amount / nmb);
 		float moleChange = mbGain * nmb;
 		amount -= moleChange;
-		if (f instanceof FluidMoltenMetal) {
-			return ((FluidMoltenMetal) f).createStack(mbGain, temperature);
-		}
+
 		if (f == null) {
 			return null;
 		}
-		return new FluidStack(f, mbGain);
+		return new FluidStackFloat(f, mbGain, getTemperature());
 	}
 
 	public NBTBase writeToNBT(NBTTagCompound nbt) {
@@ -107,6 +105,18 @@ public class GasStack {
 	public GasStack copy() {
 
 		return new GasStack(gas, amount, temperature);
+	}
+
+	/** Add a gas to this stack */
+	public void add(GasStack other) {
+		if (other.getGas() != getGas()) {
+			return;
+		}
+		float newT = (float) ((getTemperature() * amount + other
+				.getTemperature() * other.amount) / (amount + other.amount));
+		setTemperature(newT);
+		amount += other.amount;
+
 	}
 
 }

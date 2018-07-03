@@ -279,7 +279,7 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 					* COOLING_COEF;
 			ItemStack red = inventory[Slots.INPUT.ordinal()];
 			if (red != null) {
-				red.stackSize -= cryoliteTank.fill(red, true);
+				//red.stackSize -= cryoliteTank.fill(red, true);
 				if (red.stackSize == 0) {
 					inventory[Slots.INPUT.ordinal()] = null;
 				}
@@ -307,19 +307,19 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 			}
 			cryoliteTank.updateTank(getTemperature());
 			//proccessReaction();
-			FluidStack cryoDrain = cryoliteTank
-					.drain(new FluidStack(aluminiumTank.getLockedFluid(),
-							cryoliteTank.getFluidAmount(aluminiumTank
-									.getLockedFluid()) / 10),
-							false);
-			int al = aluminiumTank.fill(cryoDrain, false);
-			if (cryoDrain != null && al == cryoDrain.amount) {
-				aluminiumTank.fill(cryoliteTank.drain(new FluidStack(
-						aluminiumTank.getLockedFluid(),
-						cryoliteTank.getFluidAmount(aluminiumTank
-								.getLockedFluid()) / 10),
-						true), true);
-			}
+			//FluidStack cryoDrain = cryoliteTank
+			//		.drain(new FluidStack(aluminiumTank.getLockedFluid(),
+			//				cryoliteTank.getFluidAmount(aluminiumTank
+			//						.getLockedFluid()) / 10),
+			//				false);
+			//int al = aluminiumTank.fill(cryoDrain, false);
+			//if (cryoDrain != null && al == cryoDrain.amount) {
+			//	aluminiumTank.fill(cryoliteTank.drain(new FluidStack(
+			//			aluminiumTank.getLockedFluid(),
+			//			cryoliteTank.getFluidAmount(aluminiumTank
+			//					.getLockedFluid()) / 10),
+			//			true), true);
+			//}
 			updateFluidTemperature(aluminiumTank);
 			handleMoldOutput(Slots.MOLD.ordinal());
 			//heatSlot(Slots.alumina.ordinal());
@@ -492,17 +492,36 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		return aluminiumTank;
 	}
 
+	//@Override
+	//public int attemptOverflow(int overVol, ForgeDirection from,
+	//		boolean doOverflow) {
+	//	// TODO Auto-generated method stub
+	//	return 0;
+	//}
+
 	@Override
-	public int attemptOverflow(int overVol, ForgeDirection from,
+	public SolutionTank getTank() {
+		// TODO Auto-generated method stub
+		return cryoliteTank;
+	}
+
+	@Override
+	public float attemptOverflow(float overVol, ForgeDirection from,
 			boolean doOverflow) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public SolutionTank getTank() {
+	public double getAtmosphericPressure() {
 		// TODO Auto-generated method stub
-		return cryoliteTank;
+		return 0;
+	}
+
+	@Override
+	public double getMaxPressure() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
