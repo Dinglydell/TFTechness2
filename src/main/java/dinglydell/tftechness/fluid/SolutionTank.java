@@ -64,8 +64,13 @@ public class SolutionTank {
 		solids = new HashMap<ItemMeta, Float>();
 		solutes = new HashMap<ItemMeta, Float>();
 		gases = new HashMap<Gas, GasStack>();
-		gases.put(Gas.AIR, new GasStack(Gas.AIR, 1));
+		//f
+		//gases.put(Gas.AIR, new GasStack(Gas.AIR, 1));
 		this.capacity = capacity;
+	}
+
+	public void setGasContent(Map<Gas, GasStack> gases) {
+		this.gases = new HashMap<Gas, GasStack>(gases);
 	}
 
 	public void addCondition(Condition condition) {

@@ -279,7 +279,19 @@ public class TFTWorldData extends WorldSavedData {
 		} else {
 			compRatio = new HashMap<Gas, Float>();
 			if (atmos.isBreathable()) {
-				compRatio.put(Gas.AIR, 1f);
+				float o2 = 0.209f;
+				float n2 = 0.78f;
+				float ar = 0.00934f;
+				float co2 = greenhouseFactor / 1e6f;
+				float total = o2 + n2 + co2 + ar;
+				o2 /= total;
+				n2 /= total;
+				co2 /= total;
+				ar /= total;
+				compRatio.put(Gas.OXYGEN, o2);
+				compRatio.put(Gas.NITROGEN, n2);
+				compRatio.put(Gas.ARGON, ar);
+				compRatio.put(Gas.CARBON_DIOXIDE, co2);
 			}
 		}
 		Map<Gas, GasStack> comp = new HashMap<Gas, GasStack>();

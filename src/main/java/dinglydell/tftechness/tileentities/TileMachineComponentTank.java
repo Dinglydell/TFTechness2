@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -33,6 +34,14 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	protected SolutionTank tank = new SolutionTank(this, 1000);
 	private ItemStack stack;
 	protected boolean isSealed;
+
+	@Override
+	public void initialiseComponent() {
+		tank.setGasContent(TFTWorldData.get(worldObj)
+				.getAtmosphericComposition(yCoord));
+		super.initialiseComponent();
+
+	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound data) {
@@ -198,14 +207,17 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		nbt.setTag("Tank", tank.writeToNBT());
 		nbt.setBoolean("isSealed", isSealed);
+
 	}
 
 	@Override
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 
 		super.readServerToClientMessage(nbt);
+
 		tank.readFromNBT(nbt.getCompoundTag("Tank"));
 		isSealed = nbt.getBoolean("isSealed");
+
 	}
 
 	@Override
@@ -377,6 +389,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		this.isSealed = !this.isSealed;
 
 		this.sendClientToServerMessage();
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 
 	}
 
@@ -397,5 +410,11 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	public void readClientToServerMessage(NBTTagCompound nbt) {
 		super.readClientToServerMessage(nbt);
 		isSealed = nbt.getBoolean("isSealed");
+	}
+
+	@Override
+	public IIcon getIcon(int side) {
+
+		return component.getIcon(isSealed ? 0 : 1);
 	}
 }

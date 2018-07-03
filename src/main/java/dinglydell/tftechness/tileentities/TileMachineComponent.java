@@ -47,6 +47,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	//private ItemStack[] inventory;
 	protected Component component;
+	protected int oldLightLevel;
 	/** The materials our properties come from */
 	protected Map<ComponentProperty, ComponentMaterial> materials = new HashMap<ComponentProperty, ComponentMaterial>();
 
@@ -221,6 +222,17 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 			}
 		}
 
+		int light = this.getLightLevel();
+		if (light != oldLightLevel) {
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			//TFTechness2.logger.info("light " + light + " (T:" + temperature
+			//		+ ")");
+			//worldObj.updateLightByType(EnumSkyBlock.Block,
+			//	xCoord,
+			//yCoord,
+			//zCoord);
+		}
+		oldLightLevel = light;
 		this.sendServerToClientMessage();
 	}
 
@@ -425,7 +437,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	// light level emitted
 	public int getLightLevel() {
-		return (int) Math.min(15, Math.max(0, (temperature - 480) / 120));
+		return (int) Math.min(15, Math.max(0, (temperature - 480) / 100));
 	}
 
 	@Override

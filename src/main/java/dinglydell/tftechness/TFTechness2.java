@@ -228,7 +228,7 @@ public class TFTechness2 {
 		Component.registerComponent(new Component("tank",
 				TileMachineComponentTank.class, new Object[] { " a ",
 						"a a",
-						" a " }));
+						" a " }).registerAdditionalIcon("open"));
 
 		//Electrode
 		Component.registerComponent(new Component("electrode",

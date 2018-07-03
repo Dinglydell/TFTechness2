@@ -7,7 +7,13 @@ import dinglydell.tftechness.TFTechness2;
 
 public class Gas {
 	public static Map<String, Gas> gasRegistry = new HashMap<String, Gas>();
-	public static Gas AIR = new Gas("air", -274);
+	//public static Gas AIR = new Gas("air", -274);
+	//TODO: Fluid forms of air-gases
+	public static Gas NITROGEN = new Gas("nitrogen", -274);
+	public static Gas OXYGEN = new Gas("oxygen", -274);
+	public static Gas ARGON = new Gas("argon", -274);
+	public static Gas CARBON_DIOXIDE = new Gas("carbonDioxide", -274);
+	//	public static Gas Neon = new Gas("")
 	public static Gas STEAM = new Gas("steam", 100).setZeroVapourPoint(-198);
 
 	public String gasName;

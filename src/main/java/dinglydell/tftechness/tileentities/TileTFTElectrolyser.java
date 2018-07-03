@@ -57,8 +57,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 	protected int oldTemp = 0;
 	protected int targetTemperature = 1010;
 
-	protected SolutionTank cryoliteTank = new SolutionTank(this,
-			MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));
+	protected SolutionTank cryoliteTank;// = new SolutionTank(this,
+	//MAX_REDSTONE_CAPACITY * 1000);//, TFTFluids.moltenMetal.get("Redstone"));
 	protected FluidTankMetal aluminiumTank = new FluidTankMetal(
 			MAX_ALUMINIUM_CAPACITY * 1000,
 			TFTFluids.moltenMetal.get("Aluminum"));
