@@ -12,6 +12,9 @@ import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import zmaster587.advancedRocketry.api.AdvancedRocketryAPI;
 import zmaster587.advancedRocketry.api.IAtmosphere;
 import zmaster587.advancedRocketry.dimension.DimensionProperties;
+
+import com.bioxx.tfc.Core.TFC_Climate;
+
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.Gas;
@@ -267,7 +270,7 @@ public class TFTWorldData extends WorldSavedData {
 		return dimProps.getAtmosphereDensityAtHeight(y) * 1e5f;
 	}
 
-	public Map<Gas, GasStack> getAtmosphericComposition(int y) {
+	public Map<Gas, GasStack> getAtmosphericComposition(int x, int y, int z) {
 		float p = getAtmosphericPressure(y);
 		float T = temperatureOffset + baseTemperature;
 		double n = p / (GasStack.GAS_CONSTANT * T);
@@ -283,15 +286,18 @@ public class TFTWorldData extends WorldSavedData {
 				float n2 = 0.78f;
 				float ar = 0.00934f;
 				float co2 = greenhouseFactor / 1e6f;
-				float total = o2 + n2 + co2 + ar;
+				float h2o = TFC_Climate.getRainfall(world, x, y, z) / 1e5f;
+				float total = o2 + n2 + co2 + ar + h2o;
 				o2 /= total;
 				n2 /= total;
 				co2 /= total;
 				ar /= total;
+				h2o /= total;
 				compRatio.put(Gas.OXYGEN, o2);
 				compRatio.put(Gas.NITROGEN, n2);
 				compRatio.put(Gas.ARGON, ar);
 				compRatio.put(Gas.CARBON_DIOXIDE, co2);
+				compRatio.put(Gas.STEAM, h2o);
 			}
 		}
 		Map<Gas, GasStack> comp = new HashMap<Gas, GasStack>();

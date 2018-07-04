@@ -445,6 +445,10 @@ public class TFTechness2 {
 		TFTPropertyRegistry.registerConductivity(TFCFluids.FRESHWATER, 0.01f);
 		TFTPropertyRegistry.registerSpecificHeat(TFCFluids.FRESHWATER, 4118);
 
+		TFTPropertyRegistry.registerMolten(TFTMeta.iceFresh,
+				TFCFluids.FRESHWATER,
+				0);
+
 		//carbon
 
 		TFTPropertyRegistry.registerCarbonContentByMass(new ItemStack(

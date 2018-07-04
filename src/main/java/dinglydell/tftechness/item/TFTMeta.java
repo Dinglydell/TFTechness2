@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import zmaster587.advancedRocketry.api.AdvancedRocketryItems;
 import blusunrize.immersiveengineering.common.IEContent;
 
+import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCItems;
 
 import dinglydell.tftechness.TFTechness2;
@@ -299,5 +300,7 @@ public class TFTMeta {
 	public static ItemStack salt = new ItemStack(TFCItems.powder, 1, 9);
 	public static ItemStack arOpticalSensor = new ItemStack(
 			AdvancedRocketryItems.itemSatellitePrimaryFunction);
+	public static ItemStack iceFresh = new ItemStack(TFCBlocks.ice, 1, 1);
+	public static ItemStack iceSalt = new ItemStack(TFCBlocks.ice, 1, 0);
 
 }

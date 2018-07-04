@@ -177,31 +177,31 @@ public class SolutionTank {
 		List<Fluid> fluidDelete = new ArrayList<Fluid>();
 		for (Entry<Fluid, FluidStackFloat> fluid : fluids.entrySet()) {
 			fluid.getValue().setTemperature(temperature);
-			if (fluid.getKey() instanceof FluidMoltenMetal) {
-				FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
-				//f.setTemperature(temperature, fluid.getValue());
-
+			//if (fluid.getKey() instanceof FluidMoltenMetal) {
+			//	FluidMoltenMetal f = (FluidMoltenMetal) fluid.getKey();
+			//	//f.setTemperature(temperature, fluid.getValue());
+			Fluid f = fluid.getKey();
+			//
+			//HeatIndex hi = HeatRegistry.getInstance()
+			//	.findMatchingIndex(solid);
+			float meltTemp = TFTPropertyRegistry.getFreezingPoint(f);
+			if (temperature < meltTemp) {
 				ItemStack solid = TFTPropertyRegistry.getSolid(f);
-				HeatIndex hi = HeatRegistry.getInstance()
-						.findMatchingIndex(solid);
-				if (temperature < hi.meltTemp) {
-					float dT = hi.meltTemp - temperature;
+				float dT = meltTemp - temperature;
 
-					float amt = Math.min((dT * MELT_CONSTANT),
-							fluid.getValue().amount);
-					fluid.getValue().amount -= amt;
-					temperature += amt / MELT_CONSTANT;
-					if (fluid.getValue().amount <= 0) {
-						fluidDelete.add(f);
-					}
-					fill(solid,
-							TFTPropertyRegistry.getDensity(solid)
-									* (amt / 1000f)
-									/ TFTPropertyRegistry
-											.getVolumeDensity(solid),
-							true);
+				float amt = Math.min((dT * MELT_CONSTANT),
+						fluid.getValue().amount);
+				fluid.getValue().amount -= amt;
+				temperature += amt / MELT_CONSTANT;
+				if (fluid.getValue().amount <= 0) {
+					fluidDelete.add(f);
 				}
+				fill(solid,
+						TFTPropertyRegistry.getDensity(solid) * (amt / 1000f)
+								/ TFTPropertyRegistry.getVolumeDensity(solid),
+						true);
 			}
+			//}
 
 			Gas g = TFTPropertyRegistry.getGaseous(fluid.getKey());
 			if (g != null) {// && temperature >= g.getBoilingPoint()) {
@@ -271,23 +271,25 @@ public class SolutionTank {
 
 			}
 			//melt solids
-			HeatIndex hi = HeatRegistry.getInstance()
-					.findMatchingIndex(solid.getKey().stack);
-			if (hi != null && temperature > hi.meltTemp) {
-				float dT = temperature - hi.meltTemp;
+			//HeatIndex hi = HeatRegistry.getInstance()
+			//	.findMatchingIndex(solid.getKey().stack);
+			float meltTemp = TFTPropertyRegistry
+					.getMeltingPoint(solid.getKey().stack);
+			if (temperature > meltTemp) {
+				float dT = temperature - meltTemp;
 				float mass = solid.getValue();
 				float dens = TFTPropertyRegistry
 						.getDensity(solid.getKey().stack);
 				float volDens = TFTPropertyRegistry.getVolumeDensity(solid
 						.getKey().stack);
-				int fluidEq = (int) (mass / dens * volDens * 1000);
-				int fluidFill = Math.min(fluidEq, (int) (dT * MELT_CONSTANT));
+				float fluidEq = (mass / dens * volDens * 1000);
+				float fluidFill = Math.min(fluidEq, (dT * MELT_CONSTANT));
 
-				FluidMoltenMetal molten = TFTPropertyRegistry.getMolten(solid
-						.getKey().stack);
+				Fluid molten = TFTPropertyRegistry
+						.getMolten(solid.getKey().stack);
 				float dMass = fluidFill / (volDens * 1000) * dens;
 				solid.setValue(solid.getValue() - dMass);
-				float actualFill = fill(molten.createStack(fluidFill,
+				float actualFill = fill(new FluidStackFloat(molten, fluidFill,
 						temperature), ForgeDirection.UNKNOWN, true);
 				temperature -= actualFill / MELT_CONSTANT;
 				if (actualFill < fluidFill) {
@@ -374,8 +376,7 @@ public class SolutionTank {
 		case gas:
 			break;
 		case liquid:
-			FluidMoltenMetal fluid = TFTPropertyRegistry
-					.getMolten(recipe.input);
+			Fluid fluid = TFTPropertyRegistry.getMolten(recipe.input);
 			FluidStackFloat fs = fluids.get(fluid);
 			if (fs.amount >= recipe.inputQuantity) {
 				rate = (fs.amount / recipe.inputQuantity) / 10;
@@ -603,9 +604,8 @@ public class SolutionTank {
 			infoList.add(StatCollector.translateToLocal(solid.getKey().stack
 					.getUnlocalizedName() + ".name")
 					+ " (s) - "
-					+ Math.round(1000 * solid.getValue())
-					/ 1000f
-					+ "kg");
+					+ StringUtil.prefixify(1000 * solid.getValue())
+					+ "g");
 		}
 		double p = getTotalPressure();
 		double max = tile.getMaxPressure();

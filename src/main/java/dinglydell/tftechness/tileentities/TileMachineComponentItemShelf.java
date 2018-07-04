@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.Fluid;
 
 import com.bioxx.tfc.Core.TFC_Climate;
 import com.bioxx.tfc.Core.TFC_Core;
@@ -26,7 +26,7 @@ import com.bioxx.tfc.api.Interfaces.IFood;
 import com.bioxx.tfc.api.Interfaces.ISmeltable;
 
 import dinglydell.tftechness.TFTechness2;
-import dinglydell.tftechness.fluid.FluidMoltenMetal;
+import dinglydell.tftechness.fluid.FluidStackFloat;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.item.TFTPropertyRegistry;
 
@@ -163,17 +163,17 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 
 									}
 								}
-								FluidMoltenMetal molten = TFTPropertyRegistry
+								Fluid molten = TFTPropertyRegistry
 										.getMolten(stack);
 								for (TileMachineComponentTank tank : neighbourTanks) { //spread out the molten metal
 
 									int amt = smelt.getMetalReturnAmount(stack)
 											/ neighbourTanks.size();
-									FluidStack moltenStack = molten
-											.createStack(smelt
-													.getMetalReturnAmount(stack)
+									FluidStackFloat moltenStack = new FluidStackFloat(
+											molten,
+											smelt.getMetalReturnAmount(stack)
 													/ neighbourTanks.size(),
-													temperature);
+											temperature);
 									tank.fill(ForgeDirection.UNKNOWN,
 											moltenStack,
 											true);
@@ -181,11 +181,11 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 								if (neighbourTanks.size() != 0
 										&& smelt.getMetalReturnAmount(stack)
 												% neighbourTanks.size() != 0) { //add remainder
-									FluidStack moltenStack = molten
-											.createStack(smelt
-													.getMetalReturnAmount(stack)
+									FluidStackFloat moltenStack = new FluidStackFloat(
+											molten,
+											smelt.getMetalReturnAmount(stack)
 													% neighbourTanks.size(),
-													temperature);
+											temperature);
 									neighbourTanks.get(0)
 											.fill(ForgeDirection.UNKNOWN,
 													moltenStack,

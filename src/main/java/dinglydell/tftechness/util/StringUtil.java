@@ -3,6 +3,8 @@ package dinglydell.tftechness.util;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import net.minecraft.util.EnumChatFormatting;
+
 public class StringUtil {
 	public static String[] toStringArray(List<String> arr) {
 		return arr.toArray(new String[arr.size()]);
@@ -25,12 +27,14 @@ public class StringUtil {
 			"M",
 			"G",
 			"T",
-			"P" };
+			"P",
+			"E" };
 	private static final String[] smallSiPrefixes = new String[] { "m",
 			"\u03bc",
 			"n",
 			"p",
-			"f" };
+			"f",
+			"a" };
 
 	/**
 	 * Returns a value with an SI prefix eg. 1000 -> 1k
@@ -45,7 +49,9 @@ public class StringUtil {
 				//value = Math.round(value);
 				value *= 1000f;
 				if (value >= 1) {
-					return (new DecimalFormat("###.##").format(value)) + prefix;
+					return (new DecimalFormat("###.##").format(value))
+							+ EnumChatFormatting.BOLD.toString() + prefix
+							+ EnumChatFormatting.RESET.toString();
 				}
 			}
 			return value + smallSiPrefixes[smallSiPrefixes.length - 1];
@@ -57,7 +63,9 @@ public class StringUtil {
 			value /= 1000f;
 			if (value < 1000) {
 
-				return (new DecimalFormat("###.##").format(value)) + prefix;
+				return (new DecimalFormat("###.##").format(value))
+						+ EnumChatFormatting.BOLD.toString() + prefix
+						+ EnumChatFormatting.RESET.toString();
 			}
 		}
 		return value + siPrefixes[siPrefixes.length - 1];

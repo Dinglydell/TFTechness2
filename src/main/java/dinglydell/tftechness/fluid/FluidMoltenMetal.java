@@ -56,4 +56,8 @@ public class FluidMoltenMetal extends Fluid {
 
 	}
 
+	public float getMeltingPoint() {
+		return meltPoint;
+	}
+
 }

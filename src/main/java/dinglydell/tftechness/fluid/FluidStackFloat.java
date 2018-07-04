@@ -71,6 +71,10 @@ public class FluidStackFloat {
 
 	/** Gets the FluidStack representation - amount rounded to the nearest int */
 	public FluidStack getStack() {
+		if (fluid instanceof FluidMoltenMetal) {
+			return ((FluidMoltenMetal) fluid).createStack((int) amount,
+					temperature);
+		}
 		return new FluidStack(fluid, (int) amount);
 	}
 }

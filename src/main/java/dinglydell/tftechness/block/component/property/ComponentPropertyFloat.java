@@ -1,5 +1,6 @@
 package dinglydell.tftechness.block.component.property;
 
+import net.minecraft.util.EnumChatFormatting;
 import dinglydell.tftechness.util.StringUtil;
 
 public class ComponentPropertyFloat extends ComponentProperty<Float> {
@@ -13,7 +14,8 @@ public class ComponentPropertyFloat extends ComponentProperty<Float> {
 
 	@Override
 	protected String getDisplayValue(Float value) {
-		return StringUtil.prefixify(value) + unit;
+		return StringUtil.prefixify(value) + EnumChatFormatting.RED.toString()
+				+ unit;
 	}
 
 }

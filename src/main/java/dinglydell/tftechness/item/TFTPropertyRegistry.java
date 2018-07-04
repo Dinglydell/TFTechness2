@@ -14,6 +14,7 @@ import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.Enums.EnumSize;
 import com.bioxx.tfc.api.Enums.EnumWeight;
 
+import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.Gas;
 import dinglydell.tftechness.world.TFTWorldData;
@@ -60,10 +61,10 @@ public class TFTPropertyRegistry {
 	/** m^3/item */
 	protected static Map<ItemMeta, Float> volumeMap = new HashMap<ItemMeta, Float>();
 
-	private static Map<ItemMeta, FluidMoltenMetal> moltenMap = new HashMap<ItemMeta, FluidMoltenMetal>();
+	private static Map<ItemMeta, Fluid> moltenMap = new HashMap<ItemMeta, Fluid>();
 	private static Map<Fluid, Gas> fluidToGasMap = new HashMap<Fluid, Gas>();
 
-	private static Map<FluidMoltenMetal, ItemStack> solidMap = new HashMap<FluidMoltenMetal, ItemStack>();
+	private static Map<Fluid, ItemStack> solidMap = new HashMap<Fluid, ItemStack>();
 	private static Map<Gas, Fluid> gasToFluidMap = new HashMap<Gas, Fluid>();
 
 	private static Map<Fluid, Float> fluidMolesMap = new HashMap<Fluid, Float>();
@@ -77,6 +78,10 @@ public class TFTPropertyRegistry {
 	private static Map<Fluid, Float> fluidConductivity = new HashMap<Fluid, Float>();
 
 	private static Map<Fluid, Float> fluidSH = new HashMap<Fluid, Float>();
+
+	private static Map<ItemMeta, Float> meltPointMap = new HashMap<ItemMeta, Float>();
+
+	private static Map<Fluid, Float> freezePointMap = new HashMap<Fluid, Float>();
 
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
@@ -120,7 +125,15 @@ public class TFTPropertyRegistry {
 	}
 
 	public static void registerMolten(ItemStack stack, FluidMoltenMetal molten) {
-		moltenMap.put(new ItemMeta(stack), molten);
+		registerMolten(stack, molten, molten.getMeltingPoint());
+	}
+
+	public static void registerMolten(ItemStack stack, Fluid molten,
+			float meltingPoint) {
+		ItemMeta im = new ItemMeta(stack);
+		moltenMap.put(im, molten);
+		meltPointMap.put(im, meltingPoint);
+		freezePointMap.put(molten, meltingPoint);
 		if (!solidMap.containsKey(molten)) {
 			solidMap.put(molten, stack);
 		}
@@ -220,7 +233,7 @@ public class TFTPropertyRegistry {
 		return DEFAULT_MOLES;
 	}
 
-	public static FluidMoltenMetal getMolten(ItemStack stack) {
+	public static Fluid getMolten(ItemStack stack) {
 		ItemMeta im = new ItemMeta(stack);
 		if (moltenMap.containsKey(im)) {
 			return moltenMap.get(im);
@@ -239,6 +252,22 @@ public class TFTPropertyRegistry {
 		return null;
 	}
 
+	public static float getMeltingPoint(ItemStack stack) {
+		ItemMeta im = new ItemMeta(stack);
+		if (meltPointMap.containsKey(im)) {
+			return meltPointMap.get(im);
+		}
+
+		return Float.MAX_VALUE;
+	}
+
+	public static float getFreezingPoint(Fluid fluid) {
+		if (freezePointMap.containsKey(fluid)) {
+			return freezePointMap.get(fluid);
+		}
+		return TFTechness2.ABSOLUTE_ZERO - 1;
+	}
+
 	public static ItemStack getSolid(Fluid f) {
 		if (solidMap.containsKey(f)) {
 			return solidMap.get(f);
@@ -248,7 +277,7 @@ public class TFTPropertyRegistry {
 	}
 
 	public static FluidMoltenMetal getMolten(Metal metal) {
-		return getMolten(new ItemStack(metal.ingot));
+		return (FluidMoltenMetal) getMolten(new ItemStack(metal.ingot));
 
 	}
 

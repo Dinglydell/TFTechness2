@@ -38,7 +38,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	@Override
 	public void initialiseComponent() {
 		tank.setGasContent(TFTWorldData.get(worldObj)
-				.getAtmosphericComposition(yCoord));
+				.getAtmosphericComposition(xCoord, yCoord, zCoord));
 		super.initialiseComponent();
 
 	}
@@ -81,7 +81,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 			if (!isSealed
 					&& worldObj.getBlock(x, y, z).isAir(worldObj, x, y, z)) {
 				tank.equaliseGas(0.01f, 1, TFTWorldData.get(worldObj)
-						.getAtmosphericComposition(y));
+						.getAtmosphericComposition(x, y, z));
 			}
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			if (tile != null) {
@@ -222,6 +222,11 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 	@Override
 	public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
+		return tank.fill(resource, from, doFill);
+	}
+
+	public float fill(ForgeDirection from, FluidStackFloat resource,
+			boolean doFill) {
 		return tank.fill(resource, from, doFill);
 	}
 
