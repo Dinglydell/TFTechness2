@@ -1,20 +1,15 @@
 package dinglydell.tftechness.gui.component;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Mouse;
 
-import com.bioxx.tfc.api.TFC_ItemHeat;
-
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.util.StringUtil;
 
 public class GuiTemperature extends GuiButton {
 	public static final int MAX_SCALE_TEMP = 2000;
@@ -103,38 +98,9 @@ public class GuiTemperature extends GuiButton {
 		} else {
 			temp = tile.getTemperature();
 		}
-		String roundedTemp = null;
-		if (temp >= 100 || temp <= -100) {
-			roundedTemp = "" + Math.round(temp);
-		} else {
-
-			roundedTemp = (new BigDecimal(temp)).round(new MathContext(3))
-					.toString();
-		}
-		String colour;
-		boolean danger = false;
-		float max = tile.getMaxTemperature();
-		if (temp > 0.95 * max) {
-			colour = EnumChatFormatting.RED.toString();
-			danger = true;
-		} else if (temp > 0.9 * max) {
-			colour = EnumChatFormatting.GOLD.toString();
-		} else if (temp > 0.8 * max) {
-			colour = EnumChatFormatting.YELLOW.toString();
-		} else {
-			colour = EnumChatFormatting.WHITE.toString();
-		}
-		tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
-		tooltip.add(TFC_ItemHeat.getHeatColor(temp, max));
-		if (danger) {
-			if (temp > max) {
-				tooltip.add(colour
-						+ StatCollector.translateToLocal("gui.tooltip.failure"));
-			} else {
-				tooltip.add(colour
-						+ StatCollector.translateToLocal("gui.tooltip.danger"));
-			}
-		}
+		StringUtil.addTemperatureTooltip(tooltip,
+				temp,
+				tile.getMaxTemperature());
 
 	}
 

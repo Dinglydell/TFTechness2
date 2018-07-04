@@ -89,6 +89,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -411,6 +412,11 @@ public class TFTechness2 {
 		registerRenderers();
 		registerIEMultiblocks();
 		registerTileEntities();
+
+		//Waila support
+		FMLInterModComms.sendMessage("Waila",
+				"register",
+				"dinglydell.tftechness.waila.TFTWaila.callbackRegister");
 	}
 
 	private void registerRenderers() {

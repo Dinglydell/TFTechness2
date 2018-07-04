@@ -559,4 +559,8 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	}
 
+	public Component getComponent() {
+		return component;
+	}
+
 }

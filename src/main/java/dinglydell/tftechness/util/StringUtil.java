@@ -1,9 +1,16 @@
 package dinglydell.tftechness.util;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.List;
 
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+
+import com.bioxx.tfc.api.TFC_ItemHeat;
+
+import dinglydell.tftechness.TFTechness2;
 
 public class StringUtil {
 	public static String[] toStringArray(List<String> arr) {
@@ -69,5 +76,65 @@ public class StringUtil {
 			}
 		}
 		return value + siPrefixes[siPrefixes.length - 1];
+	}
+
+	public static void addTemperatureTooltip(List<String> tooltip, float temp,
+			float max) {
+		String roundedTemp = null;
+		if (temp >= 100 || temp <= -100) {
+			roundedTemp = "" + Math.round(temp);
+		} else {
+
+			roundedTemp = (new BigDecimal(temp)).round(new MathContext(3))
+					.toString();
+		}
+		String colour;
+		boolean danger = false;
+		if (temp > 0.95 * max) {
+			colour = EnumChatFormatting.RED.toString();
+			danger = true;
+		} else if (temp > 0.9 * max) {
+			colour = EnumChatFormatting.GOLD.toString();
+		} else if (temp > 0.8 * max) {
+			colour = EnumChatFormatting.YELLOW.toString();
+		} else {
+			colour = EnumChatFormatting.WHITE.toString();
+		}
+		tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
+		tooltip.add(TFC_ItemHeat.getHeatColor(temp, max));
+		if (danger) {
+			if (temp > max) {
+				tooltip.add(colour
+						+ StatCollector.translateToLocal("gui.tooltip.failure"));
+			} else {
+				tooltip.add(colour
+						+ StatCollector.translateToLocal("gui.tooltip.danger"));
+			}
+		}
+
+	}
+
+	public static void addPressureTooltip(List<String> tooltip, double p,
+			double max, double atmosphericPressure) {
+		String chatColour;
+		boolean danger = false;
+		double diff = Math.abs(p - atmosphericPressure);
+		if (max * 0.8 < diff) {
+			chatColour = EnumChatFormatting.RED.toString();
+			danger = true;
+		} else if (max * 0.7 < diff) {
+			chatColour = EnumChatFormatting.GOLD.toString();
+		} else if (max * 0.6 < diff) {
+			chatColour = EnumChatFormatting.YELLOW.toString();
+		} else {
+			chatColour = EnumChatFormatting.RESET.toString();
+		}
+		tooltip.add("Gases (" + chatColour + StringUtil.prefixify(p) + "Pa"
+				+ EnumChatFormatting.RESET.toString() + ")");
+		if (danger) {
+			tooltip.add(chatColour
+					+ StatCollector.translateToLocal("gui.tooltip.danger"));
+		}
+
 	}
 }
