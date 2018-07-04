@@ -59,6 +59,16 @@ public class GuiTemperature extends GuiButton {
 				TEX_WIDTH,
 				TEX_HEIGHT);
 
+		//max T
+		float maxTemp = tile.getMaxTemperature();
+		drawTexturedModalRect(this.xPosition - 1,
+				(int) (this.yPosition + this.height
+						* (1 - maxTemp / MAX_SCALE_TEMP)),
+				2,
+				0,
+				TEX_WIDTH - 4,
+				TEX_HEIGHT);
+
 	}
 
 	@Override
