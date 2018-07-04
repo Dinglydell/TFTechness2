@@ -8,4 +8,6 @@ public interface ITileTemperature {
 
 	float getTemperature();
 
+	float getMaxTemperature();
+
 }

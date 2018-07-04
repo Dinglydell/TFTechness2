@@ -2,6 +2,7 @@ package dinglydell.tftechness.block.component.property;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.block.component.ComponentMaterial;
 
 /**
@@ -25,6 +26,13 @@ public abstract class ComponentProperty<T> {
 	 */
 	public static ComponentProperty MAXIMUM_PRESSURE = new ComponentPropertyFloat(
 			"maxPressure", "Pa");
+
+	/**
+	 * The highest temperature this component can reach before it starts to
+	 * break down
+	 */
+	public static ComponentProperty MAXIMUM_TEMPERATURE = new ComponentPropertyFloat(
+			"maxTemperature", TFTechness2.degrees + "C", false);
 
 	public final String name;
 

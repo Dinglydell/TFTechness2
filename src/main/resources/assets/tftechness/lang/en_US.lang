@@ -154,6 +154,7 @@ info.machine.property.conductivity=Thermal Conductivity:
 info.machine.property.specificHeat=Specific Heat:
 info.machine.property.tier=Wire Tier:
 info.machine.property.maxPressure=Maximum Pressure:
+info.machine.property.maxTemperature=Maximum Temperature:
 
 
 tile.wall.name=§7Machine Wall§r

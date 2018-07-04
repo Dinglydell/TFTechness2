@@ -16,7 +16,9 @@ import scala.actors.threadpool.Arrays;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.block.component.property.ComponentPropertySet;
+import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
+import dinglydell.tftechness.util.ItemUtil;
 
 public class Component {
 
@@ -36,6 +38,8 @@ public class Component {
 	private Object[] recipe;
 	private Class<? extends TileMachineComponent> type;
 	private List<String> iconStrs = new ArrayList<String>();
+	private int numPrimary;
+	private int numSecondary;
 
 	/**
 	 * IMPORTANT: components are made up of swappable materials. Each letter in
@@ -56,7 +60,27 @@ public class Component {
 		registerPropertySet(ComponentPropertySet.registerSet("base",
 				new ComponentProperty[] { ComponentProperty.CONDUCTIVITY,
 						ComponentProperty.SPECIFIC_HEAT,
+						ComponentProperty.MAXIMUM_TEMPERATURE,
 						ComponentProperty.MAXIMUM_PRESSURE }));
+
+		for (Object o : recipe) {
+			if (o instanceof String) {
+				String s = (String) o;
+				for (int i = 0; i < s.length(); i++) {
+					if (s.charAt(i) == 'A') {
+						numPrimary++;
+					} else if (s.charAt(i) == 'a') {
+						numSecondary++;
+					}
+				}
+				//if (s.('A')) {
+
+				//numPrimary++;
+				//} else if (o.equals('a')) {
+				//					numSecondary++;
+				//			}
+			}
+		}
 	}
 
 	//public Component(String name, String tooltip, Object... recipe) {
@@ -179,5 +203,14 @@ public class Component {
 
 	public Class<? extends TileMachineComponent> getType() {
 		return type;
+	}
+
+	/** Gets the volume (m^3) of base material. Used when it the component melts */
+	public float getBaseMaterialAmount(Object primary, Object secondary) {
+		ItemStack p = ItemUtil.getStack(primary);
+		ItemStack s = ItemUtil.getStack(secondary);
+
+		return numPrimary * TFTPropertyRegistry.getVolumeDensity(p)
+				+ numSecondary * TFTPropertyRegistry.getVolumeDensity(s);
 	}
 }

@@ -1482,7 +1482,8 @@ public class TFTechness2 {
 				.addProperty(ComponentProperty.CONDUCTIVITY, 0.05f)
 				.addProperty(ComponentProperty.SPECIFIC_HEAT, 790f)
 				.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
-						tankThickness * 4.8e7f);
+						tankThickness * 4.8e7f)
+				.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE, 1250);
 		for (Material m : materials) {
 			// register metal materials with conductivity property
 			if (m.block != null) {
@@ -1495,7 +1496,9 @@ public class TFTechness2 {
 						.addProperty(ComponentProperty.SPECIFIC_HEAT,
 								statMap.get(m.name).getSISpecificHeat())
 						.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
-								tankThickness * statMap.get(m.name).yieldStress);
+								tankThickness * statMap.get(m.name).yieldStress)
+						.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE,
+								statMap.get(m.name).heat.meltTemp);
 			}
 		}
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
@@ -109,8 +110,13 @@ public class GuiTemperature extends GuiButton {
 			roundedTemp = (new BigDecimal(temp)).round(new MathContext(3))
 					.toString();
 		}
-
-		tooltip.add((roundedTemp) + TFTechness2.degrees + "C");
+		String colour;
+		if (temp > 0.9 * tile.getMaxTemperature()) {
+			colour = EnumChatFormatting.RED.toString();
+		} else {
+			colour = EnumChatFormatting.WHITE.toString();
+		}
+		tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
 		tooltip.add(TFC_ItemHeat.getHeatColor(temp, Float.MAX_VALUE));
 
 	}

@@ -26,7 +26,7 @@ public class TileTFTMachineController extends TileEntity implements IInventory,
 
 	protected float temperature;
 
-	protected SolutionTank internalTank = new SolutionTank(capacity * 1000);
+	protected SolutionTank internalTank;// = new SolutionTank(capacity * 1000);
 
 	public TileTFTMachineController() {
 
@@ -163,6 +163,12 @@ public class TileTFTMachineController extends TileEntity implements IInventory,
 
 	@Override
 	public float getTargetTemperature() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getMaxTemperature() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -524,4 +524,10 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		return 0;
 	}
 
+	@Override
+	public float getMaxTemperature() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

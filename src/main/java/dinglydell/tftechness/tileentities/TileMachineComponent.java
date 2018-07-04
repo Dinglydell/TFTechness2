@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -24,6 +25,7 @@ import com.bioxx.tfc.Core.TFC_Climate;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.block.BlockMoltenMetal;
 import dinglydell.tftechness.block.component.Component;
 import dinglydell.tftechness.block.component.ComponentMaterial;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
@@ -32,6 +34,7 @@ import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.gui.component.ITileTemperature;
 import dinglydell.tftechness.item.TFTPropertyRegistry;
 import dinglydell.tftechness.network.PacketMachineComponent;
+import dinglydell.tftechness.util.ItemUtil;
 
 public/* abstract */class TileMachineComponent extends TileEntity implements
 		ITileTemperature, IEnergyReceiver {
@@ -178,13 +181,17 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				float ambientTemp;
 				Block b = worldObj.getBlock(x, y, z);
 				float ambientConductivity = AIR_CONDUCTIVITY;
-				if (b instanceof IFluidBlock) {
+				if (tile instanceof TileMoltenMetal) {
+					ambientTemp = ((TileMoltenMetal) tile).getTemperature();
+					ambientConductivity = ((TileMoltenMetal) tile)
+							.getConductivity();
+				} else if (b instanceof IFluidBlock) {
 					Fluid f = ((IFluidBlock) b).getFluid();
 					ambientTemp = f.getTemperature() - 273;
 
 					ambientConductivity = TFTPropertyRegistry
 							.getConductivity(f);
-					;
+
 				} else {
 					ambientTemp = TFC_Climate.getHeightAdjustedTemp(worldObj,
 							x,
@@ -195,10 +202,13 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				//if (!b.isAir(worldObj, x, y, z)) { //TODO: different blocks with different conductivity levels?
 				//ambientConductivity /= 2;
 				//}
-
-				temperature -= HEAT_FLOW_MODIFIER * (temperature - ambientTemp)
-						* 0.5f * (getConductivity() + ambientConductivity)
-						/ getSpecificHeat();
+				float dE = HEAT_FLOW_MODIFIER * (temperature - ambientTemp)
+						* 0.5f * (getConductivity() + ambientConductivity);
+				temperature -= dE / getSpecificHeat();
+				if (tile instanceof TileMoltenMetal) {
+					TileMoltenMetal t = (TileMoltenMetal) tile;
+					t.addThermalEnergy(dE);
+				}
 			} else {
 				TileMachineComponent tc = (TileMachineComponent) tile;
 				float dE = HEAT_FLOW_MODIFIER
@@ -233,6 +243,35 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 			//zCoord);
 		}
 		oldLightLevel = light;
+
+		if (temperature > getMaxTemperature()) {
+			TFTechness2.logger.info("Melt!");
+			//TODO: more reliable way of getting base material
+			ComponentMaterial base = materials
+					.get(ComponentProperty.SPECIFIC_HEAT);
+			ItemStack p = ItemUtil.getStack(base.material);
+			Fluid molten = TFTPropertyRegistry.getMolten(p);
+			if (molten == null) {
+				worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			} else {
+				float amt = component.getBaseMaterialAmount(base.material,
+						base.shelfMaterial);
+				Block b = molten.getBlock();
+				int meta = Math.max(0, (int) (15 - 15 * amt));
+				worldObj.setBlock(xCoord, yCoord, zCoord, b, meta, 3);
+				if (b instanceof BlockMoltenMetal) {
+					TileEntity t = worldObj.getTileEntity(xCoord,
+							yCoord,
+							zCoord);
+					if (t instanceof TileMoltenMetal) {
+						((TileMoltenMetal) t).setTemperature(temperature);
+						TFTechness2.logger.info("!");
+					}
+				}
+			}
+			//worldObj.setBlock(xCoord, yCoord, zCoord, p_147465_4_, p_147465_5_, p_147465_6_)
+		}
+
 		this.sendServerToClientMessage();
 	}
 
@@ -250,6 +289,14 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		}
 		return (Float) materials.get(ComponentProperty.SPECIFIC_HEAT).validFor
 				.get(ComponentProperty.SPECIFIC_HEAT);
+	}
+
+	public float getMaxTemperature() {
+		if (!materials.containsKey(ComponentProperty.MAXIMUM_TEMPERATURE)) {
+			return Float.MAX_VALUE;
+		}
+		return (Float) materials.get(ComponentProperty.MAXIMUM_TEMPERATURE).validFor
+				.get(ComponentProperty.MAXIMUM_TEMPERATURE);
 	}
 
 	@Override
