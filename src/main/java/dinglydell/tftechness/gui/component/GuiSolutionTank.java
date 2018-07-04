@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.IIcon;
 import dinglydell.tftechness.fluid.FluidStackFloat;
 import dinglydell.tftechness.fluid.SolutionTank;
 import dinglydell.tftechness.item.ItemMeta;
@@ -50,23 +51,51 @@ public class GuiSolutionTank extends Gui implements ITFTComponent {
 			//int height = (int) (total / tank.getCapacity());
 			//int mWidth = (int) ((total % tank.getCapacity())
 			//	/ tank.getCapacity() * width);
-			int numIcons = (int) (width * height / (iconSepX * iconSepY) * amt / tank
-					.getCapacity());
+			float area = (width * height * amt / tank.getCapacity());
+			//int numIcons = 1 + (int) area / (iconSepX * iconSepY);
 			texture.bindTexture(texture.getResourceLocation(im.item
 					.getSpriteNumber()));
-			for (int i = 0; i < numIcons; i++) {
+			//float iconMinorHeight = area / width;
+			int h = (int) Math.min(area / width, iconHeight);
+			float extra = area % width;
+			IIcon icon = im.stack.getIconIndex();
+			while (area > 1) {
+				int space = Math.min(iconWidth, width - dx);
+				int w = space;
+				int trueH = h;
+				if (dx < extra && h < iconHeight) {
+					trueH++;
+					if (dx + w >= width) {
+						w = (int) Math.min(space, extra - dx);
+					}
+				}
 
-				drawTexturedModelRectFromIcon(x + dx - 1,
-						y + dy + this.height - iconHeight + 1,
-						im.stack.getIconIndex(),
-						iconWidth,
-						iconHeight);
+				area -= Math.min(iconSepX, w) * Math.min(iconSepY, trueH);
+
+				drawTexturedModelRectFromIcon(x + dx, y + dy + this.height
+						- trueH, icon, w, trueH);
 				dx += iconSepX;
-				if (dx + iconWidth / 2 > width) {
+				if (dx > width) {
 					dx = 0;
+					h = (int) Math.min(area / width, iconHeight);
+					extra = area % width;
 					dy -= iconSepY;
+					//iconMinorHeight -= iconHeight;
 				}
 			}
+			//for (int i = 0; i < numIcons; i++) {
+			//
+			//	drawTexturedModelRectFromIcon(x + dx - 1,
+			//			y + dy + this.height - iconHeight + 1,
+			//			im.stack.getIconIndex(),
+			//			iconWidth,
+			//			iconHeight);
+			//	dx += iconSepX;
+			//	if (dx + iconWidth / 2 > width) {
+			//		dx = 0;
+			//		dy -= iconSepY;
+			//	}
+			//}
 			//dy -= height;
 		}
 		for (FluidStackFloat f : tank.getDensitySortedFluids(-1)) {

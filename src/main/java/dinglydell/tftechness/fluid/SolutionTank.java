@@ -617,9 +617,18 @@ public class SolutionTank {
 		}
 		infoList.add("Gases (" + chatColour + StringUtil.prefixify(p) + "Pa"
 				+ EnumChatFormatting.RESET.toString() + ")");
-		for (Entry<Gas, GasStack> gas : gases.entrySet()) {
-			infoList.add(gas.getValue()
-					.getDisplayString(0.001f * (getCapacity() - totalV)));
+		final float gasVol = 0.001f * (capacity - totalV);
+		Comparator<GasStack> comp = new Comparator<GasStack>() {
+
+			@Override
+			public int compare(GasStack a, GasStack b) {
+				return (int) (b.getPressure(gasVol) - a.getPressure(gasVol));
+			}
+		};
+		List<GasStack> orderedGases = new ArrayList<GasStack>(gases.values());
+		Collections.sort(orderedGases, comp);
+		for (GasStack gas : orderedGases) {
+			infoList.add(gas.getDisplayString(gasVol));
 		}
 	}
 

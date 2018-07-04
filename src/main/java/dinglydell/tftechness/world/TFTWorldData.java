@@ -286,7 +286,10 @@ public class TFTWorldData extends WorldSavedData {
 				float n2 = 0.78f;
 				float ar = 0.00934f;
 				float co2 = greenhouseFactor / 1e6f;
-				float h2o = TFC_Climate.getRainfall(world, x, y, z) / 1e5f;
+				float evt = TFC_Climate.getCacheManager(world).getEVTLayerAt(x,
+						z).floatdata1;
+				float h2o = (float) (Math.sqrt(evt)
+						* TFC_Climate.getRainfall(world, x, y, z) / 1e5f);
 				float total = o2 + n2 + co2 + ar + h2o;
 				o2 /= total;
 				n2 /= total;

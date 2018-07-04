@@ -135,6 +135,8 @@ tile.Rutile.name=Rutile
 
 gui.tooltip.frozen=Frozen
 
+gui.machine.tank.sealed=Sealed
+
 info.machine.tooltip.0=Use any combination of machine
 info.machine.tooltip.1=components in a continuous structure
 info.machine.tooltip.2=to build a machine.
