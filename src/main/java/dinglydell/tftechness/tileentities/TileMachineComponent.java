@@ -551,4 +551,12 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	}
 
+	/**
+	 * Stuff that happens when this block gets destroyed Used by the tank to
+	 * cause explosions when pressure is high
+	 */
+	public void onDestroy() {
+
+	}
+
 }

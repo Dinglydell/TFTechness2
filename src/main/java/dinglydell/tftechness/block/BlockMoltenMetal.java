@@ -47,6 +47,9 @@ public class BlockMoltenMetal extends BlockFluidClassic implements
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		if (meta != 0) {
+			return null;
+		}
 		return new TileMoltenMetal(stack);
 
 	}

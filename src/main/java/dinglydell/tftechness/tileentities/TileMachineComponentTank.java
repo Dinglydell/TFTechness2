@@ -34,6 +34,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	protected SolutionTank tank = new SolutionTank(this, 1000);
 	private ItemStack stack;
 	protected boolean isSealed;
+	private boolean didExplode;
 
 	@Override
 	public void initialiseComponent() {
@@ -171,11 +172,12 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		double pressureDiff = Math.abs(pressure - atmosPressure);
 		if (pressureDiff > getMaxPressure()) {
-			float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
-			TFTechness2.logger.info("Pressure difference: " + pressureDiff);
-			TFTechness2.logger.info("BANG! " + strength + "(x: " + xCoord
-					+ ", y: " + yCoord + ", z: " + zCoord + ")");
-
+			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+			//float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
+			//TFTechness2.logger.info("Pressure difference: " + pressureDiff);
+			//TFTechness2.logger.info("BANG! " + strength + "(x: " + xCoord
+			//		+ ", y: " + yCoord + ", z: " + zCoord + ")");
+			//
 			//worldObj.createExplosion(null,
 			//		xCoord,
 			//		yCoord,
@@ -421,5 +423,31 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	public IIcon getIcon(int side) {
 
 		return component.getIcon(isSealed ? 0 : 1);
+	}
+
+	@Override
+	public void onDestroy() {
+
+		super.onDestroy();
+		if (!didExplode) {
+			didExplode = true;
+			double atmosPressure = TFTWorldData.get(worldObj)
+					.getAtmosphericPressure(yCoord);
+			double pressure = tank.getTotalPressure();
+			double pressureDiff = Math.abs(pressure - atmosPressure);
+
+			float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
+			TFTechness2.logger.info("Pressure difference: " + pressureDiff);
+			TFTechness2.logger.info("BANG! " + strength + "(x: " + xCoord
+					+ ", y: " + yCoord + ", z: " + zCoord + ")");
+			if (strength > 0.15) {
+				worldObj.createExplosion(null,
+						xCoord,
+						yCoord,
+						zCoord,
+						strength,
+						true);
+			}
+		}
 	}
 }

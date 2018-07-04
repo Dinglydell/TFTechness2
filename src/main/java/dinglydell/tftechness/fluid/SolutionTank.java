@@ -610,13 +610,24 @@ public class SolutionTank {
 		double p = getTotalPressure();
 		double max = tile.getMaxPressure();
 		String chatColour;
-		if (max * 0.8 < Math.abs(p - tile.getAtmosphericPressure())) {
+		boolean danger = false;
+		double diff = Math.abs(p - tile.getAtmosphericPressure());
+		if (max * 0.8 < diff) {
 			chatColour = EnumChatFormatting.RED.toString();
+			danger = true;
+		} else if (max * 0.7 < diff) {
+			chatColour = EnumChatFormatting.GOLD.toString();
+		} else if (max * 0.6 < diff) {
+			chatColour = EnumChatFormatting.YELLOW.toString();
 		} else {
 			chatColour = EnumChatFormatting.RESET.toString();
 		}
 		infoList.add("Gases (" + chatColour + StringUtil.prefixify(p) + "Pa"
 				+ EnumChatFormatting.RESET.toString() + ")");
+		if (danger) {
+			infoList.add(chatColour
+					+ StatCollector.translateToLocal("gui.tooltip.danger"));
+		}
 		final float gasVol = 0.001f * (capacity - totalV);
 		Comparator<GasStack> comp = new Comparator<GasStack>() {
 

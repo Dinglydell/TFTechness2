@@ -75,8 +75,9 @@ public class TileMoltenMetal extends TileEntity {
 				/ (stats.getSISpecificHeat());
 		((FluidMoltenMetal) stack.getFluid())
 				.setTemperature(temperature, stack);
-		if (this.temperature < stats.heat.meltTemp && solidBlock != null) {
-			worldObj.setBlock(xCoord, yCoord, zCoord, solidBlock, solidMeta, 2);
+		if (this.temperature < stats.heat.meltTemp && solidBlock != null
+				&& blockMetadata == 0) {
+			worldObj.setBlock(xCoord, yCoord, zCoord, solidBlock, solidMeta, 3);
 		}
 	}
 

@@ -159,6 +159,7 @@ public class BlockTFTComponent extends BlockContainer {
 	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
 		TileMachineComponent tile = (TileMachineComponent) world
 				.getTileEntity(x, y, z);
+		tile.onDestroy();
 		if (tile.getTemperature() > tile.getMaxTemperature()) {
 			return;
 		}

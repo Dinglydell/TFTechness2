@@ -137,6 +137,9 @@ gui.tooltip.frozen=Frozen
 
 gui.machine.tank.sealed=Sealed
 
+gui.tooltip.danger=**DANGER**
+gui.tooltip.failure=**CATESTROPHIC FAILURE**
+
 info.machine.tooltip.0=Use any combination of machine
 info.machine.tooltip.1=components in a continuous structure
 info.machine.tooltip.2=to build a machine.

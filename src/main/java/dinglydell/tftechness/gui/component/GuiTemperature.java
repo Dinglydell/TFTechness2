@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Mouse;
 
@@ -111,13 +112,29 @@ public class GuiTemperature extends GuiButton {
 					.toString();
 		}
 		String colour;
-		if (temp > 0.9 * tile.getMaxTemperature()) {
+		boolean danger = false;
+		float max = tile.getMaxTemperature();
+		if (temp > 0.95 * max) {
 			colour = EnumChatFormatting.RED.toString();
+			danger = true;
+		} else if (temp > 0.9 * max) {
+			colour = EnumChatFormatting.GOLD.toString();
+		} else if (temp > 0.8 * max) {
+			colour = EnumChatFormatting.YELLOW.toString();
 		} else {
 			colour = EnumChatFormatting.WHITE.toString();
 		}
 		tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
-		tooltip.add(TFC_ItemHeat.getHeatColor(temp, Float.MAX_VALUE));
+		tooltip.add(TFC_ItemHeat.getHeatColor(temp, max));
+		if (danger) {
+			if (temp > max) {
+				tooltip.add(colour
+						+ StatCollector.translateToLocal("gui.tooltip.failure"));
+			} else {
+				tooltip.add(colour
+						+ StatCollector.translateToLocal("gui.tooltip.danger"));
+			}
+		}
 
 	}
 
