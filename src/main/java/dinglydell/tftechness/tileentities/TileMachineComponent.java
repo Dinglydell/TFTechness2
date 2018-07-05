@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -563,4 +564,11 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		return component;
 	}
 
+	public void randomDisplayTick() {
+
+	}
+
+	public void randomDisplayTick(Random rand) {
+
+	}
 }

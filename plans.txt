@@ -46,6 +46,8 @@ Mid-term:
  -related to above, different materials providing different strength - such as having a max pressure difference property
  -dynamic texture for multiblock parts based on material
 
+ -temperature monitor component - can tell you the temperature of neighbour blocks
+   -can turn off neighbouring heating/cooling elements based on a target temperature
 
  -compound registry - every item is registered with what compounds it contains - these compounds are composed of elements
  -reactions in the solution tank would be based on what can be done with existing elements and compounds in the tank (possibly using enthalpy and/or entropy)

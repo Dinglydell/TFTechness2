@@ -2,10 +2,13 @@ package dinglydell.tftechness.tileentities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -38,7 +41,15 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	private ItemStack stack;
 	protected boolean isSealed;
 	private boolean didExplode;
-	private Map<ForgeDirection, Integer> soundCooldown = new HashMap<ForgeDirection, Integer>();;
+	private Map<ForgeDirection, Integer> soundCooldown = new HashMap<ForgeDirection, Integer>();
+	private Map<ForgeDirection, Double> dP = new HashMap<ForgeDirection, Double>();
+
+	public TileMachineComponentTank() {
+		super();
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			soundCooldown.put(dir, 0);
+		}
+	}
 
 	@Override
 	public void initialiseComponent() {
@@ -68,6 +79,26 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	public void updateEntity() {
 		super.updateEntity();
 		if (worldObj.isRemote) {
+			Random rand = new Random();
+			for (Entry<ForgeDirection, Double> entry : dP.entrySet()) {
+				if (entry.getValue() > 25) {
+					double rootdP = Math.sqrt(entry.getValue());
+					if (rand.nextDouble() > 5 / rootdP) {
+						ForgeDirection dir = entry.getKey();
+						double speed = rootdP / 100;
+						worldObj.spawnParticle("smoke",
+								xCoord + 0.5 + dir.offsetX * 0.5,
+								yCoord + 0.5 + dir.offsetY * 0.5,
+								zCoord + 0.5 + dir.offsetZ * 0.5,
+								dir.offsetX * speed + 0.1 * (1 - dir.offsetX)
+										* (rand.nextDouble() - 0.5),
+								dir.offsetY * speed + 0.1 * (1 - dir.offsetY)
+										* (rand.nextDouble() - 0.5),
+								dir.offsetZ * speed + 0.1 * (1 - dir.offsetZ)
+										* (rand.nextDouble() - 0.5));
+					}
+				}
+			}
 			return;
 		}
 
@@ -88,21 +119,27 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				double p = tank.getTotalPressure();
 				tank.equaliseGas(0.01f, 1, TFTWorldData.get(worldObj)
 						.getAtmosphericComposition(x, y, z));
-				double dP = p - tank.getTotalPressure();
+				dP.put(dir, p - tank.getTotalPressure());
 
-				if (dP > 20) {
+				if (dP.get(dir) > 20) {
+
 					soundCooldown.put(dir, soundCooldown.get(dir) - 1);
 					if (soundCooldown.get(dir) <= 0) {
 
 						soundCooldown.put(dir, 6);
-						TFTechness2.logger.info(dP / 1000);
-						worldObj.playSoundEffect(x, y, z, TFTechness2.MODID
-								+ ":machine.tank.hiss", (float) (dP / 1000), 1f);
+						//TFTechness2.logger.info(dP / 1000);
+						worldObj.playSoundEffect(x,
+								y,
+								z,
+								TFTechness2.MODID + ":machine.tank.hiss",
+								(float) (Math.sqrt(dP.get(dir)) / 100),
+								1f);
 					}
 				}
 
 			} else {
 				soundCooldown.put(dir, 0);
+				dP.put(dir, 0d);
 			}
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			if (tile != null) {
@@ -229,6 +266,14 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		nbt.setTag("Tank", tank.writeToNBT());
 		nbt.setBoolean("isSealed", isSealed);
+		NBTTagList dPTag = new NBTTagList();
+		for (Entry<ForgeDirection, Double> entry : dP.entrySet()) {
+			NBTTagCompound entryTag = new NBTTagCompound();
+			entryTag.setInteger("dir", entry.getKey().ordinal());
+			entryTag.setDouble("dP", entry.getValue());
+			dPTag.appendTag(entryTag);
+		}
+		nbt.setTag("dP", dPTag);
 
 	}
 
@@ -239,7 +284,12 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		tank.readFromNBT(nbt.getCompoundTag("Tank"));
 		isSealed = nbt.getBoolean("isSealed");
-
+		NBTTagList dpList = nbt.getTagList("dP", 10);
+		for (int i = 0; i < dpList.tagCount(); i++) {
+			NBTTagCompound tag = dpList.getCompoundTagAt(i);
+			ForgeDirection dir = ForgeDirection.values()[tag.getInteger("dir")];
+			dP.put(dir, tag.getDouble("dP"));
+		}
 	}
 
 	@Override
@@ -469,5 +519,11 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 						true);
 			}
 		}
+	}
+
+	@Override
+	public void randomDisplayTick(Random rand) {
+		super.randomDisplayTick(rand);
+
 	}
 }

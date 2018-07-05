@@ -2,6 +2,7 @@ package dinglydell.tftechness.block.component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -266,6 +267,13 @@ public class BlockTFTComponent extends BlockContainer {
 		//nbt.setInteger("tier", wireTier.ordinal());
 		is.setTagCompound(nbt);
 		return is;
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+		((TileMachineComponent) world.getTileEntity(x, y, z))
+				.randomDisplayTick(rand);
 	}
 
 }
