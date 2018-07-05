@@ -98,9 +98,12 @@ public class GuiSolutionTank extends Gui implements ITFTComponent {
 			//}
 			//dy -= height;
 		}
+		float fluids = tank.getFluidAmount();
+		float soluteMultiplier = (tank.getSoluteAmount() + fluids) / fluids;
 		for (FluidStackFloat f : tank.getDensitySortedFluids(-1)) {
 
-			int height = (int) (f.amount / (float) tank.getCapacity() * this.height);
+			int height = (int) (f.amount * soluteMultiplier
+					/ (float) tank.getCapacity() * (this.height + 1));
 
 			texture.bindTexture(texture.getResourceLocation(f.getFluid()
 					.getSpriteNumber()));

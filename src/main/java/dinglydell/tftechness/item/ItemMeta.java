@@ -31,7 +31,7 @@ public class ItemMeta {
 	@Override
 	public int hashCode() {
 
-		return 16 * item.hashCode() + meta;
+		return 256 * item.hashCode() + meta;
 	}
 
 }

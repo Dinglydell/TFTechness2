@@ -15,6 +15,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
+import dinglydell.tftechness.tileentities.TileMachineRF;
 import dinglydell.tftechness.util.StringUtil;
 
 public class TFTWaila implements IWailaDataProvider {
@@ -76,6 +77,11 @@ public class TFTWaila implements IWailaDataProvider {
 						maxP,
 						((TileMachineComponentTank) te)
 								.getAtmosphericPressure());
+			}
+			if (te instanceof TileMachineRF) {
+				currenttip.add("Using "
+						+ ((TileMachineRF) te).getEnergyConsumptionRate()
+						+ "RF/t");
 			}
 
 			//Component.components.get(0);

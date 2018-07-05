@@ -17,6 +17,7 @@ import com.bioxx.tfc.api.Enums.EnumWeight;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.Gas;
+import dinglydell.tftechness.fluid.Mixture;
 import dinglydell.tftechness.world.TFTWorldData;
 
 /**
@@ -54,7 +55,7 @@ public class TFTPropertyRegistry {
 	protected static Map<ItemMeta, HashMap<Fluid, Float>> solubilityMap = new HashMap<ItemMeta, HashMap<Fluid, Float>>();
 
 	/** mol/item */
-	protected static Map<ItemMeta, Integer> molesMap = new HashMap<ItemMeta, Integer>();
+	protected static Map<ItemMeta, Float> molesMap = new HashMap<ItemMeta, Float>();
 
 	/** kg/item */
 	protected static Map<ItemMeta, Float> densityMap = new HashMap<ItemMeta, Float>();
@@ -83,6 +84,8 @@ public class TFTPropertyRegistry {
 
 	private static Map<Fluid, Float> freezePointMap = new HashMap<Fluid, Float>();
 
+	protected static Map<Fluid, Mixture> mixtureMap = new HashMap<Fluid, Mixture>();
+
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
 	}
@@ -110,7 +113,7 @@ public class TFTPropertyRegistry {
 	}
 
 	/** mol/item */
-	public static void registerNumMoles(ItemStack stack, int moles) {
+	public static void registerNumMoles(ItemStack stack, float moles) {
 		molesMap.put(new ItemMeta(stack), moles);
 	}
 
@@ -225,7 +228,7 @@ public class TFTPropertyRegistry {
 	}
 
 	/** mol/item */
-	public static int getMoles(ItemStack stack) {
+	public static float getMoles(ItemStack stack) {
 		ItemMeta im = new ItemMeta(stack);
 		if (molesMap.containsKey(im)) {
 			return molesMap.get(im);
@@ -344,4 +347,14 @@ public class TFTPropertyRegistry {
 		fluidSH.put(f, value);
 	}
 
+	public static void registerMixture(Mixture m) {
+		mixtureMap.put(m.mixture.getFluid(), m);
+	}
+
+	public static Mixture getMixture(Fluid f) {
+		if (mixtureMap.containsKey(f)) {
+			return mixtureMap.get(f);
+		}
+		return null;
+	}
 }

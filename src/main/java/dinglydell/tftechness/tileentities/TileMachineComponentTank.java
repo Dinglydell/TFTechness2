@@ -104,7 +104,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		if (stack != null) {
 			stack = tank.fill(stack, true);
-			if (stack.stackSize == 0) {
+			if (stack != null && stack.stackSize == 0) {
 				stack = null;
 			}
 		}

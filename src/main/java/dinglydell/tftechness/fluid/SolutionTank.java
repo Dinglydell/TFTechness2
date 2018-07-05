@@ -245,7 +245,7 @@ public class SolutionTank {
 					solutes.put(solid.getKey(), 0f);
 				}
 				//how much (kg) to reach capacity
-				int molPerItem = TFTPropertyRegistry
+				float molPerItem = TFTPropertyRegistry
 						.getMoles(solid.getKey().stack);
 				float kgPerItem = TFTPropertyRegistry
 						.getDensity(solid.getKey().stack);
@@ -316,7 +316,7 @@ public class SolutionTank {
 				//float newSol = totalSol;
 				solutes.put(sol.getKey(), totalSol);
 				float diff = sol.getValue() - totalSol;
-				int molPerItem = TFTPropertyRegistry
+				float molPerItem = TFTPropertyRegistry
 						.getMoles(sol.getKey().stack);
 				float kgPerItem = TFTPropertyRegistry
 						.getDensity(sol.getKey().stack);
@@ -502,13 +502,13 @@ public class SolutionTank {
 		//if (!TFTItemPropertyRegistry.isPowder(stack)) {
 		//	return 0;
 		//}
-		float totalAmt = getContentAmount();
+		//float totalAmt = getContentAmount();
 		float volDens = TFTPropertyRegistry.getVolumeDensity(stack);
 		float dens = TFTPropertyRegistry.getDensity(stack);
 		float totalV = getContentAmount();
 		float maxFill = (0.001f * dens * (capacity - totalV) / volDens);
 		float amtVol = (amt / dens * volDens * 1000f);
-		float overVol = (float) Math.ceil(totalV + amtVol - getCapacity());
+		float overVol = totalV + amtVol - getCapacity();
 		if (maxFill < amt) {
 
 			overVol = tile.attemptOverflow(overVol,
@@ -523,6 +523,31 @@ public class SolutionTank {
 				solids.put(im, 0f);
 			}
 			solids.put(im, solids.get(im) + toFill);
+		}
+		return toFill;
+	}
+
+	public float fillSolute(ItemStack stack, float moles, boolean doFill) {
+		float totalV = getContentAmount();
+		float volDens = TFTPropertyRegistry.getVolumeDensity(stack);
+		float moleAmt = TFTPropertyRegistry.getMoles(stack);
+		float addedVol = 1000 * moles / moleAmt * volDens;
+
+		float overVol = totalV + addedVol - getCapacity();
+		if (overVol > 0) {
+			overVol = tile.attemptOverflow(overVol,
+					ForgeDirection.UNKNOWN,
+					doFill);
+		}
+
+		float toFill = Math.min(moles, 0.001f
+				* (overVol + getCapacity() - totalV) / volDens * moleAmt);
+		if (doFill) {
+			ItemMeta im = new ItemMeta(stack);
+			if (!solutes.containsKey(im)) {
+				solutes.put(im, 0f);
+			}
+			solutes.put(im, solutes.get(im) + toFill);
 		}
 		return toFill;
 	}
@@ -542,6 +567,48 @@ public class SolutionTank {
 		if (stack == null || stack.amount == 0) {
 			return 0;
 		}
+		//if this is registered as a mixutre, add the components
+		Mixture m = TFTPropertyRegistry.getMixture(stack.getFluid());
+		if (m != null) {
+			float amt = stack.amount;
+			for (FluidStack f : m.fluids) {
+				float trueAmt = (stack.amount * f.amount) / m.mixture.amount;
+				FluidStackFloat newF = new FluidStackFloat(f);
+				newF.amount = trueAmt;
+
+				amt = Math
+						.min(amt, (fill(newF, from, false) * m.mixture.amount)
+								/ f.amount);
+
+			}
+			for (Entry<ItemMeta, Float> solute : m.solutes.entrySet()) {
+				float trueAmt = (stack.amount * solute.getValue())
+						/ m.mixture.amount;
+				amt = Math.min(amt,
+						(fillSolute(solute.getKey().stack,
+								solute.getValue(),
+								false) * m.mixture.amount) / solute.getValue());
+
+			}
+			if (doFill) {
+				for (FluidStack f : m.fluids) {
+					float trueAmt = (amt * f.amount) / m.mixture.amount;
+					FluidStackFloat newF = new FluidStackFloat(f);
+					newF.amount = trueAmt;
+
+					fill(newF, from, true);
+
+				}
+				for (Entry<ItemMeta, Float> solute : m.solutes.entrySet()) {
+					float trueAmt = (amt * solute.getValue())
+							/ m.mixture.amount;
+					fillSolute(solute.getKey().stack, solute.getValue(), true);
+
+				}
+			}
+			return amt;
+		}
+
 		float amt = getContentAmount();
 		float overFill = amt + stack.amount - capacity;
 		//int toFill = Math.max(0, Math.min(stack.amount, capacity - amt));
@@ -822,42 +889,46 @@ public class SolutionTank {
 		}
 
 		//and the solutes
-		HashMap<ItemMeta, Float> solutesCopy = new HashMap<ItemMeta, Float>(
-				solutes);
-		List<FluidStackFloat> otherOrder = tank
-				.getDensitySortedFluids(-dir.offsetY);
-		for (Entry<ItemMeta, Float> solute : solutesCopy.entrySet()) {
-			float otherAmt = 0;
-			if (tank.solutes.containsKey(solute.getKey())) {
-				otherAmt = tank.solutes.get(solute.getKey());
-			}
-			float originalValue = solute.getValue();
-			float loss = solute.getValue() / 10f;
-			float mol = TFTPropertyRegistry.getMoles(solute.getKey().stack);
-			float volDens = TFTPropertyRegistry.getVolumeDensity(solute
-					.getKey().stack);
-			float volumeLoss = loss / mol * volDens;
-			solutes.put(solute.getKey(), solute.getValue() - loss);
-			//check if this overfills it, if so displace a liquid
-			if (tank.getContentAmount() + volumeLoss > tank.getCapacity()) {
-				//replace volume with a fluid
+		if (tank.containsAnyFluid()) {
+			HashMap<ItemMeta, Float> solutesCopy = new HashMap<ItemMeta, Float>(
+					solutes);
+			List<FluidStackFloat> otherOrder = tank
+					.getDensitySortedFluids(-dir.offsetY);
 
-				//float toReplace = volumeLoss;
-				float toReplace = tile.attemptOverflow(volumeLoss,
-						ForgeDirection.UNKNOWN,
-						true);
-
-				if (toReplace > 0) {
-					volumeLoss = (int) volumeLoss - toReplace;
+			for (Entry<ItemMeta, Float> solute : solutesCopy.entrySet()) {
+				float otherAmt = 0;
+				if (tank.solutes.containsKey(solute.getKey())) {
+					otherAmt = tank.solutes.get(solute.getKey());
 				}
-				loss = volumeLoss / volDens * mol;
+
+				float originalValue = solute.getValue();
+				float loss = solute.getValue() / 10f;
+				float mol = TFTPropertyRegistry.getMoles(solute.getKey().stack);
+				float volDens = TFTPropertyRegistry.getVolumeDensity(solute
+						.getKey().stack);
+
+				float volumeLoss = loss / mol * volDens;
 				solutes.put(solute.getKey(), solute.getValue() - loss);
+				//check if this overfills it, if so displace a liquid
+				if (tank.getContentAmount() + volumeLoss > tank.getCapacity()) {
+					//replace volume with a fluid
+
+					//float toReplace = volumeLoss;
+					float toReplace = tile.attemptOverflow(volumeLoss,
+							ForgeDirection.UNKNOWN,
+							true);
+
+					if (toReplace > 0) {
+						volumeLoss = (int) volumeLoss - toReplace;
+					}
+					loss = volumeLoss / volDens * mol;
+					solutes.put(solute.getKey(), solute.getValue() - loss);
+				}
+				otherAmt += loss;
+				tank.solutes.put(solute.getKey(), otherAmt);
+
 			}
-			otherAmt += loss;
-			tank.solutes.put(solute.getKey(), otherAmt);
-
 		}
-
 		//gas
 		equaliseGas(0.5f,
 				0.001f * (tank.getCapacity() - tank.getContentAmount()),
@@ -865,6 +936,24 @@ public class SolutionTank {
 		//	for (GasStack g : emptied) {
 		//	tank.fill(g);
 		//}
+
+		//solids
+
+		if (dir == ForgeDirection.DOWN) {
+			Map<ItemMeta, Float> solidsCopy = new HashMap<ItemMeta, Float>(
+					solids);
+
+			for (Entry<ItemMeta, Float> solid : solidsCopy.entrySet()) {
+				float original = solid.getValue();
+				solids.put(solid.getKey(), 0f);
+				ItemStack fillStack = solid.getKey().stack.copy();
+				original -= tank.fill(fillStack, original, true);
+				if (original <= 0) {
+					solids.put(solid.getKey(), original);
+					solids.remove(solid.getKey());
+				}
+			}
+		}
 
 	}
 

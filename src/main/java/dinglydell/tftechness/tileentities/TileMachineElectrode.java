@@ -100,7 +100,8 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 					inventory[i] = null;
 				}
 			}
-			return super.spendRF((int) (amt * 0.75));
+			int electrodeSpend = (int) (amt * 0.25);
+			return super.spendRF(amt - electrodeSpend) + electrodeSpend;
 		}
 		return 0;
 	}

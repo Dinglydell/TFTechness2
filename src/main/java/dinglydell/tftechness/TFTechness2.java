@@ -118,6 +118,7 @@ import dinglydell.tftechness.event.TFTEventHandler;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.FluidStackFloat;
 import dinglydell.tftechness.fluid.Gas;
+import dinglydell.tftechness.fluid.Mixture;
 import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
 import dinglydell.tftechness.item.ItemBlockMachineComponent;
@@ -214,8 +215,9 @@ public class TFTechness2 {
 
 		// item shelf
 		Component.registerComponent(new Component("shelf",
-				TileMachineComponentItemShelf.class,
-				new Object[] { "aa", "aa" }));
+				TileMachineComponentItemShelf.class, new Object[] { "aaa",
+						"   ",
+						"aaa" }));
 
 		// cooler (b is wire coil)
 		Component.registerComponent(new Component("cooler",
@@ -227,9 +229,9 @@ public class TFTechness2 {
 
 		//Tank
 		Component.registerComponent(new Component("tank",
-				TileMachineComponentTank.class, new Object[] { " a ",
+				TileMachineComponentTank.class, new Object[] { "aaa",
 						"a a",
-						" a " }).registerAdditionalIcon("open"));
+						"aaa" }).registerAdditionalIcon("open"));
 
 		//Electrode
 		Component.registerComponent(new Component("electrode",
@@ -450,6 +452,17 @@ public class TFTechness2 {
 		TFTPropertyRegistry.registerBoil(TFCFluids.FRESHWATER, Gas.STEAM);
 		TFTPropertyRegistry.registerConductivity(TFCFluids.FRESHWATER, 0.01f);
 		TFTPropertyRegistry.registerSpecificHeat(TFCFluids.FRESHWATER, 4118);
+
+		//salty!
+		TFTPropertyRegistry.registerSolute(TFTMeta.salt,
+				TFCFluids.FRESHWATER,
+				36f);
+		TFTPropertyRegistry.registerDensity(TFTMeta.salt, 0.032f);
+		TFTPropertyRegistry.registerVolume(TFTMeta.salt, 1.5e-5f);
+		TFTPropertyRegistry.registerNumMoles(TFTMeta.salt, 0.5475f);
+		TFTPropertyRegistry.registerMixture(new Mixture(new FluidStack(
+				TFCFluids.SALTWATER, 1000)).addFluid(new FluidStack(
+				TFCFluids.FRESHWATER, 984)).addSolute(TFTMeta.salt, 600));
 
 		TFTPropertyRegistry.registerMolten(TFTMeta.iceFresh,
 				TFCFluids.FRESHWATER,
