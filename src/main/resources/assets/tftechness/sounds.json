@@ -1,0 +1,9 @@
+{
+	"machine.tank.hiss": {
+		"category": "neutral",
+        "sounds":
+        [
+            "machine/pressureHiss"
+        ]
+	}
+}

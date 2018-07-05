@@ -1,5 +1,8 @@
 package dinglydell.tftechness.tileentities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,6 +38,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	private ItemStack stack;
 	protected boolean isSealed;
 	private boolean didExplode;
+	private Map<ForgeDirection, Integer> soundCooldown = new HashMap<ForgeDirection, Integer>();;
 
 	@Override
 	public void initialiseComponent() {
@@ -81,8 +85,24 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 			int z = zCoord + dir.offsetZ;
 			if (!isSealed
 					&& worldObj.getBlock(x, y, z).isAir(worldObj, x, y, z)) {
+				double p = tank.getTotalPressure();
 				tank.equaliseGas(0.01f, 1, TFTWorldData.get(worldObj)
 						.getAtmosphericComposition(x, y, z));
+				double dP = p - tank.getTotalPressure();
+
+				if (dP > 20) {
+					soundCooldown.put(dir, soundCooldown.get(dir) - 1);
+					if (soundCooldown.get(dir) <= 0) {
+
+						soundCooldown.put(dir, 6);
+						TFTechness2.logger.info(dP / 1000);
+						worldObj.playSoundEffect(x, y, z, TFTechness2.MODID
+								+ ":machine.tank.hiss", (float) (dP / 1000), 1f);
+					}
+				}
+
+			} else {
+				soundCooldown.put(dir, 0);
 			}
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			if (tile != null) {
