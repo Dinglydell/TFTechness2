@@ -1054,4 +1054,12 @@ public class SolutionTank {
 		}
 		return transfered;
 	}
+
+	public float getSolidMass() {
+		float amt = 0;
+		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
+			amt += solid.getValue();
+		}
+		return amt;
+	}
 }

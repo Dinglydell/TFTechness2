@@ -49,11 +49,22 @@ public class TFTWaila implements IWailaDataProvider {
 			StringUtil.addTemperatureTooltip(currenttip, temp, maxT);
 
 			if (te instanceof TileMachineComponentTank) {
-				if (((TileMachineComponentTank) te).isSealed()) {
+				TileMachineComponentTank tank = (TileMachineComponentTank) te;
+				if (tank.isSealed()) {
 					currenttip
 							.add(EnumChatFormatting.ITALIC
 									+ StatCollector
 											.translateToLocal("gui.machine.tank.sealed"));
+				}
+				float solids = tank.getTank().getSolidMass();
+				if (solids != 0) {
+					currenttip.add("Solids ("
+							+ StringUtil.prefixify(solids * 1000) + "g)");
+				}
+				float fluids = tank.getTank().getFluidAmount();
+				if (fluids != 0) {
+					currenttip.add("Liquids ("
+							+ StringUtil.prefixify(fluids * 0.001) + "B)");
 				}
 				double pressure = accessor.getNBTData().getFloat("Pressure");
 				double maxP = accessor.getNBTData().getFloat("MaxPressure");
