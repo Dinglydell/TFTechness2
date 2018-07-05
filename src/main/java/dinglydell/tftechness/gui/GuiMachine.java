@@ -14,7 +14,7 @@ import dinglydell.tftechness.tileentities.TileMachineComponent;
 
 public class GuiMachine extends GuiContainer {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(
-			TFTechness2.MODID + ":textures/gui/machine/electrolyser.png");
+			TFTechness2.MODID + ":textures/gui/machine/wall.png");
 	private static final int TEX_WIDTH = 175;
 	private static final int TEX_HEIGHT = 165;
 

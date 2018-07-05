@@ -466,6 +466,9 @@ public class SolutionTank {
 		}
 		ItemStack result = stack.copy();
 		result.stackSize = amt;
+		if (amt == 0) {
+			return null;
+		}
 		return result;
 	}
 
