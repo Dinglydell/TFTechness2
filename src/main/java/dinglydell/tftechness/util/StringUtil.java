@@ -11,6 +11,7 @@ import net.minecraft.util.StatCollector;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
 
 public class StringUtil {
 	public static String[] toStringArray(List<String> arr) {
@@ -79,9 +80,11 @@ public class StringUtil {
 	}
 
 	public static void addTemperatureTooltip(List<String> tooltip, float temp,
-			float max) {
+			float max, ThermometerTier tier) {
 		String roundedTemp = null;
-		if (temp >= 100 || temp <= -100) {
+		if (tier == ThermometerTier.rounded) {
+			roundedTemp = "" + Math.round(temp / 10) * 10 + "±5";
+		} else if (temp >= 100 || temp <= -100) {
 			roundedTemp = "" + Math.round(temp);
 		} else {
 
@@ -100,7 +103,9 @@ public class StringUtil {
 		} else {
 			colour = EnumChatFormatting.WHITE.toString();
 		}
-		tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
+		if (tier != ThermometerTier.fuzzy) {
+			tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
+		}
 		tooltip.add(TFC_ItemHeat.getHeatColor(temp, max));
 		if (danger) {
 			if (temp > max) {

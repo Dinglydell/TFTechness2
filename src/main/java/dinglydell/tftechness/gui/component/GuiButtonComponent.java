@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import dinglydell.tftechness.block.component.BlockTFTComponent;
+import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.util.StringUtil;
 
@@ -16,15 +17,17 @@ public class GuiButtonComponent extends GuiButtonTFT {
 
 	protected ItemStack stack;
 	public TileMachineComponent tile;
+	private ThermometerTier tier;
 	protected static RenderItem renderItems = new RenderItem();
 
 	public GuiButtonComponent(ForgeDirection dir, int x, int y, int width,
-			int height, TileMachineComponent tile) {
+			int height, TileMachineComponent tile, ThermometerTier tier) {
 		super(dir.ordinal(), x, y, width, height, "");
 		this.tile = tile;
 		if (tile != null) {
 			stack = BlockTFTComponent.getTileAsItemStack(tile);
 		}
+		this.tier = tier;
 		//tile.getBlockType().getSheet()
 	}
 
@@ -59,7 +62,8 @@ public class GuiButtonComponent extends GuiButtonTFT {
 				+ ".name"));
 		StringUtil.addTemperatureTooltip(tooltip,
 				tile.getTemperature(),
-				tile.getMaxTemperature());
+				tile.getMaxTemperature(),
+				tier);
 		((BlockTFTComponent) tile.getBlockType()).component.addTooltip(tooltip,
 				stack.getTagCompound());
 

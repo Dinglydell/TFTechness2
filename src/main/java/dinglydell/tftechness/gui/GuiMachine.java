@@ -43,7 +43,7 @@ public class GuiMachine extends GuiContainer {
 
 		super.initGui();
 		buttonList.add(new GuiTemperature(0, guiLeft + 15, guiTop + 8, 7, 49,
-				tile, false));
+				tile, false, tile.getThermometerTier()));
 		components.clear();
 		components.add(new GuiRF(guiLeft + 7, guiTop + 8, 3, 50, tile));
 	}

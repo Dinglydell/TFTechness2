@@ -37,9 +37,10 @@ public class GuiMonitor extends GuiMachine {
 		super.initGui();
 
 		selectedTemp = new GuiTemperature(0, guiLeft + 161, guiTop + 8, 7, 49,
-				null, false);
+				null, false, tile.getThermometerTier());
 		selected = new GuiButtonComponent(ForgeDirection.UNKNOWN,
-				guiLeft + 131, guiTop + 26, 16, 16, null);
+				guiLeft + 131, guiTop + 26, 16, 16, null,
+				tile.getThermometerTier());
 		buttonList.add(selectedTemp);
 		buttonList.add(selected);
 		ForgeDirection front;
@@ -95,7 +96,8 @@ public class GuiMonitor extends GuiMachine {
 
 		if (buttonTile instanceof TileMachineComponent) {
 			buttonList.add(new GuiButtonComponent(dir, guiLeft + x, guiTop + y,
-					16, 16, (TileMachineComponent) buttonTile));
+					16, 16, (TileMachineComponent) buttonTile, tile
+							.getThermometerTier()));
 
 		}
 

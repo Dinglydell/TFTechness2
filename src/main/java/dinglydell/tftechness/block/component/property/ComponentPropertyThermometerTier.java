@@ -7,7 +7,7 @@ public class ComponentPropertyThermometerTier extends
 		ComponentProperty<ThermometerTier> {
 
 	public enum ThermometerTier {
-		fuzzy, precise
+		fuzzy, rounded, precise
 	}
 
 	public ComponentPropertyThermometerTier(String name) {

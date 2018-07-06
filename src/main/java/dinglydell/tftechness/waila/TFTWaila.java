@@ -47,7 +47,10 @@ public class TFTWaila implements IWailaDataProvider {
 			if (maxT == 0) {
 				maxT = Float.MAX_VALUE;
 			}
-			StringUtil.addTemperatureTooltip(currenttip, temp, maxT);
+			StringUtil.addTemperatureTooltip(currenttip,
+					temp,
+					maxT,
+					tile.getThermometerTier());
 
 			if (te instanceof TileMachineComponentTank) {
 				TileMachineComponentTank tank = (TileMachineComponentTank) te;

@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
 import dinglydell.tftechness.util.StringUtil;
 
 public class GuiTemperature extends GuiButtonTFT {
@@ -19,12 +20,15 @@ public class GuiTemperature extends GuiButtonTFT {
 	public ITileTemperature tile;
 	private boolean target;
 	private boolean mouseDown = false;
+	private ThermometerTier tier;
 
 	public GuiTemperature(int id, int x, int y, int width, int height,
-			ITileTemperature tile, boolean target) {
+			ITileTemperature tile, boolean target, ThermometerTier tier) {
 		super(id, x, y, width, height, "");
 		this.tile = tile;
 		this.target = target;
+		this.tier = tier;
+		;
 	}
 
 	@Override
@@ -110,7 +114,8 @@ public class GuiTemperature extends GuiButtonTFT {
 		}
 		StringUtil.addTemperatureTooltip(tooltip,
 				temp,
-				tile.getMaxTemperature());
+				tile.getMaxTemperature(),
+				tier);
 
 	}
 

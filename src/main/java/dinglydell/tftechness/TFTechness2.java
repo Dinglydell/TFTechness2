@@ -1545,6 +1545,9 @@ public class TFTechness2 {
 						ThermometerTier.fuzzy);
 		ComponentMaterial.getMaterial("mv")
 				.addProperty(ComponentProperty.THERMOMETER_TIER,
+						ThermometerTier.rounded);
+		ComponentMaterial.getMaterial("hv")
+				.addProperty(ComponentProperty.THERMOMETER_TIER,
 						ThermometerTier.precise);
 
 		ComponentMaterial.registerRecipes();

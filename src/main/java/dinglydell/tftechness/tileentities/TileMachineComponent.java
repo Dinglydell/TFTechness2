@@ -31,6 +31,7 @@ import dinglydell.tftechness.block.component.Component;
 import dinglydell.tftechness.block.component.ComponentMaterial;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.block.component.property.ComponentPropertySet;
+import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 import dinglydell.tftechness.gui.component.ITileTemperature;
 import dinglydell.tftechness.item.TFTPropertyRegistry;
@@ -574,5 +575,10 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	public void randomDisplayTick(Random rand) {
 
+	}
+
+	public ThermometerTier getThermometerTier() {
+
+		return ThermometerTier.fuzzy;
 	}
 }

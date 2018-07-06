@@ -36,10 +36,10 @@ public class GuiElectrolyser extends GuiContainer {
 		super.initGui();
 		guiLeft = (width - TEX_WIDTH) / 2;
 		guiTop = (height - TEX_HEIGHT) / 2;
-		buttonList.add(new GuiTemperature(0, guiLeft + 15, guiTop + 8, 7, 49,
-				tile, true));
-		buttonList.add(new GuiTemperature(0, guiLeft + 28, guiTop + 8, 7, 49,
-				tile, false));
+		//	buttonList.add(new GuiTemperature(0, guiLeft + 15, guiTop + 8, 7, 49,
+		//			tile, true));
+		//	buttonList.add(new GuiTemperature(0, guiLeft + 28, guiTop + 8, 7, 49,
+		//			tile, false));
 
 		components.clear();
 		components.add(new GuiRF(guiLeft + 7, guiTop + 8, 3, 50, tile));
