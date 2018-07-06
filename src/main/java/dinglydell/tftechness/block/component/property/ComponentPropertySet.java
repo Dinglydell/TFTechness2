@@ -11,6 +11,9 @@ public class ComponentPropertySet {
 	public static final ComponentPropertySet WIRE_TIER = registerSet("wireTier",
 			new ComponentProperty[] { ComponentProperty.WIRE_TIER });
 
+	public static final ComponentPropertySet THERMOMETER_TIER = registerSet("thermometerTier",
+			new ComponentProperty[] { ComponentProperty.THERMOMETER_TIER });
+
 	public static ComponentPropertySet registerSet(String name,
 			ComponentProperty[] properties) {
 		ComponentPropertySet set = new ComponentPropertySet(name, properties);

@@ -110,6 +110,7 @@ import dinglydell.tftechness.block.component.Component;
 import dinglydell.tftechness.block.component.ComponentMaterial;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
 import dinglydell.tftechness.block.component.property.ComponentPropertySet;
+import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
 import dinglydell.tftechness.config.TFTConfig;
 import dinglydell.tftechness.crop.CropIndexStack;
 import dinglydell.tftechness.crop.TFTCropManager;
@@ -149,6 +150,7 @@ import dinglydell.tftechness.tileentities.TileMachineComponentTank;
 import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
+import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
@@ -238,6 +240,11 @@ public class TFTechness2 {
 				TileMachineElectrode.class,
 				new Object[] { "a a", "b b", "a a" })
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
+
+		//Monitor
+		Component.registerComponent(new Component("Monitor",
+				TileMachineMonitor.class, new Object[] { "aaa", "aba", "aaa" })
+				.registerPropertySet(ComponentPropertySet.THERMOMETER_TIER));
 
 	}
 
@@ -556,6 +563,9 @@ public class TFTechness2 {
 				"TFTMachineTank");
 		GameRegistry.registerTileEntity(TileMachineElectrode.class,
 				"TFTMachineElectrode");
+
+		GameRegistry.registerTileEntity(TileMachineMonitor.class,
+				"TFTMachineMonitor");
 
 	}
 
@@ -1529,6 +1539,13 @@ public class TFTechness2 {
 					wire.getWire()).addProperty(ComponentProperty.WIRE_TIER,
 					wire);
 		}
+		//TODO: make a thermometer item for this
+		ComponentMaterial.getMaterial("lv")
+				.addProperty(ComponentProperty.THERMOMETER_TIER,
+						ThermometerTier.fuzzy);
+		ComponentMaterial.getMaterial("mv")
+				.addProperty(ComponentProperty.THERMOMETER_TIER,
+						ThermometerTier.precise);
 
 		ComponentMaterial.registerRecipes();
 	}

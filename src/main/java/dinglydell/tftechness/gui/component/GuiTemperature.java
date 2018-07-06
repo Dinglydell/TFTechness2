@@ -3,7 +3,6 @@ package dinglydell.tftechness.gui.component;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
@@ -11,13 +10,13 @@ import org.lwjgl.input.Mouse;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.util.StringUtil;
 
-public class GuiTemperature extends GuiButton {
+public class GuiTemperature extends GuiButtonTFT {
 	public static final int MAX_SCALE_TEMP = 2000;
 	public static final ResourceLocation TEXTURE = new ResourceLocation(
 			TFTechness2.MODID + ":textures/gui/machine/SliderIndicator.png");
 	private static final int TEX_WIDTH = 15;
 	private static final int TEX_HEIGHT = 5;
-	private ITileTemperature tile;
+	public ITileTemperature tile;
 	private boolean target;
 	private boolean mouseDown = false;
 
@@ -28,15 +27,11 @@ public class GuiTemperature extends GuiButton {
 		this.target = target;
 	}
 
-	public boolean isHovering(int x, int y) {
-
-		return (x >= this.xPosition && y >= this.yPosition
-				&& x < this.xPosition + this.width && y < this.yPosition
-				+ this.height);
-	}
-
 	@Override
 	public void drawButton(Minecraft mc, int p_146112_2_, int p_146112_3_) {
+		if (tile == null) {
+			return;
+		}
 		if (target) {
 			int wheelMovement = Mouse.getDWheel();
 			tile.setTargetTemperature((int) Math.max(0,
@@ -93,14 +88,19 @@ public class GuiTemperature extends GuiButton {
 
 	@Override
 	public void mouseReleased(int x, int y) {
-		float scaleY = (y - this.yPosition) / (float) this.height;
-		//TFTechness2.logger.info(scaleY);
-		tile.setTargetTemperature((int) ((1 - scaleY) * MAX_SCALE_TEMP));
-		this.mouseDown = false;
+		if (target) {
+			float scaleY = (y - this.yPosition) / (float) this.height;
+			//TFTechness2.logger.info(scaleY);
+			tile.setTargetTemperature((int) ((1 - scaleY) * MAX_SCALE_TEMP));
+			this.mouseDown = false;
+		}
 		super.mouseReleased(x, y);
 	}
 
 	public void addTooltip(List<String> tooltip) {
+		if (tile == null) {
+			return;
+		}
 		float temp;
 		if (target) {
 			temp = tile.getTargetTemperature();

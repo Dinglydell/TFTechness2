@@ -14,6 +14,9 @@ public abstract class ComponentProperty<T> {
 	public static ComponentProperty WIRE_TIER = new ComponentPropertyWireTier(
 			"tier");
 
+	public static ComponentProperty THERMOMETER_TIER = new ComponentPropertyThermometerTier(
+			"thermoTier");
+
 	/** The thermal conductivity - measured as a number between 0 and 1. */
 	public static ComponentProperty CONDUCTIVITY = new ComponentPropertyPercent(
 			"conductivity");

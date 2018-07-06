@@ -7,11 +7,12 @@ import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
+import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class TFTGuiHandler implements IGuiHandler {
 	public enum TFTGuis {
-		Electrolyser, Machine, ItemShelf, Tank, Electrode
+		Electrolyser, Machine, ItemShelf, Tank, Electrode, Monitor
 	}
 
 	@Override
@@ -37,6 +38,10 @@ public class TFTGuiHandler implements IGuiHandler {
 		if (ID == TFTGuis.Electrode.ordinal()) {
 			return new ContainerMachineElectrode(player.inventory,
 					(TileMachineElectrode) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Monitor.ordinal()) {
+			return new ContainerMonitor(player.inventory,
+					(TileMachineMonitor) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}
@@ -65,7 +70,10 @@ public class TFTGuiHandler implements IGuiHandler {
 			return new GuiMachineElectrode(player.inventory,
 					(TileMachineElectrode) world.getTileEntity(x, y, z));
 		}
+		if (ID == TFTGuis.Monitor.ordinal()) {
+			return new GuiMonitor(player.inventory,
+					(TileMachineMonitor) world.getTileEntity(x, y, z));
+		}
 		return null;
 	}
-
 }

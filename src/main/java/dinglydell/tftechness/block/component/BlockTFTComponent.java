@@ -173,13 +173,19 @@ public class BlockTFTComponent extends BlockContainer {
 				}
 			}
 		}
-		ItemStack dropStack = new ItemStack(this, 1);
-		NBTTagCompound nbt = new NBTTagCompound();
-		tile.writeComponentPropertiesToNBT(nbt);
-		dropStack.setTagCompound(nbt);
+		ItemStack dropStack = getTileAsItemStack(tile);
 
 		dropBlockAsItem(world, x, y, z, dropStack);
 
+	}
+
+	/** Converts a tileentity to an ItemStack */
+	public static ItemStack getTileAsItemStack(TileMachineComponent tile) {
+		ItemStack stack = new ItemStack(tile.getBlockType(), 1);
+		NBTTagCompound nbt = new NBTTagCompound();
+		tile.writeComponentPropertiesToNBT(nbt);
+		stack.setTagCompound(nbt);
+		return stack;
 	}
 
 	@Override

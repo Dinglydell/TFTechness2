@@ -7,6 +7,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import dinglydell.tftechness.TFTechness2;
+import dinglydell.tftechness.gui.component.GuiButtonTFT;
 import dinglydell.tftechness.gui.component.GuiRF;
 import dinglydell.tftechness.gui.component.GuiTemperature;
 import dinglydell.tftechness.gui.component.ITFTComponent;
@@ -69,8 +70,8 @@ public class GuiMachine extends GuiContainer {
 		super.drawScreen(x, y, p_73863_3_);
 		List<String> tooltip = new ArrayList<String>();
 		for (Object b : buttonList) {
-			if (b instanceof GuiTemperature) {
-				GuiTemperature ob = ((GuiTemperature) b);
+			if (b instanceof GuiButtonTFT) {
+				GuiButtonTFT ob = ((GuiButtonTFT) b);
 				if (ob.isHovering(x, y)) {
 					ob.addTooltip(tooltip);
 				}

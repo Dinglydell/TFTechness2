@@ -464,6 +464,9 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		nbt.setFloat("temperature", temperature);
 		nbt.setInteger("rf", rf);
 		nbt.setInteger("rfCapacity", rfCapacity);
+		NBTTagCompound props = new NBTTagCompound();
+		writeComponentPropertiesToNBT(props);
+		nbt.setTag("properties", props);
 
 	}
 
@@ -476,6 +479,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		temperature = nbt.getFloat("temperature");
 		rf = nbt.getInteger("rf");
 		rfCapacity = nbt.getInteger("rfCapacity");
+		readPropertiesFromNBT(nbt);
 	}
 
 	public void readClientToServerMessage(NBTTagCompound nbt) {
