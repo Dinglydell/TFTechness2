@@ -242,7 +242,7 @@ public class TFTechness2 {
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 		//Monitor
-		Component.registerComponent(new Component("Monitor",
+		Component.registerComponent(new Component("monitor",
 				TileMachineMonitor.class, new Object[] { "aaa", "aba", "aaa" })
 				.registerPropertySet(ComponentPropertySet.THERMOMETER_TIER));
 
