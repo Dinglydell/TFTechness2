@@ -282,4 +282,13 @@ public class BlockTFTComponent extends BlockContainer {
 				.randomDisplayTick(rand);
 	}
 
+	@Override
+	public void onNeighborChange(IBlockAccess world, int x, int y, int z,
+			int tileX, int tileY, int tileZ) {
+
+		super.onNeighborChange(world, x, y, z, tileX, tileY, tileZ);
+		((TileMachineComponent) world.getTileEntity(x, y, z))
+				.onNeighbourChange();
+	}
+
 }

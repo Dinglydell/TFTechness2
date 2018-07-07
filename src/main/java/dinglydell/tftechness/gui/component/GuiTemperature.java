@@ -81,7 +81,7 @@ public class GuiTemperature extends GuiButtonTFT {
 
 	@Override
 	protected void mouseDragged(Minecraft mc, int x, int y) {
-		if (this.mouseDown && this.target) {
+		if (this.mouseDown && this.target && tile != null) {
 			TFTechness2.logger.info(y);
 			float scaleY = (y - this.yPosition) / (float) this.height;
 			//TFTechness2.logger.info(scaleY);
@@ -94,7 +94,7 @@ public class GuiTemperature extends GuiButtonTFT {
 
 	@Override
 	public void mouseReleased(int x, int y) {
-		if (target) {
+		if (target && tile != null) {
 			float scaleY = (y - this.yPosition) / (float) this.height;
 			//TFTechness2.logger.info(scaleY);
 			tile.setTargetTemperature((int) ((1 - scaleY) * MAX_SCALE_TEMP));

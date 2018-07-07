@@ -53,6 +53,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	protected int oldLightLevel;
 	/** The materials our properties come from */
 	protected Map<ComponentProperty, ComponentMaterial> materials = new HashMap<ComponentProperty, ComponentMaterial>();
+	protected float targetTemperature = Float.MAX_VALUE;
 
 	//protected SolutionTank internalTank;
 
@@ -242,6 +243,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 		data.setFloat("Temperature", temperature);
 		data.setInteger("rf", rf);
+		data.setFloat("TargetTemperature", targetTemperature);
 		NBTTagCompound propData = new NBTTagCompound();
 		writeComponentPropertiesToNBT(propData);
 		data.setTag("properties", propData);
@@ -283,7 +285,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//masterZ = data.getInteger("masterZ");
 
 		temperature = data.getFloat("Temperature");
-
+		targetTemperature = data.getFloat("TargetTemperature");
 		readPropertiesFromNBT(data);
 		rf = data.getInteger("rf");
 	}
@@ -302,6 +304,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//masterZ = nbt.getInteger("masterZ");
 		temperature = nbt.getFloat("temperature");
 		rf = nbt.getInteger("rf");
+		targetTemperature = nbt.getFloat("TargetTemperature");
 	}
 
 	@Override
@@ -322,6 +325,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		//nbt.setInteger("masterZ", masterZ);
 		nbt.setFloat("temperature", temperature);
 		nbt.setInteger("rf", rf);
+		nbt.setFloat("TargetTemperature", targetTemperature);
 
 	}
 
@@ -344,14 +348,14 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	@Override
 	public void setTargetTemperature(float max) {
-		// TODO Auto-generated method stub
-
+		this.targetTemperature = max;
+		this.sendClientToServerMessage();
 	}
 
 	@Override
 	public float getTargetTemperature() {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.targetTemperature;
 	}
 
 	public boolean isUseableByPlayer(EntityPlayer player) {
@@ -384,7 +388,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	}
 
 	public void writeClientToServerMessage(NBTTagCompound nbt) {
-		// TODO Auto-generated method stub
+		nbt.setFloat("TargetTemperature", targetTemperature);
 
 	}
 
@@ -396,7 +400,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	}
 
 	public void readClientToServerMessage(NBTTagCompound nbt) {
-		// TODO Auto-generated method stub
+		targetTemperature = nbt.getFloat("TargetTemperature");
 
 	}
 
@@ -492,5 +496,10 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	public ThermometerTier getThermometerTier() {
 
 		return ThermometerTier.fuzzy;
+	}
+
+	public void onNeighbourChange() {
+		// TODO Auto-generated method stub
+
 	}
 }

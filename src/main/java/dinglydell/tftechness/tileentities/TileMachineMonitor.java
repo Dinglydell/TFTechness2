@@ -1,10 +1,8 @@
 package dinglydell.tftechness.tileentities;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -14,7 +12,9 @@ import dinglydell.tftechness.block.component.property.ComponentPropertyThermomet
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 
 public class TileMachineMonitor extends TileMachineComponent {
-	private float targetTemperature;
+	private ArrayList<TileMachineHeatingElement> heaters = new ArrayList<TileMachineHeatingElement>();
+
+	//private float targetTemperature;
 
 	public boolean openGui(World world, EntityPlayer player) {
 		player.openGui(TFTechness2.instance,
@@ -34,89 +34,51 @@ public class TileMachineMonitor extends TileMachineComponent {
 	}
 
 	@Override
-	public void setTargetTemperature(float target) {
-		this.targetTemperature = target;
-		this.sendClientToServerMessage();
-	}
-
-	@Override
-	public float getTargetTemperature() {
-		return targetTemperature;
-	}
-
-	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
-		nbt.setFloat("TargetTemperature", targetTemperature);
-	}
-
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) {
-		super.readFromNBT(nbt);
-		targetTemperature = nbt.getFloat("TargetTemperature");
-	}
-
-	@Override
-	public void writePacketNBT(NBTTagCompound nbt) {
-		super.writePacketNBT(nbt);
-		nbt.setFloat("TargetTemperature", targetTemperature);
-	}
-
-	@Override
-	public void readPacketNBT(NBTTagCompound nbt) {
-
-		super.readPacketNBT(nbt);
-		targetTemperature = nbt.getFloat("TargetTemperature");
-	}
-
-	@Override
-	public void writeClientToServerMessage(NBTTagCompound nbt) {
-
-		super.writeClientToServerMessage(nbt);
-		nbt.setFloat("TargetTemperature", targetTemperature);
-	}
-
-	@Override
-	public void readClientToServerMessage(NBTTagCompound nbt) {
-
-		super.readClientToServerMessage(nbt);
-		targetTemperature = nbt.getFloat("TargetTemperature");
-	}
-
-	@Override
-	public void updateEntity() {
-
-		super.updateEntity();
-		if (worldObj.isRemote) {
-			return;
-		}
-		List<TileMachineHeatingElement> heaters = new ArrayList<TileMachineHeatingElement>();
-		float dE = 0;
+	public void onNeighbourChange() {
+		//heaters = new ArrayList<TileMachineHeatingElement>(); // find heaters
+		heaters.clear();
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			int x = xCoord + dir.offsetX;
 			int y = yCoord + dir.offsetY;
 			int z = zCoord + dir.offsetZ;
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 
-			if (tile instanceof TileMachineComponent) {
-				if (tile instanceof TileMachineHeatingElement
-						&& ((TileMachineHeatingElement) tile).isEnabled()) {
-					heaters.add((TileMachineHeatingElement) tile);
-
-				} else {
-					TileMachineComponent tc = (TileMachineComponent) tile;
-					dE -= getComponentEnergyChange(targetTemperature,
-							tc,
-							tc.getTemperature());
-				}
-			} else {
-				dE -= getEnvironmentalEnergyChange(tile,
-						targetTemperature,
-						x,
-						y,
-						z);
+			if (tile instanceof TileMachineHeatingElement) {
+				heaters.add((TileMachineHeatingElement) tile);
 			}
 		}
+	}
+
+	@Override
+	public void updateEntity() {
+
+		super.updateEntity();
+		if (worldObj.isRemote || heaters.size() == 0) {
+			return;
+		}
+
+		float trueTarget = targetTemperature;
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			int x = xCoord + dir.offsetX;
+			int y = yCoord + dir.offsetY;
+			int z = zCoord + dir.offsetZ;
+			TileEntity tile = worldObj.getTileEntity(x, y, z);
+			if (tile instanceof TileMachineComponent) {
+				TileMachineComponent tc = (TileMachineComponent) tile;
+				float theirDE = -getEnergyChange(tc, tc.getTargetTemperature());
+
+				float myTarget = tc.getTargetTemperature()
+						+ 2
+						* theirDE
+						/ (HEAT_FLOW_MODIFIER * (getConductivity() + tc
+								.getConductivity()));
+
+				trueTarget = Math.min(trueTarget, myTarget);
+
+			}
+
+		}
+		float dE = getEnergyChange(this, trueTarget);
 		dE = -dE / heaters.size();
 		for (TileMachineHeatingElement heater : heaters) {
 			//HEAT_FLOW_MODIFIER * (temp - otherTemp) * 0.5f
@@ -128,8 +90,38 @@ public class TileMachineMonitor extends TileMachineComponent {
 					/ (HEAT_FLOW_MODIFIER * (getConductivity() + heater
 							.getConductivity()));
 
-			heater.setTargetTemperature(otherTargetTemp);
+			heater.setThrottleTemperature(Math.min(otherTargetTemp,
+					heater.getTargetTemperature()));
 		}
+	}
+
+	private float getEnergyChange(TileMachineComponent other, float targetTemp) {
+		float dE = 0;
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			int x = xCoord + dir.offsetX;
+			int y = yCoord + dir.offsetY;
+			int z = zCoord + dir.offsetZ;
+			TileEntity tile = worldObj.getTileEntity(x, y, z);
+
+			if (tile instanceof TileMachineComponent) {
+				//if (tile instanceof TileMachineHeatingElement
+				//	&& ((TileMachineHeatingElement) tile).isEnabled()) {
+				//heaters.add((TileMachineHeatingElement) tile);
+
+				//} else {
+				if (tile != this
+						|| (other == this && !(tile instanceof TileMachineHeatingElement))) {
+					TileMachineComponent tc = (TileMachineComponent) tile;
+					dE -= getComponentEnergyChange(targetTemp,
+							tc,
+							tc.getTemperature());
+				}
+			} else {
+				dE -= getEnvironmentalEnergyChange(tile, targetTemp, x, y, z);
+			}
+
+		}
+		return dE;
 	}
 
 	@Override
@@ -143,7 +135,7 @@ public class TileMachineMonitor extends TileMachineComponent {
 
 			if (tile instanceof TileMachineHeatingElement) {
 				((TileMachineHeatingElement) tile)
-						.setTargetTemperature(Integer.MAX_VALUE);
+						.setThrottleTemperature(Float.MAX_VALUE);
 			}
 		}
 	}
