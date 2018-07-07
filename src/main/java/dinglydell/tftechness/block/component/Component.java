@@ -3,6 +3,7 @@ package dinglydell.tftechness.block.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -107,6 +108,12 @@ public class Component {
 	}
 
 	public void addTooltip(List list, NBTTagCompound nbt) {
+		if (!GuiScreen.isShiftKeyDown()) {
+			list.add(EnumChatFormatting.RED.toString()
+					+ EnumChatFormatting.ITALIC.toString()
+					+ "Hold <SHIFT> for details");
+			return;
+		}
 		for (String tooltip : tooltips) {
 			list.add(EnumChatFormatting.RED.toString()
 					+ StatCollector.translateToLocal(tooltip));

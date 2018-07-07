@@ -18,6 +18,7 @@ public class GuiButtonComponent extends GuiButtonTFT {
 	protected ItemStack stack;
 	public TileMachineComponent tile;
 	private ThermometerTier tier;
+	private boolean highlighted;
 	protected static RenderItem renderItems = new RenderItem();
 
 	public GuiButtonComponent(ForgeDirection dir, int x, int y, int width,
@@ -42,11 +43,17 @@ public class GuiButtonComponent extends GuiButtonTFT {
 		if (stack == null) {
 			return;
 		}
+
 		renderItems.renderItemIntoGUI(mc.fontRenderer,
 				mc.renderEngine,
 				stack,
 				xPosition,
 				yPosition);
+		if (highlighted) {
+			//drawHorizontalLine(xPosition, yPosition + 5, xPosition + width, 0);
+			drawRect(xPosition, yPosition, xPosition + width, yPosition
+					+ height, 0x88333366);
+		}
 
 	}
 
@@ -66,6 +73,11 @@ public class GuiButtonComponent extends GuiButtonTFT {
 				tier);
 		((BlockTFTComponent) tile.getBlockType()).component.addTooltip(tooltip,
 				stack.getTagCompound());
+
+	}
+
+	public void setHighlighted(boolean b) {
+		this.highlighted = b;
 
 	}
 

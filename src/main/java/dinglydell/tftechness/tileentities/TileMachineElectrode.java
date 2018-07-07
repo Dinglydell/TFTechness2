@@ -158,4 +158,9 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 
 		data.setTag("Items", invTag);
 	}
+
+	@Override
+	public boolean isEnabled() {
+		return super.isEnabled() && hasElectrodes();
+	}
 }

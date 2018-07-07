@@ -162,8 +162,8 @@ public class TileTFTElectrolyser extends TileTFTMachineBase implements
 		return this.targetTemperature;
 	}
 
-	public void setTargetTemperature(int target) {
-		this.targetTemperature = target;
+	public void setTargetTemperature(float target) {
+		this.targetTemperature = (int) target;
 		this.markDirty();
 		if (worldObj.isRemote) {
 			this.sendClientToServerMessage();

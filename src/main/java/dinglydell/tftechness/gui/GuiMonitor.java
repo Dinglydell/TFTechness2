@@ -18,6 +18,7 @@ public class GuiMonitor extends GuiMachine {
 	public static final ResourceLocation MONITOR_TEXTURE = new ResourceLocation(
 			TFTechness2.MODID + ":textures/gui/machine/monitor.png");
 	private GuiButtonComponent selected;
+	private GuiButtonComponent highlighted;
 	private GuiTemperature selectedTemp;
 
 	public GuiMonitor(InventoryPlayer player, TileMachineMonitor tile) {
@@ -41,8 +42,12 @@ public class GuiMonitor extends GuiMachine {
 		selected = new GuiButtonComponent(ForgeDirection.UNKNOWN,
 				guiLeft + 131, guiTop + 26, 16, 16, null,
 				tile.getThermometerTier());
+		highlighted = null;
 		buttonList.add(selectedTemp);
 		buttonList.add(selected);
+		//target
+		buttonList.add(new GuiTemperature(0, guiLeft + 28, guiTop + 8, 7, 49,
+				tile, true, tile.getThermometerTier()));
 		ForgeDirection front;
 		double dx = player.player.posX - tile.xCoord;
 		double dz = player.player.posZ - tile.zCoord;
@@ -79,7 +84,13 @@ public class GuiMonitor extends GuiMachine {
 		super.drawGuiContainerBackgroundLayer(p_146976_1_,
 				p_146976_2_,
 				p_146976_3_);
-
+		if (highlighted != null) {
+			String str = ForgeDirection.values()[highlighted.id].name();
+			fontRendererObj.drawString(str,
+					guiLeft + 140 - fontRendererObj.getStringWidth(str) / 2,
+					guiTop + 15,
+					0x555555);
+		}
 	}
 
 	@Override
@@ -110,6 +121,11 @@ public class GuiMonitor extends GuiMachine {
 			if (bc.id != ForgeDirection.UNKNOWN.ordinal()) {
 				selected.setTile(bc.tile);
 				selectedTemp.tile = bc.tile;
+				if (highlighted != null) {
+					highlighted.setHighlighted(false);
+				}
+				highlighted = bc;
+				bc.setHighlighted(true);
 			}
 		}
 	}

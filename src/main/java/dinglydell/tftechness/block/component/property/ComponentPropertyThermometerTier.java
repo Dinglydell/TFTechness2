@@ -5,9 +5,73 @@ import dinglydell.tftechness.util.StringUtil;
 
 public class ComponentPropertyThermometerTier extends
 		ComponentProperty<ThermometerTier> {
+	/** how much each level of TFC heat increments to add a new star */
+	public static final int[] temperatureIncrements = new int[] { 16,
+			26,
+			54,
+			20,
+			30,
+			40,
+			34,
+			40,
+			20,
+			20 };
+
+	public static final int[] temperatureIntervals;
+	static {
+		temperatureIntervals = new int[temperatureIncrements.length * 5];
+		int temp = 0;
+		for (int i = 0; i < temperatureIncrements.length; i++) {
+			for (int j = 0; j < 5; j++) {
+				temp += temperatureIncrements[i];
+				temperatureIntervals[i * 5 + j] = temp;
+			}
+		}
+	}
 
 	public enum ThermometerTier {
-		fuzzy, rounded, precise
+		fuzzy(20), rounded(10), precise(1);
+
+		private int increment;
+
+		private ThermometerTier(int increment) {
+			this.increment = increment;
+		}
+
+		public int increment(float targetTemperature, int wheelMovement) {
+			if (this == fuzzy && targetTemperature > 0) { // special case
+				int i;
+
+				for (i = 0; i < temperatureIntervals.length
+						&& temperatureIntervals[i] < targetTemperature; i++)
+					;
+				int newIndex = i + wheelMovement;
+				if (newIndex >= temperatureIntervals.length) {
+					return temperatureIntervals[temperatureIntervals.length - 1]
+							+ increment
+							* (1 + newIndex - temperatureIntervals.length);
+				}
+				if (newIndex <= 0) {
+					return temperatureIntervals[0] + increment * newIndex;
+				}
+				return temperatureIntervals[newIndex];
+			}
+			int target = Math.round(targetTemperature * increment) / increment;
+			return target + wheelMovement * increment;
+		}
+
+		public int round(float targetTemperature) {
+			if (this == ThermometerTier.fuzzy && targetTemperature > 0) {// special case
+				int i;
+				for (i = 0; i < temperatureIntervals.length
+						&& temperatureIntervals[i] < targetTemperature; i++)
+					;
+				if (i < temperatureIntervals.length) {
+					return temperatureIncrements[i];
+				}
+			}
+			return Math.round(targetTemperature * increment) / increment;
+		}
 	}
 
 	public ComponentPropertyThermometerTier(String name) {

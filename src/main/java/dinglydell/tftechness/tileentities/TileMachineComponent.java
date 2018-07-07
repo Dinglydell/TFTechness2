@@ -1,8 +1,6 @@
 package dinglydell.tftechness.tileentities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -78,85 +76,40 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	//	return this;
 	//}
 
-	public void CheckForMaster() {
-		CheckForMaster(null);
-	}
-
 	public float getTemperature() {
 		return this.temperature;
 		//return this.temperature / getNetSHMass() - 273;
 	}
 
-	/**
-	 * Checks all neighbours for a potential controller, and asks neighbours to
-	 * check again if necessary
-	 * 
-	 * @param caller
-	 *            The component that asked us to check - we won't ask them to
-	 *            check again to avoid an infinite loop of checking
-	 */
-	private void CheckForMaster(TileMachineComponent caller) {
-		List<TileMachineComponent> updateCandidates = new ArrayList<TileMachineComponent>();
-		for (ForgeDirection dir : ForgeDirection.values()) {
-			if (dir == ForgeDirection.UNKNOWN) {
-				continue;
-			}
-			TileEntity tile = worldObj.getTileEntity(xCoord + dir.offsetX,
-					yCoord + dir.offsetY,
-					zCoord + dir.offsetZ);
-			if (tile != null) {
-				if (tile instanceof TileMachineComponent) {
-					TileMachineComponent tc = (TileMachineComponent) tile;
-					if (tc.hasMaster()) {
-						if (!hasMaster()) { // if we don't have a master adopt the neighbour's master
-							setMasterCoords(tc.masterX, tc.masterY, tc.masterZ);
-						}
-						if (!hasSameMaster(tc)) { // if we already had a different master, abandon master (ambiguous)
-							removeMaster();
-						}
-					} else if (tile != caller) { // if the other doesn't have a master, and isn't the one to ask us to check re-evaluate
-						updateCandidates.add(tc);
-					}
-				} else if (tile instanceof TileTFTMachineController) {
-					if (hasMaster() && !isMaster(tile)) {
-						//if we have a master, but it's not the same as this one then have no master because it's ambiguous
-						removeMaster();
-					} else {
-						setMasterCoords(tile.xCoord, tile.yCoord, tile.zCoord);
-					}
+	protected float getEnvironmentalEnergyChange(TileEntity tile, float temp,
+			int x, int y, int z) {
+		float ambientTemp;
+		Block b = worldObj.getBlock(x, y, z);
+		float ambientConductivity = AIR_CONDUCTIVITY;
+		if (tile instanceof TileMoltenMetal) {
+			ambientTemp = ((TileMoltenMetal) tile).getTemperature();
+			ambientConductivity = ((TileMoltenMetal) tile).getConductivity();
+		} else if (b instanceof IFluidBlock) {
+			Fluid f = ((IFluidBlock) b).getFluid();
+			ambientTemp = f.getTemperature() - 273;
 
-				}
-			}
+			ambientConductivity = TFTPropertyRegistry.getConductivity(f);
+
+		} else {
+			ambientTemp = TFC_Climate.getHeightAdjustedTemp(worldObj, x, y, z);
 		}
 
-		for (TileMachineComponent tc : updateCandidates) {
-			//tc.CheckForMaster(this);
-		}
+		//if (!b.isAir(worldObj, x, y, z)) { //TODO: different blocks with different conductivity levels?
+		//ambientConductivity /= 2;
+		//}
+		return HEAT_FLOW_MODIFIER * (temp - ambientTemp) * 0.5f
+				* (getConductivity() + ambientConductivity);
 	}
 
-	private void removeMaster() {
-		getMaster().removeComponent(this);
-		masterY = -1;
-
-	}
-
-	private TileTFTMachineController getMaster() {
-		return (TileTFTMachineController) worldObj.getTileEntity(masterX,
-				masterY,
-				masterZ);
-	}
-
-	private boolean isMaster(TileEntity tile) {
-
-		return hasMaster() && masterX == tile.xCoord && masterY == tile.yCoord
-				&& masterZ == tile.zCoord;
-	}
-
-	public boolean hasSameMaster(TileMachineComponent tc) {
-
-		return tc.getMasterX() == getMasterX()
-				&& tc.getMasterY() == getMasterY()
-				&& tc.getMasterZ() == getMasterZ();
+	protected float getComponentEnergyChange(float temp,
+			TileMachineComponent tc, float otherTemp) {
+		return HEAT_FLOW_MODIFIER * (temp - otherTemp) * 0.5f
+				* (getConductivity() + tc.getConductivity());
 	}
 
 	@Override
@@ -180,32 +133,11 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 			int z = zCoord + dir.offsetZ;
 			TileEntity tile = worldObj.getTileEntity(x, y, z);
 			if (tile == null || !(tile instanceof TileMachineComponent)) {
-				float ambientTemp;
-				Block b = worldObj.getBlock(x, y, z);
-				float ambientConductivity = AIR_CONDUCTIVITY;
-				if (tile instanceof TileMoltenMetal) {
-					ambientTemp = ((TileMoltenMetal) tile).getTemperature();
-					ambientConductivity = ((TileMoltenMetal) tile)
-							.getConductivity();
-				} else if (b instanceof IFluidBlock) {
-					Fluid f = ((IFluidBlock) b).getFluid();
-					ambientTemp = f.getTemperature() - 273;
-
-					ambientConductivity = TFTPropertyRegistry
-							.getConductivity(f);
-
-				} else {
-					ambientTemp = TFC_Climate.getHeightAdjustedTemp(worldObj,
-							x,
-							y,
-							z);
-				}
-
-				//if (!b.isAir(worldObj, x, y, z)) { //TODO: different blocks with different conductivity levels?
-				//ambientConductivity /= 2;
-				//}
-				float dE = HEAT_FLOW_MODIFIER * (temperature - ambientTemp)
-						* 0.5f * (getConductivity() + ambientConductivity);
+				float dE = getEnvironmentalEnergyChange(tile,
+						temperature,
+						x,
+						y,
+						z);
 				temperature -= dE / getSpecificHeat();
 				if (tile instanceof TileMoltenMetal) {
 					TileMoltenMetal t = (TileMoltenMetal) tile;
@@ -213,9 +145,9 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 				}
 			} else {
 				TileMachineComponent tc = (TileMachineComponent) tile;
-				float dE = HEAT_FLOW_MODIFIER
-						* (temperature - tc.getTemperature()) * 0.5f
-						* (getConductivity() + tc.getConductivity());
+				float dE = getComponentEnergyChange(temperature,
+						tc,
+						tc.getTemperature());
 				//TODO: probably want to change this
 				float mass = 1;
 				temperature -= dE / (mass * getSpecificHeat());
@@ -356,29 +288,6 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		rf = data.getInteger("rf");
 	}
 
-	public boolean hasMaster() {
-		return worldObj.getTileEntity(masterX, masterY, masterZ) instanceof TileTFTMachineController;
-	}
-
-	public int getMasterX() {
-		return masterX;
-	}
-
-	public int getMasterY() {
-		return masterY;
-	}
-
-	public int getMasterZ() {
-		return masterZ;
-	}
-
-	public void setMasterCoords(int x, int y, int z) {
-		masterX = x;
-		masterY = y;
-		masterZ = z;
-		getMaster().addComponent(this);
-	}
-
 	@Override
 	public void onDataPacket(NetworkManager net,
 			S35PacketUpdateTileEntity packet) {
@@ -404,6 +313,9 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	}
 
+	/**
+	 * Write the one time packet sent when the client first loads the TileEntity
+	 */
 	protected void writePacketNBT(NBTTagCompound nbt) {
 		//nbt.setInteger("masterX", masterX);
 		//nbt.setInteger("masterY", masterY);
@@ -431,7 +343,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	}
 
 	@Override
-	public void setTargetTemperature(int max) {
+	public void setTargetTemperature(float max) {
 		// TODO Auto-generated method stub
 
 	}

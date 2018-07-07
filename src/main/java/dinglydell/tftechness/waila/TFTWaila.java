@@ -88,15 +88,10 @@ public class TFTWaila implements IWailaDataProvider {
 			}
 
 			//Component.components.get(0);
-			if (accessor.getPlayer().isSneaking()) {
-				tile.getComponent().addTooltip(currenttip,
-						accessor.getNBTData().getCompoundTag("props"));
-			} else {
-				currenttip.add(EnumChatFormatting.RED.toString()
-						+ EnumChatFormatting.ITALIC.toString()
+			//if (accessor.getPlayer().isSneaking()) {
+			tile.getComponent().addTooltip(currenttip,
+					accessor.getNBTData().getCompoundTag("props"));
 
-						+ "Hold <SHIFT> for details");
-			}
 			//properties
 			//NBTTagCompound propData = accessor.getNBTData().getCompoundTag("properties");
 			//for (ComponentPropertySet propSet : te.getComponent().propertySets) {

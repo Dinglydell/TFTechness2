@@ -98,7 +98,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
-import dinglydell.tftechness.block.BlockTFTController;
 import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.BlockTreatedBarrel;
@@ -154,7 +153,6 @@ import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
-import dinglydell.tftechness.tileentities.TileTFTMachineController;
 import dinglydell.tftechness.tileentities.TileTreatedBarrel;
 import dinglydell.tftechness.util.ItemUtil;
 import dinglydell.tftechness.util.MathsUtils;
@@ -549,8 +547,6 @@ public class TFTechness2 {
 		GameRegistry.registerTileEntity(TileTreatedBarrel.class,
 				"TreatedBarrel");
 
-		GameRegistry.registerTileEntity(TileTFTMachineController.class,
-				"TFTMachineController");
 		GameRegistry.registerTileEntity(TileMachineComponent.class,
 				"TFTMachineComponent");
 		GameRegistry.registerTileEntity(TileMachineHeatingElement.class,
@@ -614,11 +610,6 @@ public class TFTechness2 {
 		TFTBlocks.treatedBarrel = new ItemStack(TFTBlocks.barrel, 1, 3);
 
 		//machines
-
-		TFTBlocks.machineController = new BlockTFTController()
-				.setBlockName("machineController");
-		GameRegistry.registerBlock(TFTBlocks.machineController,
-				"machineController");
 
 		//Add all component blocks
 		for (Component c : Component.components) {

@@ -37,9 +37,11 @@ public class GuiTemperature extends GuiButtonTFT {
 			return;
 		}
 		if (target) {
-			int wheelMovement = Mouse.getDWheel();
-			tile.setTargetTemperature((int) Math.max(0,
-					tile.getTargetTemperature() + wheelMovement / 120));
+			int wheelMovement = Mouse.getDWheel() / 120;
+			//TFTechness2.logger.info(wheelMovement);
+			int t = tier.increment(tile.getTargetTemperature(), wheelMovement);
+			tile.setTargetTemperature((int) Math.max(TFTechness2.ABSOLUTE_ZERO,
+					t));
 		}
 
 		float temp;

@@ -80,4 +80,10 @@ public abstract class TileMachineRF extends TileMachineComponent {
 		return (WireTier) materials.get(ComponentProperty.WIRE_TIER).validFor
 				.get(ComponentProperty.WIRE_TIER);
 	}
+
+	/** Returns true if we're both on and able to use stuff */
+	public boolean isEnabled() {
+		return rf > 0
+				&& worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
+	}
 }

@@ -2,7 +2,7 @@ package dinglydell.tftechness.gui.component;
 
 public interface ITileTemperature {
 
-	void setTargetTemperature(int max);
+	void setTargetTemperature(float max);
 
 	float getTargetTemperature();
 

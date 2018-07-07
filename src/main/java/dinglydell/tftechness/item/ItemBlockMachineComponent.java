@@ -72,6 +72,7 @@ public class ItemBlockMachineComponent extends ItemBlock {
 			//			+ " " + EnumChatFormatting.RED.toString()
 			//			+ Math.round(100 * tag.getFloat("Conductivity")) + "%");
 		}
+
 		block.component.addTooltip(list, tag);
 
 		//list.add(EnumChatFormatting.RED.toString()
