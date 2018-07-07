@@ -229,6 +229,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 
 		double pressureDiff = Math.abs(pressure - atmosPressure);
 		if (pressureDiff > getMaxPressure()) {
+			//tank.equaliseGas(10f, 1f, new HashMap<Gas, GasStack>());
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 			//float strength = (float) (Math.sqrt(pressureDiff) * 0.0025);
 			//TFTechness2.logger.info("Pressure difference: " + pressureDiff);

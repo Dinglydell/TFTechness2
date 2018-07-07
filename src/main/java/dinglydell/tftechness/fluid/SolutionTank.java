@@ -154,7 +154,7 @@ public class SolutionTank {
 			}
 			float mass = TFTPropertyRegistry.getDensity(is) * solute.getValue()
 					/ (float) TFTPropertyRegistry.getMoles(is);
-			SHMass += mass * hi.specificHeat * 1000;
+			SHMass += /* mass * */hi.specificHeat * 1000;
 
 		}
 		for (Entry<ItemMeta, Float> solid : solids.entrySet()) {
@@ -163,7 +163,7 @@ public class SolutionTank {
 			if (hi == null) {
 				continue;
 			}
-			SHMass += hi.specificHeat * 1000 * solid.getValue();
+			SHMass += hi.specificHeat * 1000 /* solid.getValue() */;
 		}
 
 		return SHMass;
@@ -465,8 +465,8 @@ public class SolutionTank {
 			fill(stack, amt * dens, true);
 		}
 		ItemStack result = stack.copy();
-		result.stackSize = amt;
-		if (amt == 0) {
+		result.stackSize -= amt;
+		if (result.stackSize == 0) {
 			return null;
 		}
 		return result;
@@ -507,15 +507,15 @@ public class SolutionTank {
 		float dens = TFTPropertyRegistry.getDensity(stack);
 		float totalV = getContentAmount();
 		float maxFill = (0.001f * dens * (capacity - totalV) / volDens);
-		float amtVol = (amt / dens * volDens * 1000f);
-		float overVol = totalV + amtVol - getCapacity();
+		double amtVol = (amt / dens * volDens * 1000d);
+		double overVol = totalV + amtVol - getCapacity();
 		if (maxFill < amt) {
 
-			overVol = tile.attemptOverflow(overVol,
+			overVol = tile.attemptOverflow((float) overVol,
 					ForgeDirection.UNKNOWN,
 					doFill);
 		}
-		float toFill = Math.min(amt, 0.001f
+		float toFill = (float) Math.min(amt, 0.001f
 				* (overVol + getCapacity() - totalV) / volDens * dens);
 		if (doFill) {
 			ItemMeta im = new ItemMeta(stack);
@@ -1026,6 +1026,8 @@ public class SolutionTank {
 				}
 
 			}
+		} else if (vol == 0) {
+			gases.clear();
 		}
 	}
 
