@@ -45,7 +45,8 @@ public class OreDict {
 		for (ItemStack it : items) {
 			UniqueIdentifier ui = GameRegistry.findUniqueIdentifierFor(it
 					.getItem());
-			if (ui.modId.equals(TFTechness2.MODID)) {
+			if (ui.modId.equals(TFTechness2.MODID)
+					|| ui.modId.equals("terrafirmacraft")) {
 				return it;
 			}
 
