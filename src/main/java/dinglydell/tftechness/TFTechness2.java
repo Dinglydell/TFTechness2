@@ -383,7 +383,7 @@ public class TFTechness2 {
 		// IE
 		statMap.put("Constantan", new MetalStat(0.39, 1210, 9870, 0.0424f,
 				1.44e8f));
-		statMap.put("Electrum", new MetalStat(0.181, 650, 14460, 0.9f, 8.5e7f));
+		statMap.put("Electrum", new MetalStat(0.181, 1025, 14460, 0.9f, 8.5e7f));
 		//the world shudders in silence as a thousand dictionaries crumble in despair
 		statMap.put("Aluminum", new MetalStat(0.91, 660, 2700, 0.408f, 4e7f));
 
