@@ -1503,7 +1503,19 @@ public class TFTechness2 {
 				.addProperty(ComponentProperty.SPECIFIC_HEAT, 790f)
 				.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
 						tankThickness * 4.8e7f)
-				.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE, 1250f);
+				.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE, 1250);
+
+		//fire brick 0.0005
+		ComponentMaterial
+				.registerMaterial("fireBrick",
+						new ItemStack(TFCBlocks.fireBrick),
+						new ItemStack(TFCItems.fireBrick, 1, 1))
+				.addProperty(ComponentProperty.CONDUCTIVITY, 0.0025f)
+				.addProperty(ComponentProperty.SPECIFIC_HEAT, 1050f)
+				.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
+						tankThickness * 4.8e7f)
+				.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE, 1648f);
+
 		for (Material m : materials) {
 			// register metal materials with conductivity property
 			if (m.block != null) {

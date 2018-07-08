@@ -31,8 +31,8 @@ public abstract class ComponentProperty<T> {
 			"maxPressure", "Pa");
 
 	/**
-	 * The highest temperature this component can reach before it starts to
-	 * break down
+	 * The highest temperature (celsius) this component can reach before it
+	 * starts to break down
 	 */
 	public static ComponentProperty MAXIMUM_TEMPERATURE = new ComponentPropertyFloat(
 			"maxTemperature", TFTechness2.degrees + "C", false);
