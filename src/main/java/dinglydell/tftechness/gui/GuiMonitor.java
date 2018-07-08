@@ -53,8 +53,8 @@ public class GuiMonitor extends GuiMachine {
 		buttonList.add(new GuiTemperature(0, guiLeft + 28, guiTop + 8, 7, 49,
 				tile, true, tile.getThermometerTier()));
 		ForgeDirection front;
-		double dx = player.player.posX - tile.xCoord;
-		double dz = player.player.posZ - tile.zCoord;
+		double dx = player.player.posX - tile.xCoord - 0.5;
+		double dz = player.player.posZ - tile.zCoord - 0.5;
 		if (Math.abs(dz) > Math.abs(dx)) {
 			//in z direction
 			if (dz > 0) { // +ve z

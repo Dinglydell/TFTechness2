@@ -400,7 +400,7 @@ public class TFTechness2 {
 		//statMap.put("Billon", new MetalStat(0.35, 950, 1024));
 		statMap.put("Uranium",
 				new MetalStat(0.12, 1132, 19100, 0.048f, 2.95e8f));
-		statMap.put("DullElectrum", new MetalStat(0.181, 650, 14460, 0.722f,
+		statMap.put("DullElectrum", new MetalStat(0.181, 1010, 14460, 0.722f,
 				8.3e7f));
 
 		//non-metals

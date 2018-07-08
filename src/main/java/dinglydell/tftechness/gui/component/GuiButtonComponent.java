@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import dinglydell.tftechness.block.component.BlockTFTComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineMonitor;
+import dinglydell.tftechness.tileentities.TileMachineRF;
 import dinglydell.tftechness.util.StringUtil;
 
 /** A button that is another machine component - used for monitors */
@@ -79,6 +80,11 @@ public class GuiButtonComponent extends GuiButtonTFT {
 				tile.getTemperature(),
 				tile.getMaxTemperature(),
 				monitor.getThermometerTier());
+		if (tile instanceof TileMachineRF) {
+			tooltip.add("Using "
+					+ ((TileMachineRF) tile).getEnergyConsumptionRate()
+					+ "RF/t");
+		}
 		((BlockTFTComponent) tile.getBlockType()).component.addTooltip(tooltip,
 				stack.getTagCompound());
 
