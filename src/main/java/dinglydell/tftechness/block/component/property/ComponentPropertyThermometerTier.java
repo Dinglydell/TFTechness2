@@ -39,6 +39,9 @@ public class ComponentPropertyThermometerTier extends
 		}
 
 		public int increment(float targetTemperature, int wheelMovement) {
+			if (wheelMovement == 0) {
+				return (int) targetTemperature;
+			}
 			if (this == fuzzy && targetTemperature > 0) { // special case
 				int i;
 
@@ -56,8 +59,15 @@ public class ComponentPropertyThermometerTier extends
 				}
 				if (newIndex >= temperatureIntervals.length
 						|| i >= temperatureIntervals.length) {
+					if (newIndex == temperatureIntervals.length) {
+						if (wheelMovement > 0) {
+							newIndex++;
+						} else {
+							newIndex--;
+						}
+					}
 					return temperatureIntervals[temperatureIntervals.length - 1]
-							+ (increment * (1 + newIndex - temperatureIntervals.length));
+							+ (increment * (newIndex - temperatureIntervals.length));
 				}
 				if (newIndex <= 0) {
 					return temperatureIntervals[0] + increment * newIndex;
