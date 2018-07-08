@@ -45,11 +45,19 @@ public class ComponentPropertyThermometerTier extends
 				for (i = 0; i < temperatureIntervals.length
 						&& temperatureIntervals[i] < targetTemperature; i++)
 					;
+
 				int newIndex = i + wheelMovement;
-				if (newIndex >= temperatureIntervals.length) {
+				if (i >= temperatureIntervals.length) {
+					newIndex += (targetTemperature - temperatureIntervals[temperatureIntervals.length - 1])
+							/ increment;
+				} else if (i == 0) {
+					newIndex -= (temperatureIntervals[0] - targetTemperature)
+							/ increment;
+				}
+				if (newIndex >= temperatureIntervals.length
+						|| i >= temperatureIntervals.length) {
 					return temperatureIntervals[temperatureIntervals.length - 1]
-							+ increment
-							* (1 + newIndex - temperatureIntervals.length);
+							+ (increment * (1 + newIndex - temperatureIntervals.length));
 				}
 				if (newIndex <= 0) {
 					return temperatureIntervals[0] + increment * newIndex;
@@ -70,7 +78,7 @@ public class ComponentPropertyThermometerTier extends
 					return temperatureIntervals[i];
 				}
 			}
-			return Math.round(targetTemperature * increment) / increment;
+			return Math.round(targetTemperature / increment) * increment;
 		}
 	}
 

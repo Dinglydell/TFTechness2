@@ -90,6 +90,10 @@ metal.TitaniumAluminide.name=Titanium Aluminide
 metal.TitaniumIridium.name=Titanium Iridium
 metal.Gold.name=Gold
 metal.Nickel.name=Nickel
+metal.Brass.name=Brass
+metal.Platinum.name=Platinum
+metal.Bismuth.name=Bismuth
+metal.Zinc.name=Zinc
 
 
 metal.stone.name=Stone
