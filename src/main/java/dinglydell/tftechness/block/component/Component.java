@@ -206,6 +206,7 @@ public class Component {
 				//prop.setTileEntityValues(tile, stack.getTagCompound());
 			}
 		}
+		tile.initialiseProperties();
 	}
 
 	public Class<? extends TileMachineComponent> getType() {

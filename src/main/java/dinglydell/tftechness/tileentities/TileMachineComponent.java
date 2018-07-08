@@ -502,4 +502,15 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 		// TODO Auto-generated method stub
 
 	}
+
+	/**
+	 * Called when the component is first placed just after properties are
+	 * initialised
+	 */
+	public void initialiseProperties() {
+		this.targetTemperature = getThermometerTier()
+				.increment(getThermometerTier().round(this.getMaxTemperature()),
+						-1);
+
+	}
 }

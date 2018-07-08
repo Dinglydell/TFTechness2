@@ -21,10 +21,11 @@ public class GuiMonitor extends GuiMachine {
 	private GuiButtonComponent highlighted;
 	private GuiTemperature selectedTemp;
 	private GuiTemperature selectedTarget;
+	protected TileMachineMonitor tile;
 
 	public GuiMonitor(InventoryPlayer player, TileMachineMonitor tile) {
 		super(new ContainerMonitor(player, tile), player, tile);
-
+		this.tile = tile;
 	}
 
 	@Override
@@ -43,8 +44,7 @@ public class GuiMonitor extends GuiMachine {
 		selectedTarget = new GuiTemperature(0, guiLeft + 148, guiTop + 8, 7,
 				49, null, true, tile.getThermometerTier());
 		selected = new GuiButtonComponent(ForgeDirection.UNKNOWN,
-				guiLeft + 122, guiTop + 26, 16, 16, null,
-				tile.getThermometerTier());
+				guiLeft + 122, guiTop + 26, 16, 16, null, tile);
 		highlighted = null;
 		buttonList.add(selectedTemp);
 		buttonList.add(selected);
@@ -111,8 +111,7 @@ public class GuiMonitor extends GuiMachine {
 
 		if (buttonTile instanceof TileMachineComponent) {
 			buttonList.add(new GuiButtonComponent(dir, guiLeft + x, guiTop + y,
-					16, 16, (TileMachineComponent) buttonTile, tile
-							.getThermometerTier()));
+					16, 16, (TileMachineComponent) buttonTile, tile));
 
 		}
 
@@ -123,14 +122,21 @@ public class GuiMonitor extends GuiMachine {
 		if (button instanceof GuiButtonComponent) {
 			GuiButtonComponent bc = (GuiButtonComponent) button;
 			if (bc.id != ForgeDirection.UNKNOWN.ordinal()) {
-				selected.setTile(bc.tile);
-				selectedTemp.tile = bc.tile;
-				selectedTarget.tile = bc.tile;
 				if (highlighted != null) {
 					highlighted.setHighlighted(false);
 				}
-				highlighted = bc;
-				bc.setHighlighted(true);
+				if (bc.tile == selected.tile) {
+					selected.setTile(null);
+					selectedTemp.tile = null;
+					selectedTarget.tile = null;
+				} else {
+					selected.setTile(bc.tile);
+					selectedTemp.tile = bc.tile;
+					selectedTarget.tile = bc.tile;
+
+					highlighted = bc;
+					bc.setHighlighted(true);
+				}
 			}
 		}
 	}

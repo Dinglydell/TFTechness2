@@ -8,8 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.util.ForgeDirection;
 import dinglydell.tftechness.block.component.BlockTFTComponent;
-import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
+import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.util.StringUtil;
 
 /** A button that is another machine component - used for monitors */
@@ -17,29 +17,33 @@ public class GuiButtonComponent extends GuiButtonTFT {
 
 	protected ItemStack stack;
 	public TileMachineComponent tile;
-	private ThermometerTier tier;
 	private boolean highlighted;
+	private TileMachineMonitor monitor;
 	protected static RenderItem renderItems = new RenderItem();
 
 	public GuiButtonComponent(ForgeDirection dir, int x, int y, int width,
-			int height, TileMachineComponent tile, ThermometerTier tier) {
+			int height, TileMachineComponent tile, TileMachineMonitor monitor) {
 		super(dir.ordinal(), x, y, width, height, "");
 		this.tile = tile;
 		if (tile != null) {
 			stack = BlockTFTComponent.getTileAsItemStack(tile);
 		}
-		this.tier = tier;
+		this.monitor = monitor;
 		//tile.getBlockType().getSheet()
 	}
 
 	public void setTile(TileMachineComponent tile) {
 
 		this.tile = tile;
-		stack = BlockTFTComponent.getTileAsItemStack(tile);
+		if (tile == null) {
+			stack = null;
+		} else {
+			stack = BlockTFTComponent.getTileAsItemStack(tile);
+		}
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int p_146112_2_, int p_146112_3_) {
+	public void drawButton(Minecraft mc, int x, int y) {
 		if (stack == null) {
 			return;
 		}
@@ -52,7 +56,11 @@ public class GuiButtonComponent extends GuiButtonTFT {
 		if (highlighted) {
 			//drawHorizontalLine(xPosition, yPosition + 5, xPosition + width, 0);
 			drawRect(xPosition, yPosition, xPosition + width, yPosition
-					+ height, 0x88333366);
+					+ height, 0x55333366);
+		}
+		if (monitor.isThrottleCause(tile)) {
+			drawRect(xPosition, yPosition, xPosition + width, yPosition
+					+ height, 0x55663333);
 		}
 
 	}
@@ -70,7 +78,7 @@ public class GuiButtonComponent extends GuiButtonTFT {
 		StringUtil.addTemperatureTooltip(tooltip,
 				tile.getTemperature(),
 				tile.getMaxTemperature(),
-				tier);
+				monitor.getThermometerTier());
 		((BlockTFTComponent) tile.getBlockType()).component.addTooltip(tooltip,
 				stack.getTagCompound());
 

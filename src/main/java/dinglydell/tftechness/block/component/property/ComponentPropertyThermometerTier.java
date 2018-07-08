@@ -67,7 +67,7 @@ public class ComponentPropertyThermometerTier extends
 						&& temperatureIntervals[i] < targetTemperature; i++)
 					;
 				if (i < temperatureIntervals.length) {
-					return temperatureIncrements[i];
+					return temperatureIntervals[i];
 				}
 			}
 			return Math.round(targetTemperature * increment) / increment;

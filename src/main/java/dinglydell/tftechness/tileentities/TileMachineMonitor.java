@@ -3,6 +3,7 @@ package dinglydell.tftechness.tileentities;
 import java.util.ArrayList;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -13,6 +14,9 @@ import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
 
 public class TileMachineMonitor extends TileMachineComponent {
 	private ArrayList<TileMachineHeatingElement> heaters = new ArrayList<TileMachineHeatingElement>();
+	protected int throttleCauseX = 0;
+	protected int throttleCauseY = -1;
+	protected int throttleCauseZ = 0;
 
 	//private float targetTemperature;
 
@@ -50,13 +54,30 @@ public class TileMachineMonitor extends TileMachineComponent {
 	}
 
 	@Override
+	public void writeServerToClientMessage(NBTTagCompound nbt) {
+		super.writeServerToClientMessage(nbt);
+		//TODO: write this in your own packet so this doesn't have to be sent constantly
+		nbt.setInteger("throttleX", throttleCauseX);
+		nbt.setInteger("throttleY", throttleCauseY);
+		nbt.setInteger("throttleZ", throttleCauseZ);
+	}
+
+	@Override
+	public void readServerToClientMessage(NBTTagCompound nbt) {
+		super.readServerToClientMessage(nbt);
+		throttleCauseX = nbt.getInteger("throttleX");
+		throttleCauseY = nbt.getInteger("throttleY");
+		throttleCauseZ = nbt.getInteger("throttleZ");
+	}
+
+	@Override
 	public void updateEntity() {
 
 		super.updateEntity();
 		if (worldObj.isRemote || heaters.size() == 0) {
 			return;
 		}
-
+		setThrottleCause(this);
 		float trueTarget = targetTemperature;
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			int x = xCoord + dir.offsetX;
@@ -72,8 +93,10 @@ public class TileMachineMonitor extends TileMachineComponent {
 						* theirDE
 						/ (HEAT_FLOW_MODIFIER * (getConductivity() + tc
 								.getConductivity()));
-
-				trueTarget = Math.min(trueTarget, myTarget);
+				if (myTarget < trueTarget) {
+					trueTarget = myTarget;
+					setThrottleCause(tc);
+				}
 
 			}
 
@@ -89,10 +112,19 @@ public class TileMachineMonitor extends TileMachineComponent {
 					* dE
 					/ (HEAT_FLOW_MODIFIER * (getConductivity() + heater
 							.getConductivity()));
-
-			heater.setThrottleTemperature(Math.min(otherTargetTemp,
-					heater.getTargetTemperature()));
+			if (heater.getTargetTemperature() < otherTargetTemp) {
+				otherTargetTemp = heater.getTargetTemperature();
+				setThrottleCause(heater);
+			}
+			heater.setThrottleTemperature(otherTargetTemp);
 		}
+	}
+
+	private void setThrottleCause(TileMachineComponent tc) {
+		throttleCauseX = tc.xCoord;
+		throttleCauseY = tc.yCoord;
+		throttleCauseZ = tc.zCoord;
+
 	}
 
 	private float getEnergyChange(TileMachineComponent other, float targetTemp) {
@@ -138,6 +170,11 @@ public class TileMachineMonitor extends TileMachineComponent {
 						.setThrottleTemperature(Float.MAX_VALUE);
 			}
 		}
+	}
+
+	public boolean isThrottleCause(TileMachineComponent tile) {
+		return tile.xCoord == throttleCauseX && tile.yCoord == throttleCauseY
+				&& tile.zCoord == throttleCauseZ;
 	}
 
 }

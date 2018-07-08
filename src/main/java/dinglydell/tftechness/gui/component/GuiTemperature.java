@@ -32,11 +32,11 @@ public class GuiTemperature extends GuiButtonTFT {
 	}
 
 	@Override
-	public void drawButton(Minecraft mc, int p_146112_2_, int p_146112_3_) {
+	public void drawButton(Minecraft mc, int mouseX, int mouseY) {
 		if (tile == null) {
 			return;
 		}
-		if (target) {
+		if (target && isHovering(mouseX, mouseY)) {
 			int wheelMovement = Mouse.getDWheel() / 120;
 			//TFTechness2.logger.info(wheelMovement);
 			int t = tier.increment(tile.getTargetTemperature(), wheelMovement);
