@@ -8,6 +8,10 @@ public class ComponentPropertySet {
 
 	private static Map<String, ComponentPropertySet> sets = new HashMap<String, ComponentPropertySet>();
 
+	//TODO: consider max pressure change instead or in relation to gas speed rather than rotation
+	public static final ComponentPropertySet TURBINE_SPEED = registerSet("wireTier",
+			new ComponentProperty[] { ComponentProperty.MAX_TURBINE_SPEED });
+
 	public static final ComponentPropertySet WIRE_TIER = registerSet("wireTier",
 			new ComponentProperty[] { ComponentProperty.WIRE_TIER });
 

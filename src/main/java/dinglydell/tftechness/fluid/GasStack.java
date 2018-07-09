@@ -119,4 +119,9 @@ public class GasStack {
 
 	}
 
+	public double getMass() {
+		return amount * gas.getMolarMass();
+
+	}
+
 }

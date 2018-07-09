@@ -15,6 +15,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
+import dinglydell.tftechness.tileentities.TileMachineComponentTurbine;
 import dinglydell.tftechness.tileentities.TileMachineRF;
 import dinglydell.tftechness.util.StringUtil;
 
@@ -52,34 +53,43 @@ public class TFTWaila implements IWailaDataProvider {
 					maxT,
 					tile.getThermometerTier());
 
+			if (te instanceof TileMachineComponentTurbine) {
+				currenttip.add(StringUtil
+						.prefixify(((TileMachineComponentTurbine) te).getRPS())
+						+ "Hz");
+			}
 			if (te instanceof TileMachineComponentTank) {
 				TileMachineComponentTank tank = (TileMachineComponentTank) te;
+
 				if (tank.isSealed()) {
 					currenttip
 							.add(EnumChatFormatting.ITALIC
 									+ StatCollector
 											.translateToLocal("gui.machine.tank.sealed"));
 				}
-				float solids = tank.getTank().getSolidMass();
-				if (solids != 0) {
-					currenttip.add("Solids ("
-							+ StringUtil.prefixify(solids * 1000) + "g)");
+				if (tank.getTank() != null) {
+					float solids = tank.getTank().getSolidMass();
+					if (solids != 0) {
+						currenttip.add("Solids ("
+								+ StringUtil.prefixify(solids * 1000) + "g)");
+					}
+					float fluids = tank.getTank().getFluidAmount();
+					if (fluids != 0) {
+						currenttip.add("Liquids ("
+								+ StringUtil.prefixify(fluids * 0.001) + "B)");
+					}
+					double pressure = accessor.getNBTData()
+							.getFloat("Pressure");
+					double maxP = accessor.getNBTData().getFloat("MaxPressure");
+					if (maxP == 0) {
+						maxP = Double.MAX_VALUE;
+					}
+					StringUtil.addPressureTooltip(currenttip,
+							pressure,
+							maxP,
+							((TileMachineComponentTank) te)
+									.getAtmosphericPressure());
 				}
-				float fluids = tank.getTank().getFluidAmount();
-				if (fluids != 0) {
-					currenttip.add("Liquids ("
-							+ StringUtil.prefixify(fluids * 0.001) + "B)");
-				}
-				double pressure = accessor.getNBTData().getFloat("Pressure");
-				double maxP = accessor.getNBTData().getFloat("MaxPressure");
-				if (maxP == 0) {
-					maxP = Double.MAX_VALUE;
-				}
-				StringUtil.addPressureTooltip(currenttip,
-						pressure,
-						maxP,
-						((TileMachineComponentTank) te)
-								.getAtmosphericPressure());
 			}
 			if (te instanceof TileMachineRF) {
 				currenttip.add("Using "

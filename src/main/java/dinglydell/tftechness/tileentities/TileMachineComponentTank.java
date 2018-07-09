@@ -37,12 +37,12 @@ import dinglydell.tftechness.world.TFTWorldData;
 
 public class TileMachineComponentTank extends TileMachineInventory implements
 		IFluidHandler, ITESolutionTank {
-	protected SolutionTank tank = new SolutionTank(this, 1000);
+	protected SolutionTank tank;
 	private ItemStack stack;
 	protected boolean isSealed;
 	private boolean didExplode;
 	private Map<ForgeDirection, Integer> soundCooldown = new HashMap<ForgeDirection, Integer>();
-	private Map<ForgeDirection, Double> dP = new HashMap<ForgeDirection, Double>();
+	protected Map<ForgeDirection, Double> dP = new HashMap<ForgeDirection, Double>();
 
 	public TileMachineComponentTank() {
 		super();
@@ -51,19 +51,25 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 	}
 
+	protected int getCapacity() {
+		return 1000;
+	}
+
 	@Override
-	public void initialiseComponent() {
+	public void initialiseProperties() {
+
+		super.initialiseProperties();
+		tank = new SolutionTank(this, getCapacity());
 		tank.setGasContent(TFTWorldData.get(worldObj)
 				.getAtmosphericComposition(xCoord, yCoord, zCoord));
-		super.initialiseComponent();
-
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound data) {
 		super.writeToNBT(data);
-
-		data.setTag("Tank", tank.writeToNBT());
+		if (tank != null) {
+			data.setTag("Tank", tank.writeToNBT());
+		}
 		data.setBoolean("Sealed", isSealed);
 	}
 
@@ -71,7 +77,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	public void readFromNBT(NBTTagCompound data) {
 		super.readFromNBT(data);
 
-		tank.readFromNBT(data.getCompoundTag("Tank"));
+		tank = SolutionTank.readFromNBT(this, data.getCompoundTag("Tank"));
 		isSealed = data.getBoolean("Sealed");
 	}
 
@@ -81,7 +87,13 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		if (worldObj.isRemote) {
 			Random rand = new Random();
 			for (Entry<ForgeDirection, Double> entry : dP.entrySet()) {
-				if (entry.getValue() > 25) {
+				if (worldObj.getBlock(xCoord + entry.getKey().offsetX,
+						yCoord + entry.getKey().offsetY,
+						zCoord + entry.getKey().offsetZ).isAir(worldObj,
+						xCoord + entry.getKey().offsetX,
+						yCoord + entry.getKey().offsetY,
+						zCoord + entry.getKey().offsetZ)
+						&& entry.getValue() > 25) {
 					double rootdP = Math.sqrt(entry.getValue());
 					if (rand.nextDouble() > 5 / rootdP) {
 						ForgeDirection dir = entry.getKey();
@@ -146,7 +158,9 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				if (tile instanceof TileMachineComponentTank) {
 
 					TileMachineComponentTank tileTank = (TileMachineComponentTank) tile;
+					double p = tank.getTotalPressure();
 					tank.equalise(tileTank.tank, dir);
+					dP.put(dir, p - tank.getTotalPressure());
 					//if (tank.hasCondition(SolutionRecipe.electrodes)) {// share conditions
 					//	tileTank.tank.addCondition(SolutionRecipe.electrodes);
 					//} else if (tileTank.tank
@@ -249,7 +263,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	@Override
 	public float getSpecificHeat() {
 
-		return super.getSpecificHeat() + tank.getSHMass();
+		return super.getSpecificHeat() + (tank == null ? 0 : tank.getSHMass());
 	}
 
 	@Override
@@ -264,8 +278,9 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	@Override
 	public void writeServerToClientMessage(NBTTagCompound nbt) {
 		super.writeServerToClientMessage(nbt);
-
-		nbt.setTag("Tank", tank.writeToNBT());
+		if (tank != null) {
+			nbt.setTag("Tank", tank.writeToNBT());
+		}
 		nbt.setBoolean("isSealed", isSealed);
 		NBTTagList dPTag = new NBTTagList();
 		for (Entry<ForgeDirection, Double> entry : dP.entrySet()) {
@@ -282,8 +297,11 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	public void readServerToClientMessage(NBTTagCompound nbt) {
 
 		super.readServerToClientMessage(nbt);
-
-		tank.readFromNBT(nbt.getCompoundTag("Tank"));
+		if (tank == null) {
+			tank = SolutionTank.readFromNBT(this, nbt.getCompoundTag("Tank"));
+		} else {
+			tank.readFromNBT(nbt.getCompoundTag("Tank"));
+		}
 		isSealed = nbt.getBoolean("isSealed");
 		NBTTagList dpList = nbt.getTagList("dP", 10);
 		for (int i = 0; i < dpList.tagCount(); i++) {

@@ -51,7 +51,7 @@ public class SolutionTank {
 	/** stored by moles */
 	protected Map<ItemMeta, Float> solutes;
 
-	protected Map<Gas, GasStack> gases;
+	private Map<Gas, GasStack> gases;
 
 	protected final int capacity;
 	private Set<Condition> conditions = new HashSet<Condition>();
@@ -62,14 +62,24 @@ public class SolutionTank {
 		fluids = new HashMap<Fluid, FluidStackFloat>();
 		solids = new HashMap<ItemMeta, Float>();
 		solutes = new HashMap<ItemMeta, Float>();
-		gases = new HashMap<Gas, GasStack>();
+		this.gases = new HashMap<Gas, GasStack>();
 		//f
 		//gases.put(Gas.AIR, new GasStack(Gas.AIR, 1));
 		this.capacity = capacity;
 	}
 
 	public void setGasContent(Map<Gas, GasStack> gases) {
-		this.gases = new HashMap<Gas, GasStack>(gases);
+		if (capacity == 1000) {
+			this.gases = new HashMap<Gas, GasStack>(gases);
+		} else {
+			this.gases = new HashMap<Gas, GasStack>();
+			for (GasStack gas : gases.values()) {
+				GasStack newStack = gas.copy();
+				newStack.amount *= capacity / 1000f;
+				this.gases.put(gas.getGas(), newStack);
+			}
+		}
+
 	}
 
 	public void addCondition(Condition condition) {
@@ -331,7 +341,7 @@ public class SolutionTank {
 		}
 
 		//gases
-		for (GasStack gas : gases.values()) {
+		for (GasStack gas : getGasContent().values()) {
 			float dt = gas.getTemperature() - temperature;
 			gas.setTemperature(gas.getTemperature() - dt * 0.1f);
 			//TODO: improve this change
@@ -480,10 +490,10 @@ public class SolutionTank {
 	 * */
 	private void reduceGas(float vol) {
 		double totalAmt = 0;
-		for (Entry<Gas, GasStack> g : gases.entrySet()) {
+		for (Entry<Gas, GasStack> g : getGasContent().entrySet()) {
 			totalAmt += g.getValue().amount;
 		}
-		for (Entry<Gas, GasStack> g : gases.entrySet()) {
+		for (Entry<Gas, GasStack> g : getGasContent().entrySet()) {
 			double volReduce = vol / totalAmt * g.getValue().amount;
 			float totalV = 0.001f * (getCapacity() - getContentAmount());
 			// this ensures the pressure and temperature will be constant if volume decreases
@@ -690,7 +700,8 @@ public class SolutionTank {
 				return (int) (b.getPressure(gasVol) - a.getPressure(gasVol));
 			}
 		};
-		List<GasStack> orderedGases = new ArrayList<GasStack>(gases.values());
+		List<GasStack> orderedGases = new ArrayList<GasStack>(getGasContent()
+				.values());
 		Collections.sort(orderedGases, comp);
 		for (GasStack gas : orderedGases) {
 			infoList.add(gas.getDisplayString(gasVol));
@@ -701,9 +712,22 @@ public class SolutionTank {
 	//	return null;
 	//}
 
+	public static SolutionTank readFromNBT(ITESolutionTank tile,
+			NBTTagCompound tag) {
+		int capacity = tag.getInteger("Capacity");
+		if (!tag.hasKey("Capacity")) {
+			capacity = 1000;
+		}
+		SolutionTank tank = new SolutionTank(tile, capacity);
+
+		tank.readFromNBT(tag);
+
+		return tank;
+	}
+
 	public void readFromNBT(NBTTagCompound tag) {
-		fluids.clear();
 		solids.clear();
+		fluids.clear();
 		solutes.clear();
 		gases.clear();
 
@@ -745,10 +769,14 @@ public class SolutionTank {
 				gases.put(gs.getGas(), gs);
 			}
 		}
+
 	}
 
 	public NBTTagCompound writeToNBT() {
 		NBTTagCompound tag = new NBTTagCompound();
+
+		tag.setInteger("Capacity", capacity);
+
 		NBTTagList fluidTags = new NBTTagList();
 		for (FluidStackFloat fs : fluids.values()) {
 			fluidTags.appendTag(fs.writeToNBT(new NBTTagCompound()));
@@ -769,7 +797,7 @@ public class SolutionTank {
 
 		//gas
 		NBTTagList gasTags = new NBTTagList();
-		for (GasStack gs : gases.values()) {
+		for (GasStack gs : getGasContent().values()) {
 			gasTags.appendTag(gs.writeToNBT(new NBTTagCompound()));
 		}
 		tag.setTag("Gases", gasTags);
@@ -932,7 +960,7 @@ public class SolutionTank {
 		//gas
 		equaliseGas(0.5f,
 				0.001f * (tank.getCapacity() - tank.getContentAmount()),
-				tank.gases);
+				tank.getGasContent());
 		//	for (GasStack g : emptied) {
 		//	tank.fill(g);
 		//}
@@ -961,12 +989,12 @@ public class SolutionTank {
 		if (gas.amount == 0) {
 			return;
 		}
-		if (gases.containsKey(gas.getGas())) {
-			GasStack existing = gases.get(gas.getGas());
+		if (getGasContent().containsKey(gas.getGas())) {
+			GasStack existing = getGasContent().get(gas.getGas());
 			existing.add(gas);
 
 		} else {
-			gases.put(gas.getGas(), gas.copy());
+			getGasContent().put(gas.getGas(), gas.copy());
 		}
 
 	}
@@ -974,7 +1002,8 @@ public class SolutionTank {
 	public void equaliseGas(float rate, float otherVol,
 			Map<Gas, GasStack> composition) {
 		//gasy gases
-		HashMap<Gas, GasStack> gasesCopy = new HashMap<Gas, GasStack>(gases);
+		HashMap<Gas, GasStack> gasesCopy = new HashMap<Gas, GasStack>(
+				getGasContent());
 		float vol = 0.001f * (getCapacity() - getContentAmount());
 		//double otherPressure = tank.getTotalPressure();
 		//double myPressure = getTotalPressure();
@@ -1027,33 +1056,33 @@ public class SolutionTank {
 
 			}
 		} else if (vol == 0) {
-			gases.clear();
+			getGasContent().clear();
 		}
 	}
 
 	public GasStack drain(Gas gas, double amt, boolean doDrain) {
-		if (!gases.containsKey(gas)) {
+		if (!getGasContent().containsKey(gas)) {
 			return null;
 		}
-		GasStack drainStack = gases.get(gas).copy();
+		GasStack drainStack = getGasContent().get(gas).copy();
 		drainStack.amount = Math.min(drainStack.amount, amt);
 		if (doDrain) {
-			gases.get(gas).amount -= drainStack.amount;
+			getGasContent().get(gas).amount -= drainStack.amount;
 		}
 		return drainStack;
 	}
 
 	private double getGasAmount(Gas gas) {
-		if (gases.containsKey(gas)) {
-			return gases.get(gas).amount;
+		if (getGasContent().containsKey(gas)) {
+			return getGasContent().get(gas).amount;
 		}
 		return 0;
 	}
 
 	private float getTemperature(Gas gas) {
-		if (gases.containsKey(gas)) {
+		if (getGasContent().containsKey(gas)) {
 			//float vol = 0.001f * (getCapacity() - getContentAmount());
-			return gases.get(gas).getTemperature();
+			return getGasContent().get(gas).getTemperature();
 		}
 
 		return tile.getTemperature();
@@ -1062,9 +1091,9 @@ public class SolutionTank {
 	/** volume provided to save performance on repeated checks */
 	private double getPressure(Gas gas, float vol) {
 
-		if (gases.containsKey(gas)) {
+		if (getGasContent().containsKey(gas)) {
 			//float vol = 0.001f * (getCapacity() - getContentAmount());
-			return gases.get(gas).getPressure(vol);
+			return getGasContent().get(gas).getPressure(vol);
 		}
 
 		return 0;
@@ -1080,7 +1109,7 @@ public class SolutionTank {
 		if (vol == 0) {
 			return tile.getAtmosphericPressure();
 		}
-		for (GasStack gas : gases.values()) {
+		for (GasStack gas : getGasContent().values()) {
 			p += gas.getPressure(vol);
 		}
 		return p;
@@ -1156,4 +1185,30 @@ public class SolutionTank {
 		}
 		return amt;
 	}
+
+	public Map<Gas, GasStack> getGasContent() {
+		return gases;
+	}
+
+	/** Mass of everything. Gas, liquid, solid, solute... all of it */
+	public float getContentMass() {
+		float m = 0;
+		for (GasStack g : gases.values()) {
+			m += g.getMass();
+		}
+		for (FluidStackFloat f : fluids.values()) {
+			m += f.amount * TFTPropertyRegistry.getDensity(f.getFluid())
+					* 0.001f;
+		}
+		for (Float solid : solids.values()) {
+			m += solid;
+		}
+		for (Entry<ItemMeta, Float> solute : solutes.entrySet()) {
+			m += solute.getValue()
+					/ TFTPropertyRegistry.getMoles(solute.getKey().stack)
+					* TFTPropertyRegistry.getDensity(solute.getKey().stack);
+		}
+		return m;
+	}
+
 }

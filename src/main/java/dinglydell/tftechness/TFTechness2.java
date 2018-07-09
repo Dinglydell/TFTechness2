@@ -146,6 +146,7 @@ import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
+import dinglydell.tftechness.tileentities.TileMachineComponentTurbine;
 import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
@@ -243,6 +244,13 @@ public class TFTechness2 {
 		Component.registerComponent(new Component("monitor",
 				TileMachineMonitor.class, new Object[] { "aaa", "aba", "aaa" })
 				.registerPropertySet(ComponentPropertySet.THERMOMETER_TIER));
+
+		//Turbine
+		Component.registerComponent(new Component("turbine",
+				TileMachineComponentTurbine.class, new Object[] { "aba",
+						"aba",
+						"aba" })
+				.registerPropertySet(ComponentPropertySet.TURBINE_SPEED));
 
 	}
 
@@ -562,6 +570,9 @@ public class TFTechness2 {
 
 		GameRegistry.registerTileEntity(TileMachineMonitor.class,
 				"TFTMachineMonitor");
+
+		GameRegistry.registerTileEntity(TileMachineComponentTurbine.class,
+				"TFTMachineTurbine");
 
 	}
 
@@ -1515,6 +1526,7 @@ public class TFTechness2 {
 				.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
 						tankThickness * 4.8e7f)
 				.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE, 1648f);
+		float rotorCOMRadius = 0.25f;
 
 		for (Material m : materials) {
 			// register metal materials with conductivity property
@@ -1530,7 +1542,12 @@ public class TFTechness2 {
 						.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
 								tankThickness * statMap.get(m.name).yieldStress)
 						.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE,
-								statMap.get(m.name).heat.meltTemp);
+								statMap.get(m.name).heat.meltTemp)
+						//sqrt(yieldStress / density)
+						.addProperty(ComponentProperty.MAX_TURBINE_SPEED,
+								(float) (Math.sqrt(statMap.get(m.name).yieldStress
+										/ (statMap.get(m.name).density
+												* rotorCOMRadius * rotorCOMRadius)) / (2 * Math.PI)));
 			}
 		}
 

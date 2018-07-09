@@ -11,6 +11,10 @@ import dinglydell.tftechness.block.component.ComponentMaterial;
  */
 public abstract class ComponentProperty<T> {
 
+	/** The maximum rotary speed the turbine can handle */
+	public static ComponentProperty MAX_TURBINE_SPEED = new ComponentPropertyFloat(
+			"turbineSpeed", "Hz");
+
 	public static ComponentProperty WIRE_TIER = new ComponentPropertyWireTier(
 			"tier");
 

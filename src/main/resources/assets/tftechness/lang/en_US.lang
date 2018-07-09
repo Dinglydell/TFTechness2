@@ -158,6 +158,7 @@ info.machine.cooler.tooltip=Uses RF to move heat from neighbor blocks into itsel
 info.machine.tank.tooltip=Stores...stuff. Maybe it can melt it?
 info.machine.electrode.tooltip=Uses RF to electrolyze neighboring tanks.
 info.machine.monitor.tooltip=Can be used to view the temperature of neighbouring blocks.
+info.machine.turbine.tooltip=Starts spinning when gas passes through.
 
 info.machine.property.conductivity=Thermal Conductivity:
 info.machine.property.specificHeat=Specific Heat:
@@ -165,6 +166,7 @@ info.machine.property.tier=Wire Tier:
 info.machine.property.maxPressure=Maximum Pressure:
 info.machine.property.maxTemperature=Maximum Temperature:
 info.machine.property.thermoTier=Thermometer Tier:
+info.machine.property.turbineSpeed=Maximum Rotor Speed:
 
 
 tile.wall.name=§7Machine Wall§r
@@ -174,3 +176,4 @@ tile.cooler.name=§7Machine Cooling Element§r
 tile.tank.name=§7Machine Tank§r
 tile.electrode.name=§7Machine Electrode Box§r
 tile.monitor.name=§7Machine Monitor§r
+tile.turbine.name=§7Machine Turbine§r

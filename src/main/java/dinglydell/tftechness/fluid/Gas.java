@@ -9,12 +9,13 @@ public class Gas {
 	public static Map<String, Gas> gasRegistry = new HashMap<String, Gas>();
 	//public static Gas AIR = new Gas("air", -274);
 	//TODO: Fluid forms of air-gases
-	public static Gas NITROGEN = new Gas("nitrogen", -274);
-	public static Gas OXYGEN = new Gas("oxygen", -274);
-	public static Gas ARGON = new Gas("argon", -274);
-	public static Gas CARBON_DIOXIDE = new Gas("carbonDioxide", -274);
+	public static Gas NITROGEN = new Gas("nitrogen", -274, 0.028f);
+	public static Gas OXYGEN = new Gas("oxygen", -274, 0.032f);
+	public static Gas ARGON = new Gas("argon", -274, 0.040f);
+	public static Gas CARBON_DIOXIDE = new Gas("carbonDioxide", -274, 44);
 	//	public static Gas Neon = new Gas("")
-	public static Gas STEAM = new Gas("steam", 100).setZeroVapourPoint(-198);
+	public static Gas STEAM = new Gas("steam", 100, 0.018f)
+			.setZeroVapourPoint(-198);
 
 	public String gasName;
 	/** typical boiling point at 1atm pressure */
@@ -23,12 +24,14 @@ public class Gas {
 	private float zeroVapourPoint = TFTechness2.ABSOLUTE_ZERO;
 	/** P = e^(k(T - freeze point)) */
 	private double vapourPressureK;
+	/** kg/mol */
+	private float molarMass;
 
-	public Gas(String name, float boilingPoint) {
+	public Gas(String name, float boilingPoint, float molarMass) {
 		this.gasName = name;
 		this.boilingPoint = boilingPoint;
 		gasRegistry.put(name, this);
-
+		this.molarMass = molarMass;
 		calcVapourPressure();
 	}
 
@@ -58,6 +61,11 @@ public class Gas {
 			return Float.POSITIVE_INFINITY;
 		}
 		return Math.exp(vapourPressureK * (temperature - zeroVapourPoint));
+	}
+
+	/** kg/mol */
+	public float getMolarMass() {
+		return molarMass;
 	}
 
 	//public FluidStack condense(float amt){
