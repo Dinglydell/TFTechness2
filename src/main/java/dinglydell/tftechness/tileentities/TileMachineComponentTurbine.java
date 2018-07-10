@@ -56,7 +56,7 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 		}
 		float mass = tank.getContentMass();
 		if (mass > 0) {
-			rps *= 1 / (0.025f * mass + 1);
+			rps *= 1 / (0.05f * mass + 1);
 		}
 		if (rps > getMaxTurbineSpeed()) {
 			TFTechness2.logger.info("Overclock! " + rps);
@@ -68,7 +68,7 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 					|| dir.getOpposite().ordinal() == blockMetadata) {
 				float dRPS = Math.abs((float) (entry.getValue() * 0.0005f));
 				rps += dRPS;
-				temperature -= dRPS * 0.05f;
+				temperature -= dRPS * 0.01f;
 				TileEntity te = getAdjacentTile(dir);
 				if (te instanceof TileMachineComponentTurbine) {
 					TileMachineComponentTurbine turb = (TileMachineComponentTurbine) te;
@@ -138,6 +138,6 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 		ForgeDirection dir = ForgeDirection.values()[side];
 		return component.getIcon((isSealed ? 0 : 1)
 				+ (((dir.ordinal() == blockMetadata || dir.getOpposite()
-						.ordinal() == blockMetadata) ? 1 : 0) >> 1));
+						.ordinal() == blockMetadata) ? 1 : 0) << 1));
 	}
 }

@@ -62,7 +62,7 @@ public class StringUtil {
 							+ EnumChatFormatting.RESET.toString();
 				}
 			}
-			return value + smallSiPrefixes[smallSiPrefixes.length - 1];
+			return "0";//value + smallSiPrefixes[smallSiPrefixes.length - 1];
 
 		}
 
