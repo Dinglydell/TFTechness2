@@ -35,16 +35,13 @@ Mid-term:
 
 -rewrite tank such that fluids have varying pressure - so they don't have a fixed density to solve issues such as aluminium not being formed because it causes the thing to go over capacity
 
- -multiblock components with melting/deformation temperatures - eg a silver based wall component may be a great conductor but will melt if you heat it too much
  -multiblock components with an additional material for the "coating" of the block - this will determine the conductivity with the air as opposed to other machine blocks
  -multiblock components that consider the atmospheric conditions of the planet its on when calculating heat loss to the environment
  -steam powered multiblock components?
  -target temperature in multiblocks
  -materials with electrical resistance and/or a limited transfer rate?
- -multiblocks capable of generating RF
- -gasses and pressure in a SolutionTank (with explosions!)
- -related to above, different materials providing different strength - such as having a max pressure difference property
  -dynamic texture for multiblock parts based on material
+ -firebox component - non-rf heat source
 
  -temperature monitor component - can tell you the temperature of neighbour blocks
    -can turn off neighbouring heating/cooling elements based on a target temperature
@@ -52,7 +49,7 @@ Mid-term:
  -compound registry - every item is registered with what compounds it contains - these compounds are composed of elements
  -reactions in the solution tank would be based on what can be done with existing elements and compounds in the tank (possibly using enthalpy and/or entropy)
  -densities of stuff in solution tank that varies with state
- -use vapour pressures for fluids boiling
+
 
  -SolutionTank with alloy mixing!
 

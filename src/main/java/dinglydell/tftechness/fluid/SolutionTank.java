@@ -963,7 +963,7 @@ public class SolutionTank {
 			}
 		}
 		//gas
-		equaliseGas(0.5f,
+		equaliseGas(0.5f + 0.25f * dir.offsetY,
 				0.001f * (tank.getCapacity() - tank.getContentAmount()),
 				tank.getGasContent());
 		//	for (GasStack g : emptied) {

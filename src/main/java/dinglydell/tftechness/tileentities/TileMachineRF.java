@@ -7,7 +7,7 @@ import dinglydell.tftechness.block.component.property.ComponentProperty;
 
 public abstract class TileMachineRF extends TileMachineComponent {
 	public enum WireTier {
-		lv(256, 1f, 0.02f), mv(1024, 0.85f, 0.1f), hv(4096, 0.7f, 0.5f);
+		lv(256, 1f, 0.025f), mv(1024, 0.85f, 0.125f), hv(4096, 0.7f, 0.625f);
 
 		public final float efficiency;
 		public final int transferRate;

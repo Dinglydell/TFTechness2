@@ -1,16 +1,18 @@
 package dinglydell.tftechness.tileentities;
 
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 
 public class TileMachineDynamo extends TileMachineRF implements IEnergyProvider {
 
-	private static final float RPS_TO_RF = 100f;
+	private static final float RPS_TO_RF = 50f;
 
 	@Override
-	public int extractEnergy(ForgeDirection dir, int amt, boolean doExtract) {
+	public int extractEnergy(ForgeDirection dir, int amt, boolean simulate) {
 		amt = Math.min(amt, rf);
-		if (doExtract) {
+		if (!simulate) {
 			rf -= amt;
 		}
 		return amt;
@@ -18,7 +20,31 @@ public class TileMachineDynamo extends TileMachineRF implements IEnergyProvider 
 
 	@Override
 	protected int spendRF(int amt) {
+
 		return 0;
+	}
+
+	@Override
+	public void updateEntity() {
+		super.updateEntity();
+		if (worldObj.isRemote) {
+			return;
+		}
+		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+			TileEntity te = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord
+					+ dir.offsetY, zCoord + dir.offsetZ);
+			if (te instanceof IEnergyReceiver
+					&& !(te instanceof TileMachineComponent)) {
+				extractEnergy(dir.getOpposite(),
+						((IEnergyReceiver) te).receiveEnergy(dir, rf, false),
+						false);
+			}
+		}
+	}
+
+	@Override
+	public boolean canConnectEnergy(ForgeDirection from) {
+		return true;
 	}
 
 	/**

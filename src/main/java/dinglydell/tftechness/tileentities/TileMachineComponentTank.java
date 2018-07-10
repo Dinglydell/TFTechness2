@@ -130,8 +130,8 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 			if (!isSealed
 					&& worldObj.getBlock(x, y, z).isAir(worldObj, x, y, z)) {
 				double p = tank.getTotalPressure();
-				tank.equaliseGas(0.01f, 1, TFTWorldData.get(worldObj)
-						.getAtmosphericComposition(x, y, z));
+				tank.equaliseGas(0.01f + 0.005f * dir.offsetY, 1, TFTWorldData
+						.get(worldObj).getAtmosphericComposition(x, y, z));
 				dP.put(dir, p - tank.getTotalPressure());
 
 				if (dP.get(dir) > 20) {
@@ -541,7 +541,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 						xCoord,
 						yCoord,
 						zCoord,
-						Math.min(strength, 30),
+						Math.min(strength, 50),
 						true);
 			}
 			return drop && strength < 2;
