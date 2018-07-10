@@ -92,9 +92,10 @@ public class TFTWaila implements IWailaDataProvider {
 				}
 			}
 			if (te instanceof TileMachineRF) {
-				currenttip.add("Using "
-						+ ((TileMachineRF) te).getEnergyConsumptionRate()
-						+ "RF/t");
+				currenttip
+						.add((((TileMachineRF) te).isGenerator() ? "Generating "
+								: "Using ")
+								+ ((TileMachineRF) te).getEnergyRate() + "RF/t");
 			}
 
 			//Component.components.get(0);

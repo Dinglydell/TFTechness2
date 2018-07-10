@@ -49,7 +49,7 @@ public class GuiRF extends Gui implements ITFTComponent {
 		tooltip.add(tile.getEnergyStored(ForgeDirection.UNKNOWN) + "/"
 				+ tile.getMaxEnergyStored(ForgeDirection.UNKNOWN) + "RF");
 		if (tile instanceof TileMachineRF) {
-			tooltip.add(((TileMachineRF) tile).getEnergyConsumptionRate()
+			tooltip.add(((TileMachineRF) tile).getEnergyRate()
 					+ "RF/t");
 		}
 

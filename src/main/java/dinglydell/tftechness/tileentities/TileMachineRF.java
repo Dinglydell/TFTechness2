@@ -7,14 +7,16 @@ import dinglydell.tftechness.block.component.property.ComponentProperty;
 
 public abstract class TileMachineRF extends TileMachineComponent {
 	public enum WireTier {
-		lv(256, 1f), mv(1024, 0.85f), hv(4096, 0.7f);
+		lv(256, 1f, 0.02f), mv(1024, 0.85f, 0.1f), hv(4096, 0.7f, 0.5f);
 
 		public final float efficiency;
 		public final int transferRate;
+		public final float inductionRate;
 
-		WireTier(int transferRate, float efficiency) {
+		WireTier(int transferRate, float efficiency, float inductionRate) {
 			this.transferRate = transferRate;
 			this.efficiency = efficiency;
+			this.inductionRate = inductionRate;
 		}
 
 		public ItemStack getWire() {
@@ -24,7 +26,7 @@ public abstract class TileMachineRF extends TileMachineComponent {
 
 	//protected WireTier tier = WireTier.lv;
 
-	private int rfRate;
+	protected int rfRate;
 
 	//public TileMachineRF setWireTier(WireTier tier) {
 	//	this.tier = tier;
@@ -54,7 +56,7 @@ public abstract class TileMachineRF extends TileMachineComponent {
 	public void updateEntity() {
 
 		super.updateEntity();
-		if (!worldObj.isRemote) {
+		if (!worldObj.isRemote && !isGenerator()) { //TODO: make RF consuming machines a subclass of this
 
 			//redstone power -> shutdown
 			if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) != 0) {
@@ -69,7 +71,7 @@ public abstract class TileMachineRF extends TileMachineComponent {
 
 	protected abstract int spendRF(int amt);
 
-	public int getEnergyConsumptionRate() {
+	public int getEnergyRate() {
 		return rfRate;
 	}
 
@@ -85,5 +87,9 @@ public abstract class TileMachineRF extends TileMachineComponent {
 	public boolean isEnabled() {
 		return rf > 0
 				&& worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) == 0;
+	}
+
+	public boolean isGenerator() {
+		return false;
 	}
 }

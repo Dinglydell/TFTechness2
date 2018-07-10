@@ -148,6 +148,7 @@ import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
 import dinglydell.tftechness.tileentities.TileMachineComponentTurbine;
 import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
+import dinglydell.tftechness.tileentities.TileMachineDynamo;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMachineMonitor;
@@ -209,9 +210,9 @@ public class TFTechness2 {
 
 		//heater (b is wire coil)
 		Component.registerComponent(new Component("heater",
-				TileMachineHeatingElement.class, new Object[] { " b ",
-						"bAb",
-						" b " })
+				TileMachineHeatingElement.class, new Object[] { "bab",
+						"aAa",
+						"bab" })
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 		// item shelf
@@ -253,6 +254,11 @@ public class TFTechness2 {
 				.registerPropertySet(ComponentPropertySet.TURBINE_SPEED)
 				.registerAdditionalIcon("open").registerAdditionalIcon("IO")
 				.registerAdditionalIcon("IO_open"));
+
+		//Dynamo
+		Component.registerComponent(new Component("dynamo",
+				TileMachineDynamo.class, new Object[] { "bbb", "bAb", "bbb" })
+				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 	}
 
@@ -575,6 +581,9 @@ public class TFTechness2 {
 
 		GameRegistry.registerTileEntity(TileMachineComponentTurbine.class,
 				"TFTMachineTurbine");
+
+		GameRegistry.registerTileEntity(TileMachineDynamo.class,
+				"TFTMachineDynamo");
 
 	}
 

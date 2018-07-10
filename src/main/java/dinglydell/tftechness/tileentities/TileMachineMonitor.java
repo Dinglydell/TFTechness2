@@ -157,8 +157,8 @@ public class TileMachineMonitor extends TileMachineComponent {
 	}
 
 	@Override
-	public void onDestroy() { //clean up - dethrottle everything
-		super.onDestroy();
+	public boolean onDestroy() { //clean up - dethrottle everything
+		boolean destroy = super.onDestroy();
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			int x = xCoord + dir.offsetX;
 			int y = yCoord + dir.offsetY;
@@ -170,6 +170,7 @@ public class TileMachineMonitor extends TileMachineComponent {
 						.setThrottleTemperature(Float.MAX_VALUE);
 			}
 		}
+		return destroy;
 	}
 
 	public boolean isThrottleCause(TileMachineComponent tile) {

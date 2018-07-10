@@ -172,7 +172,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				} else if (tile instanceof TileMachineElectrode) {
 					TileMachineElectrode tileElectrode = (TileMachineElectrode) tile;
 
-					if (tileElectrode.getEnergyConsumptionRate() > 0
+					if (tileElectrode.getEnergyRate() > 0
 							&& tileElectrode.hasElectrodes()) {
 						tank.addCondition(SolutionRecipe.electrodes);
 					}
@@ -541,7 +541,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 						xCoord,
 						yCoord,
 						zCoord,
-						strength,
+						Math.min(strength, 30),
 						true);
 			}
 			return drop && strength < 2;

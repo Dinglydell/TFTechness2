@@ -81,9 +81,9 @@ public class GuiButtonComponent extends GuiButtonTFT {
 				tile.getMaxTemperature(),
 				monitor.getThermometerTier());
 		if (tile instanceof TileMachineRF) {
-			tooltip.add("Using "
-					+ ((TileMachineRF) tile).getEnergyConsumptionRate()
-					+ "RF/t");
+			tooltip.add(((TileMachineRF) tile).isGenerator() ? "Generating "
+					: "Using " + ((TileMachineRF) tile).getEnergyRate()
+							+ "RF/t");
 		}
 		((BlockTFTComponent) tile.getBlockType()).component.addTooltip(tooltip,
 				stack.getTagCompound());

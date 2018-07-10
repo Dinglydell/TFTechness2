@@ -66,7 +66,7 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 			ForgeDirection dir = entry.getKey();
 			if (dir.ordinal() == blockMetadata
 					|| dir.getOpposite().ordinal() == blockMetadata) {
-				float dRPS = Math.abs((float) (entry.getValue() * 0.0005f));
+				float dRPS = Math.abs((float) (entry.getValue() * 0.00025f));
 				rps += dRPS;
 				temperature -= dRPS * 0.01f;
 				TileEntity te = getAdjacentTile(dir);
@@ -77,8 +77,12 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 					turb.rps -= diff;
 				} else if (te instanceof TileEntityDynamo) {
 					TileEntityDynamo dyn = (TileEntityDynamo) te;
-					dyn.inputRotation(rps, dir.ordinal());
+					dyn.inputRotation(rps * 0.5, dir.ordinal());
 					rps *= 0.8f;
+				} else if (te instanceof TileMachineDynamo) {
+					TileMachineDynamo dyn = (TileMachineDynamo) te;
+					rps -= dyn.rotateDynamo(rps);
+					//rps *= 0.8f;
 				}
 				//Map<Gas, GasStack> gases;
 				//float vol;
