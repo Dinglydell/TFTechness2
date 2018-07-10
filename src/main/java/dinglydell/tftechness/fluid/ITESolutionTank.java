@@ -1,10 +1,10 @@
 package dinglydell.tftechness.fluid;
 
-import net.minecraftforge.common.util.ForgeDirection;
+import java.util.Set;
 
 public interface ITESolutionTank {
 	/** Attempt to displace this much fluid from the tank into neighbour tanks */
-	public float attemptOverflow(float overVol, ForgeDirection from,
+	public float attemptOverflow(float overVol, Set<ITESolutionTank> from,
 			boolean doOverflow);
 
 	public SolutionTank getTank();

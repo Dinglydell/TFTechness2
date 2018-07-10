@@ -250,7 +250,9 @@ public class TFTechness2 {
 				TileMachineComponentTurbine.class, new Object[] { "aba",
 						"aba",
 						"aba" })
-				.registerPropertySet(ComponentPropertySet.TURBINE_SPEED));
+				.registerPropertySet(ComponentPropertySet.TURBINE_SPEED)
+				.registerAdditionalIcon("open").registerAdditionalIcon("IO")
+				.registerAdditionalIcon("IO_open"));
 
 	}
 
@@ -1526,7 +1528,7 @@ public class TFTechness2 {
 				.addProperty(ComponentProperty.MAXIMUM_PRESSURE,
 						tankThickness * 4.8e7f)
 				.addProperty(ComponentProperty.MAXIMUM_TEMPERATURE, 1648f);
-		float rotorCOMRadius = 0.25f;
+		float rotorCOMRadius = 0.4f;
 
 		for (Material m : materials) {
 			// register metal materials with conductivity property
@@ -1546,7 +1548,7 @@ public class TFTechness2 {
 						//sqrt(yieldStress / density)
 						.addProperty(ComponentProperty.MAX_TURBINE_SPEED,
 								(float) (Math.sqrt(statMap.get(m.name).yieldStress
-										/ (statMap.get(m.name).density
+										/ (statMap.get(m.name).density * 0.5
 												* rotorCOMRadius * rotorCOMRadius)) / (2 * Math.PI)));
 			}
 		}

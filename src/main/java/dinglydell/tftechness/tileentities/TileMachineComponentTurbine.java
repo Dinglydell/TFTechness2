@@ -135,6 +135,9 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 
 	@Override
 	public IIcon getIcon(int side) {
-		return component.getIcon(0);
+		ForgeDirection dir = ForgeDirection.values()[side];
+		return component.getIcon((isSealed ? 0 : 1)
+				+ (((dir.ordinal() == blockMetadata || dir.getOpposite()
+						.ordinal() == blockMetadata) ? 1 : 0) >> 1));
 	}
 }

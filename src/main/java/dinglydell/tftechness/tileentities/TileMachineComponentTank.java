@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -421,7 +422,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	}
 
 	@Override
-	public float attemptOverflow(float overVol, ForgeDirection from,
+	public float attemptOverflow(float overVol, Set<ITESolutionTank> from,
 			boolean doOverflow) {
 
 		float transfered = 0;
@@ -457,18 +458,21 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	}
 
 	private float attemptOverflowInDirection(ForgeDirection to, float overVol,
-			ForgeDirection from, boolean doOverflow) {
-		if (to == from) {
-			return 0;
-		}
+			Set<ITESolutionTank> from, boolean doOverflow) {
+
 		TileEntity tile = worldObj.getTileEntity(xCoord + to.offsetX, yCoord
 				+ to.offsetY, zCoord + to.offsetZ);
+
 		if (tile instanceof TileMachineComponentTank) {
+			if (!from.add((ITESolutionTank) tile)) {
+				return 0;
+			}
 			TileMachineComponentTank tt = (TileMachineComponentTank) tile;
 			return tank.transferFluidTo(tt.tank,
 					overVol,
 					ForgeDirection.DOWN,
-					doOverflow);
+					doOverflow,
+					from);
 
 		}
 		return 0;
@@ -515,9 +519,12 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 	}
 
 	@Override
-	public void onDestroy() {
+	public boolean onDestroy() {
 
-		super.onDestroy();
+		boolean drop = super.onDestroy();
+		if (didExplode) {
+			return false;
+		}
 		if (!didExplode) {
 			didExplode = true;
 			double atmosPressure = TFTWorldData.get(worldObj)
@@ -537,7 +544,9 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 						strength,
 						true);
 			}
+			return drop && strength < 2;
 		}
+		return drop;
 	}
 
 	@Override

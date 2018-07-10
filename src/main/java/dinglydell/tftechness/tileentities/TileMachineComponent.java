@@ -476,9 +476,11 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 	/**
 	 * Stuff that happens when this block gets destroyed Used by the tank to
 	 * cause explosions when pressure is high
+	 * 
+	 * @return whether or not the block should drop as an item
 	 */
-	public void onDestroy() {
-
+	public boolean onDestroy() {
+		return temperature <= getMaxTemperature();
 	}
 
 	public Component getComponent() {

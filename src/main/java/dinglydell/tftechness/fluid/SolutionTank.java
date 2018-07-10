@@ -522,7 +522,7 @@ public class SolutionTank {
 		if (maxFill < amt) {
 
 			overVol = tile.attemptOverflow((float) overVol,
-					ForgeDirection.UNKNOWN,
+					new HashSet<ITESolutionTank>(),
 					doFill);
 		}
 		float toFill = (float) Math.min(amt, 0.001f
@@ -546,7 +546,7 @@ public class SolutionTank {
 		float overVol = totalV + addedVol - getCapacity();
 		if (overVol > 0) {
 			overVol = tile.attemptOverflow(overVol,
-					ForgeDirection.UNKNOWN,
+					new HashSet<ITESolutionTank>(),
 					doFill);
 		}
 
@@ -572,8 +572,13 @@ public class SolutionTank {
 		return filler;
 	}
 
-	/** Fill the tank with some fluid */
 	public float fill(FluidStackFloat stack, ForgeDirection from, boolean doFill) {
+		return fill(stack, from, doFill, new HashSet<ITESolutionTank>());
+	}
+
+	/** Fill the tank with some fluid */
+	public float fill(FluidStackFloat stack, ForgeDirection from,
+			boolean doFill, Set<ITESolutionTank> blacklist) {
 		if (stack == null || stack.amount == 0) {
 			return 0;
 		}
@@ -606,7 +611,7 @@ public class SolutionTank {
 					FluidStackFloat newF = new FluidStackFloat(f);
 					newF.amount = trueAmt;
 
-					fill(newF, from, true);
+					fill(newF, from, true, blacklist);
 
 				}
 				for (Entry<ItemMeta, Float> solute : m.solutes.entrySet()) {
@@ -623,7 +628,7 @@ public class SolutionTank {
 		float overFill = amt + stack.amount - capacity;
 		//int toFill = Math.max(0, Math.min(stack.amount, capacity - amt));
 		if (overFill > 0) {
-			overFill = tile.attemptOverflow(overFill, from, true);
+			overFill = tile.attemptOverflow(overFill, blacklist, true);
 		}
 		float toFill = overFill + capacity - amt;
 		if (doFill) {
@@ -943,7 +948,7 @@ public class SolutionTank {
 
 					//float toReplace = volumeLoss;
 					float toReplace = tile.attemptOverflow(volumeLoss,
-							ForgeDirection.UNKNOWN,
+							new HashSet<ITESolutionTank>(),
 							true);
 
 					if (toReplace > 0) {
@@ -1156,7 +1161,7 @@ public class SolutionTank {
 	}
 
 	public float transferFluidTo(SolutionTank tank, float overVol,
-			ForgeDirection dir, boolean doTransfer) {
+			ForgeDirection dir, boolean doTransfer, Set<ITESolutionTank> from) {
 		List<FluidStackFloat> orderedFluids = getDensitySortedFluids(dir.offsetY);
 		float transfered = 0;
 		for (FluidStackFloat fluid : orderedFluids) {
@@ -1168,7 +1173,7 @@ public class SolutionTank {
 			amt = tank.fill(drainStack, dir.getOpposite(), doTransfer);
 			if (doTransfer) {
 				drainStack.amount -= amt;
-				fill(drainStack, dir.getOpposite(), doTransfer);
+				fill(drainStack, dir.getOpposite(), doTransfer, from);
 			}
 			transfered += amt;
 			if (transfered >= overVol) {
