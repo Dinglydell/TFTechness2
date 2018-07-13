@@ -3,6 +3,7 @@ package dinglydell.tftechness.util;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.util.EnumChatFormatting;
@@ -44,6 +45,13 @@ public class StringUtil {
 			"f",
 			"a" };
 
+	private static final String[] coldTempNames = new String[] { "Cool",
+			"Cold",
+			"Freezing",
+			"Very Cold",
+			"Extremely Cold",
+			"Absolutely Cold" };
+
 	/**
 	 * Returns a value with an SI prefix eg. 1000 -> 1k
 	 * */
@@ -79,6 +87,31 @@ public class StringUtil {
 		return value + siPrefixes[siPrefixes.length - 1];
 	}
 
+	public static String getHeatColour(float temp, float meltTemp) {
+		if (temp < 14) {
+			float n = 15 - temp;
+			// i == index of string
+			int i;
+			//j == number of stars
+			int j = 4;
+			for (i = -1; i < coldTempNames.length && n > 0; i++) {
+				for (j = 5; j > 0 && n > 0; j--) {
+					n -= Math.pow(i + 1, 2);
+				}
+			}
+
+			char[] chars = new char[j];
+			Arrays.fill(chars, '\u2605');
+			String stars = new String(chars);
+			if (i == coldTempNames.length) {
+				i--;
+				stars = "";
+			}
+			return coldTempNames[i] + stars;
+		}
+		return TFC_ItemHeat.getHeatColor(temp, meltTemp);
+	}
+
 	public static void addTemperatureTooltip(List<String> tooltip, float temp,
 			float max, ThermometerTier tier) {
 		String roundedTemp = null;
@@ -106,7 +139,7 @@ public class StringUtil {
 		if (tier != ThermometerTier.fuzzy) {
 			tooltip.add(colour + (roundedTemp) + TFTechness2.degrees + "C");
 		}
-		tooltip.add(TFC_ItemHeat.getHeatColor(temp, max));
+		tooltip.add(getHeatColour(temp, max));
 		if (danger) {
 			if (temp > max) {
 				tooltip.add(colour
