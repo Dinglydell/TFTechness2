@@ -20,7 +20,7 @@ public class TileMachineMonitor extends TileMachineComponent {
 
 	//private float targetTemperature;
 
-	public boolean openGui(World world, EntityPlayer player) {
+	public boolean onRightClick(World world, EntityPlayer player) {
 		player.openGui(TFTechness2.instance,
 				TFTGuis.Monitor.ordinal(),
 				world,

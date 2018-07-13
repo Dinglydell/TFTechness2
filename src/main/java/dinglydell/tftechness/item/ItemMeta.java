@@ -14,8 +14,11 @@ public class ItemMeta {
 	}
 
 	public ItemMeta(ItemStack stack) {
-		this.item = stack.getItem();
-		this.meta = stack.getItemDamage();
+		if (stack != null) {
+			this.item = stack.getItem();
+
+			this.meta = stack.getItemDamage();
+		}
 		this.stack = stack;
 	}
 
@@ -30,7 +33,9 @@ public class ItemMeta {
 
 	@Override
 	public int hashCode() {
-
+		if (item == null) {
+			return 0;
+		}
 		return 256 * item.hashCode() + meta;
 	}
 

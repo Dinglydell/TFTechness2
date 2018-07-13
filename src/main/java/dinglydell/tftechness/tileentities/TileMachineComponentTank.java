@@ -411,7 +411,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		return tank;
 	}
 
-	public boolean openGui(World world, EntityPlayer player) {
+	public boolean onRightClick(World world, EntityPlayer player) {
 		player.openGui(TFTechness2.instance,
 				TFTGuis.Tank.ordinal(),
 				world,

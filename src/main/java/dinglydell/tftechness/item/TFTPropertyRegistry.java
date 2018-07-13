@@ -1,9 +1,12 @@
 package dinglydell.tftechness.item;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
@@ -18,7 +21,6 @@ import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.fluid.FluidMoltenMetal;
 import dinglydell.tftechness.fluid.Gas;
 import dinglydell.tftechness.fluid.Mixture;
-import dinglydell.tftechness.world.TFTWorldData;
 
 /**
  * Properties that are assigned to certain items or fluids for various
@@ -70,11 +72,11 @@ public class TFTPropertyRegistry {
 
 	private static Map<Fluid, Float> fluidMolesMap = new HashMap<Fluid, Float>();
 
-	/**
-	 * The amount this item will contribute to the greenhouse factor when it is
-	 * combusted
-	 */
-	protected static Map<ItemMeta, Float> carbonContent = new HashMap<ItemMeta, Float>();
+	///**
+	// * The amount this item will contribute to the greenhouse factor when it is
+	//	 *combusted
+	// */
+	//	protected static Map<ItemMeta, Float> carbonContent = new HashMap<ItemMeta, Float>();
 
 	private static Map<Fluid, Float> fluidConductivity = new HashMap<Fluid, Float>();
 
@@ -85,6 +87,10 @@ public class TFTPropertyRegistry {
 	private static Map<Fluid, Float> freezePointMap = new HashMap<Fluid, Float>();
 
 	protected static Map<Fluid, Mixture> mixtureMap = new HashMap<Fluid, Mixture>();
+
+	private static Map<ItemMeta, TFTFuel> fuels = new HashMap<ItemMeta, TFTFuel>();
+
+	private static Set<Item> ignitionSources = new HashSet<Item>();
 
 	public static void registerPowder(ItemStack stack) {
 		powders.put(new ItemMeta(stack), true);
@@ -307,22 +313,24 @@ public class TFTPropertyRegistry {
 
 	}
 
-	public static void registerCarbonContentByMass(ItemStack stack, float mass) {
+	//	public static void registerCarbonContentByMass(ItemStack stack, float mass) {
+	//
+	//		registerCarbonContent(stack, mass * TFTWorldData.MASS_TO_PPM);
+	//	}
+	//
+	//	/** increase in ppm in atmos as a result of this emission */
+	//	public static void registerCarbonContent(ItemStack stack, float amt) {
+	//		carbonContent.put(new ItemMeta(stack), amt);
+	//	}
 
-		registerCarbonContent(stack, mass * TFTWorldData.MASS_TO_PPM);
-	}
+	public static void registerFuel(ItemStack stack, TFTFuel fuel) {
+		fuels.put(new ItemMeta(stack), fuel);
 
-	/** increase in ppm in atmos as a result of this emission */
-	public static void registerCarbonContent(ItemStack stack, float amt) {
-		carbonContent.put(new ItemMeta(stack), amt);
 	}
 
 	public static float getCarbonContent(ItemStack stack) {
-		ItemMeta im = new ItemMeta(stack);
-		if (carbonContent.containsKey(im)) {
-			return carbonContent.get(im);
-		}
-		return 0;
+		TFTFuel fuel = getFuel(stack);
+		return fuel == null ? 0 : fuel.getCarbonContentByPpm();
 	}
 
 	public static void registerConductivity(Fluid f, float value) {
@@ -356,5 +364,32 @@ public class TFTPropertyRegistry {
 			return mixtureMap.get(f);
 		}
 		return null;
+	}
+
+	public static boolean isCombustible(ItemStack stack) {
+		ItemMeta im = new ItemMeta(stack);
+		if (fuels.containsKey(im)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static TFTFuel getFuel(ItemStack stack) {
+		ItemMeta im = new ItemMeta(stack);
+		if (fuels.containsKey(im)) {
+			return fuels.get(im);
+		}
+		return null;
+	}
+
+	public static boolean isIgnitionSource(ItemStack stack) {
+		if (ignitionSources.contains(stack.getItem())) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void registerIgnitionSource(Item fireStarter) {
+		ignitionSources.add(fireStarter);
 	}
 }

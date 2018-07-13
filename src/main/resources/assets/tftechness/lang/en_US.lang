@@ -160,6 +160,7 @@ info.machine.electrode.tooltip=Uses RF to electrolyze neighboring tanks.
 info.machine.monitor.tooltip=Can be used to view the temperature of neighbouring blocks.
 info.machine.turbine.tooltip=Starts spinning when gas passes through.
 info.machine.dynamo.tooltip=Generates RF from spinning turbines.
+info.machine.firebox.tooltip=Produces heat by burning stuff.
 
 info.machine.property.conductivity=Thermal Conductivity:
 info.machine.property.specificHeat=Specific Heat:
@@ -179,3 +180,4 @@ tile.electrode.name=§7Machine Electrode Box§r
 tile.monitor.name=§7Machine Monitor§r
 tile.turbine.name=§7Machine Turbine§r
 tile.dynamo.name=§7Machine Dynamo§r
+tile.firebox.name=§7Machine Firebox§r

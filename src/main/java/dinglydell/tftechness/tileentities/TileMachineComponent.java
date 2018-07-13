@@ -329,7 +329,7 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 
 	}
 
-	public boolean openGui(World world, EntityPlayer player) {
+	public boolean onRightClick(World world, EntityPlayer player) {
 		//if (!hasMaster()) {
 		//	return false;
 		//}

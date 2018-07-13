@@ -61,7 +61,7 @@ public class TFTWorldData extends WorldSavedData {
 	public static final float MASS_TO_PPM = 7.7186614932663209867803988886333e-5f;
 
 	/** roughly equivalent to concentration of CO2 in PPM */
-	protected float greenhouseFactor = 180;
+	protected double greenhouseFactor = 180;
 	protected float temperatureOffset = 0;
 	protected int leafOffset = 0;
 
@@ -127,7 +127,7 @@ public class TFTWorldData extends WorldSavedData {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		temperatureOffset = nbt.getFloat("Temperature");
-		greenhouseFactor = nbt.getFloat("Greenhouse");
+		greenhouseFactor = nbt.getDouble("Greenhouse");
 		leafOffset = nbt.getInteger("Trees");
 
 	}
@@ -135,7 +135,7 @@ public class TFTWorldData extends WorldSavedData {
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setFloat("Temperature", temperatureOffset);
-		nbt.setFloat("Greenhouse", greenhouseFactor);
+		nbt.setDouble("Greenhouse", greenhouseFactor);
 		nbt.setInteger("Trees", leafOffset);
 	}
 
@@ -143,7 +143,7 @@ public class TFTWorldData extends WorldSavedData {
 		return temperatureOffset;
 	}
 
-	public float getGreenhouseFactor() {
+	public double getGreenhouseFactor() {
 		return greenhouseFactor;
 	}
 
@@ -285,7 +285,7 @@ public class TFTWorldData extends WorldSavedData {
 				float o2 = 0.209f;
 				float n2 = 0.78f;
 				float ar = 0.00934f;
-				float co2 = greenhouseFactor / 1e6f;
+				float co2 = (float) (greenhouseFactor / 1e6);
 				//	float evt = TFC_Climate.getCacheManager(world).getEVTLayerAt(x,
 				//		z).floatdata1;
 				float h2o = //(float) (Math.sqrt(evt) *

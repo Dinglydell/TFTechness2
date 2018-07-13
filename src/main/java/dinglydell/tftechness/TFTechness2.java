@@ -60,6 +60,7 @@ import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.common.IEContent;
 
 import com.bioxx.tfc.Core.FluidBaseTFC;
+import com.bioxx.tfc.Core.TFC_Core;
 import com.bioxx.tfc.Core.WeatherManager;
 import com.bioxx.tfc.Core.Metal.Alloy;
 import com.bioxx.tfc.Core.Metal.AlloyManager;
@@ -74,6 +75,7 @@ import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
+import com.bioxx.tfc.api.Constant.Global;
 import com.bioxx.tfc.api.Crafting.BarrelManager;
 import com.bioxx.tfc.api.Crafting.BarrelRecipe;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
@@ -81,6 +83,7 @@ import com.bioxx.tfc.api.Crafting.KilnCraftingManager;
 import com.bioxx.tfc.api.Crafting.KilnRecipe;
 import com.bioxx.tfc.api.Crafting.QuernManager;
 import com.bioxx.tfc.api.Crafting.QuernRecipe;
+import com.bioxx.tfc.api.Enums.EnumFuelMaterial;
 import com.bioxx.tfc.api.Enums.EnumSize;
 import com.bioxx.tfc.api.Enums.EnumWeight;
 
@@ -123,6 +126,7 @@ import dinglydell.tftechness.fluid.TFTFluids;
 import dinglydell.tftechness.gui.TFTGuiHandler;
 import dinglydell.tftechness.item.ItemBlockMachineComponent;
 import dinglydell.tftechness.item.ItemBlockTreatedBarrel;
+import dinglydell.tftechness.item.TFTFuel;
 import dinglydell.tftechness.item.TFTItems;
 import dinglydell.tftechness.item.TFTMeta;
 import dinglydell.tftechness.item.TFTPropertyRegistry;
@@ -150,6 +154,7 @@ import dinglydell.tftechness.tileentities.TileMachineComponentTurbine;
 import dinglydell.tftechness.tileentities.TileMachineCoolingElement;
 import dinglydell.tftechness.tileentities.TileMachineDynamo;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
+import dinglydell.tftechness.tileentities.TileMachineFirebox;
 import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
@@ -259,6 +264,12 @@ public class TFTechness2 {
 		Component.registerComponent(new Component("dynamo",
 				TileMachineDynamo.class, new Object[] { "bbb", "bAb", "bbb" })
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
+
+		Component
+				.registerComponent(new Component("firebox",
+						TileMachineFirebox.class, new Object[] { " a ",
+								"A A",
+								" a " }));
 
 	}
 
@@ -491,17 +502,33 @@ public class TFTechness2 {
 
 		//carbon
 
-		TFTPropertyRegistry.registerCarbonContentByMass(new ItemStack(
-				TFCItems.coal), 192f);
-		TFTPropertyRegistry.registerCarbonContentByMass(TFTMeta.charcoal, 192f);
+		//		TFTPropertyRegistry.registerCarbonContentByMass(new ItemStack(
+		//			TFCItems.coal), 192f);
+		TFTPropertyRegistry.registerFuel(new ItemStack(TFCItems.coal),
+				new TFTFuel(EnumFuelMaterial.COAL, 192f, 500));
+		TFTPropertyRegistry.registerFuel(TFTMeta.charcoal, new TFTFuel(
+				EnumFuelMaterial.CHARCOAL, 192f, 349));
+		//TFTPropertyRegistry.registerCarbonContentByMass(TFTMeta.charcoal, 192f);
+		int cokeTime = EnumFuelMaterial.COAL.burnTimeMax * 2;
+		int cokeTemp = (int) (EnumFuelMaterial.COAL.burnTempMax * 1.1);
+		TFTPropertyRegistry.registerFuel(TFTMeta.ieCoalCoke, new TFTFuel(
+				"coalCoke", cokeTime, cokeTemp, 180f, 700));
+		TFTPropertyRegistry.registerFuel(TFTMeta.ieCoalCokeBlock, new TFTFuel(
+				"coalCokeBlock", 9 * cokeTime, cokeTemp, 9 * 180f, 700));
+		//TFTPropertyRegistry.registerCarbonContentByMass(TFTMeta.ieCoalCoke,
+		//180f);
+		//TFTPropertyRegistry
+		//	.registerCarbonContentByMass(TFTMeta.ieCoalCokeBlock, 180f * 9);
+		for (int i = 0; i < Global.WOOD_ALL.length; i++) {
+			ItemStack log = new ItemStack(TFCItems.logs, 1, i);
+			EnumFuelMaterial m = TFC_Core.getFuelMaterial(log);
 
-		TFTPropertyRegistry.registerCarbonContentByMass(TFTMeta.ieCoalCoke,
-				180f);
-		TFTPropertyRegistry
-				.registerCarbonContentByMass(TFTMeta.ieCoalCokeBlock, 180f * 9);
-		for (ItemStack log : OreDictionary.getOres("logWood")) {
-			TFTPropertyRegistry.registerCarbonContentByMass(log, 57f);
+			TFTPropertyRegistry.registerFuel(log, new TFTFuel(m, 57f, 300));
 		}
+
+		//IGNITION
+		TFTPropertyRegistry.registerIgnitionSource(TFCItems.fireStarter);
+		TFTPropertyRegistry.registerIgnitionSource(TFCItems.flintSteel);
 
 	}
 
@@ -584,6 +611,8 @@ public class TFTechness2 {
 
 		GameRegistry.registerTileEntity(TileMachineDynamo.class,
 				"TFTMachineDynamo");
+		GameRegistry.registerTileEntity(TileMachineFirebox.class,
+				"TFTMachineFirebox");
 
 	}
 

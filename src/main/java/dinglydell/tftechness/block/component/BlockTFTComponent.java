@@ -246,7 +246,7 @@ public class BlockTFTComponent extends BlockContainer {
 		if (!world.isRemote) {
 			TileMachineComponent te = (TileMachineComponent) world
 					.getTileEntity(x, y, z);
-			te.openGui(world, player);
+			te.onRightClick(world, player);
 		}
 
 		return true;

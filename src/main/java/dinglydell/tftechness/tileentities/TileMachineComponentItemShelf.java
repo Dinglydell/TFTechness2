@@ -266,7 +266,7 @@ public class TileMachineComponentItemShelf extends TileMachineInventory {
 		data.setTag("Items", invTag);
 	}
 
-	public boolean openGui(World world, EntityPlayer player) {
+	public boolean onRightClick(World world, EntityPlayer player) {
 		//if (!hasMaster()) {
 		//	return false;
 		//}

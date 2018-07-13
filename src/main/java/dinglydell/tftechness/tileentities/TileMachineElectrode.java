@@ -111,7 +111,7 @@ public class TileMachineElectrode extends TileMachineHeatingElement implements
 		return inventory[0] != null && inventory[1] != null;
 	}
 
-	public boolean openGui(World world, EntityPlayer player) {
+	public boolean onRightClick(World world, EntityPlayer player) {
 		player.openGui(TFTechness2.instance,
 				TFTGuis.Electrode.ordinal(),
 				world,

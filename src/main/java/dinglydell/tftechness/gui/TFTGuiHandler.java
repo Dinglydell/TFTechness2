@@ -8,12 +8,13 @@ import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
 import dinglydell.tftechness.tileentities.TileMachineComponentTurbine;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
+import dinglydell.tftechness.tileentities.TileMachineFirebox;
 import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class TFTGuiHandler implements IGuiHandler {
 	public enum TFTGuis {
-		Electrolyser, Machine, ItemShelf, Tank, Electrode, Monitor, Turbine
+		Electrolyser, Machine, ItemShelf, Tank, Electrode, Monitor, Turbine, Firebox
 	}
 
 	@Override
@@ -47,6 +48,10 @@ public class TFTGuiHandler implements IGuiHandler {
 		if (ID == TFTGuis.Turbine.ordinal()) {
 			return new ContainerMachineTank(player.inventory,
 					(TileMachineComponentTurbine) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Firebox.ordinal()) {
+			return new ContainerFirebox(player.inventory,
+					(TileMachineFirebox) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}
@@ -82,6 +87,10 @@ public class TFTGuiHandler implements IGuiHandler {
 		if (ID == TFTGuis.Turbine.ordinal()) {
 			return new GuiMachineTurbine(player.inventory,
 					(TileMachineComponentTurbine) world.getTileEntity(x, y, z));
+		}
+		if (ID == TFTGuis.Firebox.ordinal()) {
+			return new GuiFirebox(player.inventory,
+					(TileMachineFirebox) world.getTileEntity(x, y, z));
 		}
 		return null;
 	}
