@@ -32,6 +32,9 @@ public class TileMachineMonitor extends TileMachineComponent {
 
 	@Override
 	public ThermometerTier getThermometerTier() {
+		if (!materials.containsKey(ComponentProperty.THERMOMETER_TIER)) {
+			return ThermometerTier.fuzzy;
+		}
 		return (ThermometerTier) materials
 				.get(ComponentProperty.THERMOMETER_TIER).validFor
 				.get(ComponentProperty.THERMOMETER_TIER);

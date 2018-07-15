@@ -123,6 +123,8 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 		}
 		temperature = tank.updateTank(temperature);
 		tank.removeCondition(SolutionRecipe.electrodes);
+		Map<ForgeDirection, Double> dPCopy = new HashMap<ForgeDirection, Double>(
+				dP);
 		for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
 			int x = xCoord + dir.offsetX;
 			int y = yCoord + dir.offsetY;
@@ -132,6 +134,13 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				double p = tank.getTotalPressure();
 				tank.equaliseGas(0.01f + 0.005f * dir.offsetY, 1, TFTWorldData
 						.get(worldObj).getAtmosphericComposition(x, y, z));
+				ForgeDirection opp = dir.getOpposite();
+				if (dPCopy.containsKey(opp)) {
+					double newDP = -0.1 * dPCopy.get(opp);
+					if (newDP > 0) {
+						tank.transferGasTo(null, newDP);
+					}
+				}
 				dP.put(dir, p - tank.getTotalPressure());
 
 				if (dP.get(dir) > 20) {
@@ -161,6 +170,13 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 					TileMachineComponentTank tileTank = (TileMachineComponentTank) tile;
 					double p = tank.getTotalPressure();
 					tank.equalise(tileTank.tank, dir);
+					ForgeDirection opp = dir.getOpposite();
+					if (dPCopy.containsKey(opp)) {
+						double newDP = -0.5 * dPCopy.get(opp);
+						if (newDP > 0) {
+							tank.transferGasTo(tileTank.tank, newDP);
+						}
+					}
 					dP.put(dir, p - tank.getTotalPressure());
 					//if (tank.hasCondition(SolutionRecipe.electrodes)) {// share conditions
 					//	tileTank.tank.addCondition(SolutionRecipe.electrodes);
@@ -464,7 +480,7 @@ public class TileMachineComponentTank extends TileMachineInventory implements
 				+ to.offsetY, zCoord + to.offsetZ);
 
 		if (tile instanceof TileMachineComponentTank) {
-			if (!from.add((ITESolutionTank) tile)) {
+			if (!from.add((ITESolutionTank) tile) || from.size() > 3) {
 				return 0;
 			}
 			TileMachineComponentTank tt = (TileMachineComponentTank) tile;

@@ -41,10 +41,9 @@ Mid-term:
  -target temperature in multiblocks
  -materials with electrical resistance and/or a limited transfer rate?
  -dynamic texture for multiblock parts based on material
- -firebox component - non-rf heat source
 
- -temperature monitor component - can tell you the temperature of neighbour blocks
-   -can turn off neighbouring heating/cooling elements based on a target temperature
+ -make firebox component conscious of oxygen supply from tanks/atmosphere (maybe include processes in absence of oxygen such as wood -> charcoal)
+
 
  -compound registry - every item is registered with what compounds it contains - these compounds are composed of elements
  -reactions in the solution tank would be based on what can be done with existing elements and compounds in the tank (possibly using enthalpy and/or entropy)

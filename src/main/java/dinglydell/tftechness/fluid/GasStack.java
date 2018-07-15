@@ -116,6 +116,10 @@ public class GasStack {
 				.getTemperature() * other.amount) / (amount + other.amount));
 		setTemperature(newT);
 		amount += other.amount;
+		if (Double.isNaN(amount)) {
+			TFTechness2.logger.warn("NaN in GasSack!");
+			amount = 0;
+		}
 
 	}
 

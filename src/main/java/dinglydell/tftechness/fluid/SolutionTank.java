@@ -181,7 +181,7 @@ public class SolutionTank {
 
 	/** Updates the tank and returns the new temperature */
 	public float updateTank(float temperature) {
-
+		//gases.clear();
 		// fluids solidifying and stuff
 		List<Fluid> fluidDelete = new ArrayList<Fluid>();
 		for (Entry<Fluid, FluidStackFloat> fluid : fluids.entrySet()) {
@@ -1022,47 +1022,67 @@ public class SolutionTank {
 				//double myPressure = gas.getPressure(vol);
 
 				//double dP = myPressure - otherPressure;
+				handleGas(gas.getGas(), rate, vol, totalVol, composition);
 
-				double otherAmt;
-				float otherT;
-				if (composition.containsKey(gas.getGas())) {
-					otherAmt = composition.get(gas.getGas()).amount;
-					otherT = composition.get(gas.getGas()).getTemperature();
-				} else {
-					otherAmt = 0;
-					otherT = 0;
-				}
-				double totalAmt = gas.amount + otherAmt;
-				if (totalAmt == 0) {
-					continue;
-				}
-				double Tavg = (gas.amount * gas.getTemperature() + otherAmt
-						* otherT)
-						/ totalAmt;
-				double eqAmt = (Tavg - TFTechness2.ABSOLUTE_ZERO)
-						* vol
-						* totalAmt
-						/ (totalVol * (gas.getTemperature() - TFTechness2.ABSOLUTE_ZERO));
-				double dN = (gas.amount - eqAmt) * rate;
-				if (dN > 0) {
-					GasStack drainStack = drain(gas.getGas(), dN, true);
-					if (composition.containsKey(drainStack.getGas())) {
-						composition.get(gas.getGas()).add(drainStack);
-					} else {
-						composition.put(drainStack.getGas(), drainStack);
-					}
-				} else {
-					dN = Math.min(otherAmt, -dN);
-					if (dN != 0) {
-						composition.get(gas.getGas()).amount -= dN;
-						fill(new GasStack(gas.getGas(), dN, otherT));
-					}
+			}
+			for (Gas gas : composition.keySet()) {
+				if (!gases.containsKey(gas)) {
+					handleGas(gas, rate, vol, totalVol, composition);
 				}
 
 			}
+
 		} else if (vol == 0) {
 			getGasContent().clear();
 		}
+	}
+
+	private void handleGas(Gas gas, float rate, float vol, float totalVol,
+			Map<Gas, GasStack> composition) {
+
+		double otherAmt;
+		float otherT;
+		if (composition.containsKey(gas)) {
+			otherAmt = composition.get(gas).amount;
+			otherT = composition.get(gas).getTemperature();
+		} else {
+			otherAmt = 0;
+			otherT = 0;
+		}
+		double myAmt;
+		double myT;
+		if (gases.containsKey(gas)) {
+			myAmt = gases.get(gas).amount;
+			myT = gases.get(gas).getTemperature();
+		} else {
+			myAmt = 0;
+			myT = 0;
+		}
+		double totalAmt = myAmt + otherAmt;
+		if (totalAmt == 0) {
+			return;
+		}
+		double Tavg = (myAmt * myT + otherAmt * otherT) / totalAmt;
+		double eqAmt = (Tavg - TFTechness2.ABSOLUTE_ZERO) * vol * totalAmt
+				/ (totalVol * (myT - TFTechness2.ABSOLUTE_ZERO));
+		double dN = (myAmt - eqAmt) * rate;
+		if (dN > 0) {
+			GasStack drainStack = drain(gas, dN, true);
+			if (drainStack != null) {
+				if (composition.containsKey(drainStack.getGas())) {
+					composition.get(gas).add(drainStack);
+				} else {
+					composition.put(drainStack.getGas(), drainStack);
+				}
+			}
+		} else {
+			dN = Math.min(otherAmt, -dN);
+			if (dN != 0 && !Double.isNaN(dN)) {
+				composition.get(gas).amount -= dN;
+				fill(new GasStack(gas, dN, otherT));
+			}
+		}
+
 	}
 
 	public GasStack drain(Gas gas, double amt, boolean doDrain) {
@@ -1214,6 +1234,22 @@ public class SolutionTank {
 					* TFTPropertyRegistry.getDensity(solute.getKey().stack);
 		}
 		return m;
+	}
+
+	public void transferGasTo(SolutionTank tank, double dP) {
+		double p = getTotalPressure();
+		if (p == 0) {
+			return;
+		}
+		List<GasStack> gasList = new ArrayList<GasStack>(gases.values());
+		for (GasStack gas : gasList) {
+			double amt = gas.amount * dP / p;
+			GasStack drainStack = drain(gas.getGas(), amt, true);
+			if (tank != null) {
+				tank.fill(drainStack);
+			}
+		}
+
 	}
 
 }

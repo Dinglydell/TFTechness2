@@ -3,6 +3,7 @@ package dinglydell.tftechness.tileentities;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.gui.TFTGuiHandler.TFTGuis;
@@ -153,5 +154,10 @@ public class TileMachineFirebox extends TileMachineInventory {
 
 	public int getFuelTimeLeft() {
 		return fuel.burnTime - fuelTimer;
+	}
+
+	@Override
+	public IIcon getIcon(int side) {
+		return component.getIcon(ignited ? 1 : 0);
 	}
 }

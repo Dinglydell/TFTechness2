@@ -48,9 +48,9 @@ public class StringUtil {
 	private static final String[] coldTempNames = new String[] { "Cool",
 			"Cold",
 			"Freezing",
-			"Very Cold",
-			"Extremely Cold",
-			"Absolutely Cold" };
+			"Frigid",
+			"Very Frigid",
+			"Extremely Frigid" };
 
 	/**
 	 * Returns a value with an SI prefix eg. 1000 -> 1k
@@ -88,7 +88,7 @@ public class StringUtil {
 	}
 
 	public static String getHeatColour(float temp, float meltTemp) {
-		if (temp < 14) {
+		if (temp < 15) {
 			float n = 15 - temp;
 			// i == index of string
 			int i;
@@ -96,7 +96,7 @@ public class StringUtil {
 			int j = 4;
 			for (i = -1; i < coldTempNames.length && n > 0; i++) {
 				for (j = 5; j > 0 && n > 0; j--) {
-					n -= Math.pow(i + 1, 2);
+					n -= Math.pow(2, i + 1);
 				}
 			}
 

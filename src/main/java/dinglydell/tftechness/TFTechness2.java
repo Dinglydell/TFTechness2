@@ -265,11 +265,9 @@ public class TFTechness2 {
 				TileMachineDynamo.class, new Object[] { "bbb", "bAb", "bbb" })
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
-		Component
-				.registerComponent(new Component("firebox",
-						TileMachineFirebox.class, new Object[] { " a ",
-								"A A",
-								" a " }));
+		Component.registerComponent(new Component("firebox",
+				TileMachineFirebox.class, new Object[] { " a ", "A A", " a " })
+				.registerAdditionalIcon("lit"));
 
 	}
 

@@ -68,7 +68,7 @@ public class TileMachineComponentTurbine extends TileMachineComponentTank {
 					|| dir.getOpposite().ordinal() == blockMetadata) {
 				float dRPS = Math.abs((float) (entry.getValue() * 0.00025f));
 				rps += dRPS;
-				temperature -= dRPS * 0.01f;
+				temperature -= dRPS * 0.02f;
 				TileEntity te = getAdjacentTile(dir);
 				if (te instanceof TileMachineComponentTurbine) {
 					TileMachineComponentTurbine turb = (TileMachineComponentTurbine) te;
