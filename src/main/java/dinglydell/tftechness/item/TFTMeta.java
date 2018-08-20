@@ -303,4 +303,6 @@ public class TFTMeta {
 	public static ItemStack iceFresh = new ItemStack(TFCBlocks.ice, 1, 1);
 	public static ItemStack iceSalt = new ItemStack(TFCBlocks.ice, 1, 0);
 
+	public static ItemStack steamEngineHobbyist = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 7);
 }

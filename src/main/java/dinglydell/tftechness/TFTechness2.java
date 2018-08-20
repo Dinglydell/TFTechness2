@@ -99,6 +99,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
+import dinglydell.tftechness.achievement.AchievementHandler;
 import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
 import dinglydell.tftechness.block.BlockTFTMachine;
@@ -144,7 +145,7 @@ import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.EnumState;
 import dinglydell.tftechness.recipe.TFTAlloyRecipe;
 import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
-import dinglydell.tftechness.render.RenderBlockTFT;
+import dinglydell.tftechness.render.RenderCropTFT;
 import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
@@ -288,6 +289,8 @@ public class TFTechness2 {
 		AdvancedRocketryBlocks.blockRollingMachine
 				.setBlockName("advRollingMachine");
 
+		//zmaster587.advancedRocketry.satellite.SatelliteOreMapping
+
 	}
 
 	private void addCrops() {
@@ -362,10 +365,10 @@ public class TFTechness2 {
 
 		// Stock TFC
 		// For multiple metals with the same stat entry
-		MetalStat blackSteel = new MetalStat(0.35, 1485, 8982, 0.113f, 7.6e8f);
-		MetalStat blueSteel = new MetalStat(0.35, 1540, 8775, 0.115f, 8e8f);
+		MetalStat blackSteel = new MetalStat(0.35, 1485, 16160, 0.113f, 7.6e8f);
+		MetalStat blueSteel = new MetalStat(0.35, 1540, 27440, 0.115f, 8e8f);
 		MetalStat copper = new MetalStat(0.35, 1080, 8960, 0.772f, 7e7f);
-		MetalStat redSteel = new MetalStat(0.35, 1540, 9837, 0.115f, 8e8f);
+		MetalStat redSteel = new MetalStat(0.35, 1540, 29620, 0.115f, 8e8f);
 		MetalStat steel = new MetalStat(0.35, 1540, 8000, 0.108f, 2.5e8f);
 
 		statMap.put("Bismuth", new MetalStat(0.14, 270, 10000, 0.017f, 4e6f));
@@ -444,7 +447,7 @@ public class TFTechness2 {
 		registerRenderers();
 		registerIEMultiblocks();
 		registerTileEntities();
-
+		AchievementHandler.init();
 		//Waila support
 		FMLInterModComms.sendMessage("Waila",
 				"register",
@@ -453,9 +456,9 @@ public class TFTechness2 {
 
 	private void registerRenderers() {
 		RenderingRegistry
-				.registerBlockHandler(RenderBlockTFT.renderCrops = RenderingRegistry
+				.registerBlockHandler(RenderCropTFT.renderCrops = RenderingRegistry
 						.getNextAvailableRenderId(),
-						new RenderBlockTFT());
+						new RenderCropTFT());
 
 	}
 
@@ -617,7 +620,6 @@ public class TFTechness2 {
 	private void registerBlocks() {
 		TFTBlocks.metalSheet = new BlockTFTMetalSheet()
 				.setBlockName("MetalSheet").setHardness(80);
-
 		GameRegistry.registerBlock(TFTBlocks.metalSheet, "MetalSheet");
 
 		TFTBlocks.machine = new BlockTFTMachine().setBlockName("Machine")

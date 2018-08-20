@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dinglydell.tftechness.TFTechness2;
 import dinglydell.tftechness.crop.TFTCropManager;
-import dinglydell.tftechness.render.RenderBlockTFT;
+import dinglydell.tftechness.render.RenderCropTFT;
 
 public class BlockCropTFT extends BlockCrop {
 	protected Map<CropIndex, IIcon[]> icons;
@@ -47,7 +47,7 @@ public class BlockCropTFT extends BlockCrop {
 	@Override
 	public int getRenderType() {
 
-		return RenderBlockTFT.renderCrops;
+		return RenderCropTFT.renderCrops;
 	}
 
 	// Please stop having hard-coded IDs, TFC

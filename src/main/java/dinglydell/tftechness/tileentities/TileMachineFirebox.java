@@ -97,6 +97,7 @@ public class TileMachineFirebox extends TileMachineInventory {
 		if (useItem != null && TFTPropertyRegistry.isIgnitionSource(useItem)) {
 			useItem.setItemDamage(useItem.getItemDamage() + 1);
 			this.ignited = true;
+			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 			return true;
 		}
 

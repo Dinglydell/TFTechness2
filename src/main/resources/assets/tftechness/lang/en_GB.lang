@@ -9,3 +9,5 @@ item.lumberTreatedWood.name=Treated Timber
 
 info.machine.cooler.tooltip=Uses RF to move heat from neighbour blocks into itself.
 info.machine.electrode.tooltip=Uses RF to electrolyse neighbouring tanks.
+
+achievement.tftechness.aluminium.desc=Make an aluminium ingot

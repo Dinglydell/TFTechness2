@@ -58,11 +58,7 @@ public class Component {
 
 		iconStrs.add(TFTechness2.MODID + ":machine/" + name.toLowerCase());
 		//universal
-		registerPropertySet(ComponentPropertySet.registerSet("base",
-				new ComponentProperty[] { ComponentProperty.CONDUCTIVITY,
-						ComponentProperty.SPECIFIC_HEAT,
-						ComponentProperty.MAXIMUM_TEMPERATURE,
-						ComponentProperty.MAXIMUM_PRESSURE }));
+		registerPropertySet(ComponentPropertySet.BASE);
 
 		for (Object o : recipe) {
 			if (o instanceof String) {

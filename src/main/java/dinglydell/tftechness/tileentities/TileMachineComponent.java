@@ -515,4 +515,9 @@ public/* abstract */class TileMachineComponent extends TileEntity implements
 						-1);
 
 	}
+
+	public ComponentMaterial getBaseMaterial() {
+		// TODO you probably need something a bit more reliable than this
+		return materials.get(ComponentProperty.CONDUCTIVITY);
+	}
 }
