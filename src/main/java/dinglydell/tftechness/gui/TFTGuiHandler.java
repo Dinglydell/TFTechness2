@@ -10,20 +10,19 @@ import dinglydell.tftechness.tileentities.TileMachineComponentTurbine;
 import dinglydell.tftechness.tileentities.TileMachineElectrode;
 import dinglydell.tftechness.tileentities.TileMachineFirebox;
 import dinglydell.tftechness.tileentities.TileMachineMonitor;
-import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 
 public class TFTGuiHandler implements IGuiHandler {
 	public enum TFTGuis {
-		Electrolyser, Machine, ItemShelf, Tank, Electrode, Monitor, Turbine, Firebox
+		Machine, ItemShelf, Tank, Electrode, Monitor, Turbine, Firebox
 	}
 
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
-		if (ID == TFTGuis.Electrolyser.ordinal()) {
-			return new ContainerElectrolyser(player.inventory,
-					(TileTFTElectrolyser) world.getTileEntity(x, y, z));
-		}
+		//if (ID == TFTGuis.Electrolyser.ordinal()) {
+		//	return new ContainerElectrolyser(player.inventory,
+		//			(TileTFTElectrolyser) world.getTileEntity(x, y, z));
+		//}
 		if (ID == TFTGuis.Machine.ordinal()) {
 			return new ContainerMachine(player.inventory,
 					(TileMachineComponent) world.getTileEntity(x, y, z));
@@ -59,10 +58,10 @@ public class TFTGuiHandler implements IGuiHandler {
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
-		if (ID == TFTGuis.Electrolyser.ordinal()) {
-			return new GuiElectrolyser(player.inventory,
-					(TileTFTElectrolyser) world.getTileEntity(x, y, z));
-		}
+		//if (ID == TFTGuis.Electrolyser.ordinal()) {
+		//	return new GuiElectrolyser(player.inventory,
+		//			(TileTFTElectrolyser) world.getTileEntity(x, y, z));
+		//}
 		if (ID == TFTGuis.Machine.ordinal()) {
 			return new GuiMachine(player.inventory,
 					(TileMachineComponent) world.getTileEntity(x, y, z));

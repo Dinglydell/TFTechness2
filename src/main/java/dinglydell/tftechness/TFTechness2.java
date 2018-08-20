@@ -50,7 +50,6 @@ import zmaster587.libVulpes.api.material.MaterialRegistry;
 import zmaster587.libVulpes.interfaces.IRecipe;
 import zmaster587.libVulpes.recipe.RecipesMachine;
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.MultiblockHandler;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
@@ -102,7 +101,6 @@ import cpw.mods.fml.relauncher.Side;
 import dinglydell.tftechness.achievement.AchievementHandler;
 import dinglydell.tftechness.block.BlockCropTFT;
 import dinglydell.tftechness.block.BlockMoltenMetal;
-import dinglydell.tftechness.block.BlockTFTMachine;
 import dinglydell.tftechness.block.BlockTFTMetalSheet;
 import dinglydell.tftechness.block.BlockTreatedBarrel;
 import dinglydell.tftechness.block.TFTBlocks;
@@ -135,11 +133,8 @@ import dinglydell.tftechness.metal.AlloyIngred;
 import dinglydell.tftechness.metal.Material;
 import dinglydell.tftechness.metal.MetalSnatcher;
 import dinglydell.tftechness.metal.MetalStat;
-import dinglydell.tftechness.multiblock.MultiblockElectrolyser;
 import dinglydell.tftechness.network.MachineComponentPacketHandler;
 import dinglydell.tftechness.network.PacketMachineComponent;
-import dinglydell.tftechness.network.PacketTFTMachine;
-import dinglydell.tftechness.network.TFTMachinePacketHandler;
 import dinglydell.tftechness.recipe.RemoveBatch;
 import dinglydell.tftechness.recipe.SolutionRecipe;
 import dinglydell.tftechness.recipe.SolutionRecipe.EnumState;
@@ -160,7 +155,6 @@ import dinglydell.tftechness.tileentities.TileMachineHeatingElement;
 import dinglydell.tftechness.tileentities.TileMachineMonitor;
 import dinglydell.tftechness.tileentities.TileMachineRF.WireTier;
 import dinglydell.tftechness.tileentities.TileMoltenMetal;
-import dinglydell.tftechness.tileentities.TileTFTElectrolyser;
 import dinglydell.tftechness.tileentities.TileTreatedBarrel;
 import dinglydell.tftechness.util.ItemUtil;
 import dinglydell.tftechness.util.MathsUtils;
@@ -343,14 +337,14 @@ public class TFTechness2 {
 
 	private void registerPacketHandlers() {
 		snw = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
-		snw.registerMessage(TFTMachinePacketHandler.class,
-				PacketTFTMachine.class,
-				0,
-				Side.SERVER);
-		snw.registerMessage(TFTMachinePacketHandler.class,
-				PacketTFTMachine.class,
-				1,
-				Side.CLIENT);
+		//snw.registerMessage(TFTMachinePacketHandler.class,
+		//		PacketTFTMachine.class,
+		////		0,
+		//		Side.SERVER);
+		//	snw.registerMessage(TFTMachinePacketHandler.class,
+		//			PacketTFTMachine.class,
+		//			1,
+		//			Side.CLIENT);
 		snw.registerMessage(MachineComponentPacketHandler.class,
 				PacketMachineComponent.class,
 				2,
@@ -445,7 +439,7 @@ public class TFTechness2 {
 		registerBlocks();
 		registerGui();
 		registerRenderers();
-		registerIEMultiblocks();
+		//	registerIEMultiblocks();
 		registerTileEntities();
 		AchievementHandler.init();
 		//Waila support
@@ -575,16 +569,11 @@ public class TFTechness2 {
 
 	}
 
-	private void registerIEMultiblocks() {
-		MultiblockHandler.registerMultiblock(MultiblockElectrolyser.instance);
-
-	}
-
 	private void registerTileEntities() {
 		GameRegistry.registerTileEntity(TETFTMetalSheet.class, "TFTMetalSheet");
 
-		GameRegistry.registerTileEntity(TileTFTElectrolyser.class,
-				"TFTElectrolyser");
+		//GameRegistry.registerTileEntity(TileTFTElectrolyser.class,
+		//		"TFTElectrolyser");
 
 		GameRegistry.registerTileEntity(TileMoltenMetal.class, "MoltenMetal");
 
@@ -622,8 +611,8 @@ public class TFTechness2 {
 				.setBlockName("MetalSheet").setHardness(80);
 		GameRegistry.registerBlock(TFTBlocks.metalSheet, "MetalSheet");
 
-		TFTBlocks.machine = new BlockTFTMachine().setBlockName("Machine")
-				.setHardness(80);
+		//TFTBlocks.machine = new BlockTFTMachine().setBlockName("Machine")
+		//		.setHardness(80);
 
 		GameRegistry.registerBlock(TFTBlocks.machine, "Machine");
 

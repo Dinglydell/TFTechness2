@@ -10,7 +10,7 @@ import dinglydell.tftechness.block.component.Component;
 
 public class TFTBlocks {
 	public static Block metalSheet;
-	public static Block machine;
+	//	public static Block machine;
 	public static Map<String, Block> moltenMetal = new HashMap<String, Block>();
 	public static Block crops;
 	public static Block barrel;
