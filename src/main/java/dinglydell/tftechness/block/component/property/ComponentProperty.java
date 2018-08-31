@@ -11,6 +11,16 @@ import dinglydell.tftechness.block.component.ComponentMaterial;
  */
 public abstract class ComponentProperty<T> {
 
+	/** The type of power used by an anvil (typically steam vs rf) */
+	public static final ComponentProperty ANVIL_POWER = new ComponentPropertyPowerType(
+			"anvilPower");
+
+	public static final ComponentProperty ANVIL_TIER = new ComponentPropertyAnvilTier(
+			"anvilTier");
+
+	public static final ComponentProperty ANVIL_ACTION_TYPE = new ComponentPropertyAction(
+			"anvilAction");
+
 	/** The maximum rotary speed the turbine can handle */
 	public static ComponentProperty MAX_TURBINE_SPEED = new ComponentPropertyFloat(
 			"turbineSpeed", "Hz");

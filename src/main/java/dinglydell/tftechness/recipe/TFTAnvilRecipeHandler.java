@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.bioxx.tfc.api.TFCItems;
+import com.bioxx.tfc.api.Constant.Global;
 import com.bioxx.tfc.api.Crafting.AnvilManager;
 import com.bioxx.tfc.api.Crafting.AnvilRecipe;
 import com.bioxx.tfc.api.Crafting.AnvilReq;
@@ -53,19 +54,22 @@ public class TFTAnvilRecipeHandler {
 			//tin gear bushing
 			manager.addRecipe(new AnvilRecipe(new ItemStack(TFCItems.tinSheet),
 					null, TFTAnvilRecipeHandler.bushingPlan, AnvilReq.COPPER,
-					TFTMeta.tinGearBushing));
+					TFTMeta.tinGearBushing)
+					.addRecipeSkill(Global.SKILL_GENERAL_SMITHING));
 
 			//iron gear
 			manager.addRecipe(new AnvilRecipe(new ItemStack(
 					TFCItems.wroughtIronSheet2x), TFTMeta.tinGearBushing,
 					TFTAnvilRecipeHandler.gearPlan, AnvilReq.WROUGHTIRON,
-					TFTMeta.ironGear));
+					TFTMeta.ironGear)
+					.addRecipeSkill(Global.SKILL_GENERAL_SMITHING));
 
 			//steel gear
 			manager.addRecipe(new AnvilRecipe(new ItemStack(
 					TFCItems.steelSheet2x), TFTMeta.tinGearBushing,
 					TFTAnvilRecipeHandler.gearPlan, AnvilReq.STEEL,
-					TFTMeta.steelGear));
+					TFTMeta.steelGear)
+					.addRecipeSkill(Global.SKILL_GENERAL_SMITHING));
 
 			//wSeed = world.getWorldInfo().getSeed();
 		}

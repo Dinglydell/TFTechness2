@@ -3,6 +3,8 @@
 
 -placeable treated lumber?
 
+-oil & oil power
+
 -allow external heater to be used to keep crops warm during winter?
     -related: multiblock machines having a small affect on ambient temperature up to 1 block away from them?
         -this may never happen because the potential performance issues
@@ -38,6 +40,7 @@ Mid-term:
  -multiblock components with an additional material for the "coating" of the block - this will determine the conductivity with the air as opposed to other machine blocks
  -multiblock components that consider the atmospheric conditions of the planet its on when calculating heat loss to the environment
  -steam powered multiblock components?
+ -steam drill that digs shafts, but doesnt actually give ores?
  -target temperature in multiblocks
  -materials with electrical resistance and/or a limited transfer rate?
  -dynamic texture for multiblock parts based on material
@@ -45,12 +48,11 @@ Mid-term:
  -make firebox component conscious of oxygen supply from tanks/atmosphere (maybe include processes in absence of oxygen such as wood -> charcoal)
 
 
+
  -compound registry - every item is registered with what compounds it contains - these compounds are composed of elements
  -reactions in the solution tank would be based on what can be done with existing elements and compounds in the tank (possibly using enthalpy and/or entropy)
  -densities of stuff in solution tank that varies with state
 
-
- -SolutionTank with alloy mixing!
 
  -better multiblock component recipes - a multistage process with anvils?
 

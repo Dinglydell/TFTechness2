@@ -24,6 +24,15 @@ public class ComponentPropertySet {
 	public static final ComponentPropertySet THERMOMETER_TIER = registerSet("thermometerTier",
 			new ComponentProperty[] { ComponentProperty.THERMOMETER_TIER });
 
+	public static final ComponentPropertySet ANVIL_POWER_ASSIST = registerSet("anvilPower",
+			new ComponentProperty[] { ComponentProperty.ANVIL_POWER });
+
+	public static final ComponentPropertySet ANVIL_TIER = registerSet("anvilTier",
+			new ComponentProperty[] { ComponentProperty.ANVIL_TIER });
+
+	public static final ComponentPropertySet ANVIL_ACTION_TYPE = registerSet("anvilAction",
+			new ComponentProperty[] { ComponentProperty.ANVIL_ACTION_TYPE });;
+
 	public static ComponentPropertySet registerSet(String name,
 			ComponentProperty[] properties) {
 		ComponentPropertySet set = new ComponentPropertySet(name, properties);

@@ -305,4 +305,8 @@ public class TFTMeta {
 
 	public static ItemStack steamEngineHobbyist = new ItemStack(
 			RailcraftBlocks.getBlockMachineBeta(), 1, 7);
+	public static ItemStack steamEngineCommercial = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 8);
+	public static ItemStack steamEngineIndustrial = new ItemStack(
+			RailcraftBlocks.getBlockMachineBeta(), 1, 9);
 }

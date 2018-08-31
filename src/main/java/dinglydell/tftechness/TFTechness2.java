@@ -29,7 +29,6 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -74,6 +73,7 @@ import com.bioxx.tfc.api.Metal;
 import com.bioxx.tfc.api.TFCBlocks;
 import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
+import com.bioxx.tfc.api.TFC_ItemHeat;
 import com.bioxx.tfc.api.Constant.Global;
 import com.bioxx.tfc.api.Crafting.BarrelManager;
 import com.bioxx.tfc.api.Crafting.BarrelRecipe;
@@ -143,6 +143,7 @@ import dinglydell.tftechness.recipe.TFTAnvilRecipeHandler;
 import dinglydell.tftechness.render.RenderCropTFT;
 import dinglydell.tftechness.render.RenderItemMetal;
 import dinglydell.tftechness.tileentities.TETFTMetalSheet;
+import dinglydell.tftechness.tileentities.TileMachineAnvil;
 import dinglydell.tftechness.tileentities.TileMachineComponent;
 import dinglydell.tftechness.tileentities.TileMachineComponentItemShelf;
 import dinglydell.tftechness.tileentities.TileMachineComponentTank;
@@ -206,26 +207,38 @@ public class TFTechness2 {
 		//wall
 		Component.registerComponent(new Component("wall",
 				TileMachineComponent.class,
-				new Object[] { " a ", "aAa", " a " }));
+				new Object[] { " a ", "aAa", " a " })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE));
 
 		//heater (b is wire coil)
 		Component.registerComponent(new Component("heater",
 				TileMachineHeatingElement.class, new Object[] { "bab",
 						"aAa",
 						"bab" })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 		// item shelf
 		Component.registerComponent(new Component("shelf",
 				TileMachineComponentItemShelf.class, new Object[] { "aaa",
 						"   ",
-						"aaa" }));
+						"aaa" })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE));
 
 		// cooler (b is wire coil)
 		Component.registerComponent(new Component("cooler",
 				TileMachineCoolingElement.class, new Object[] { " a ",
 						"bAb",
 						" b " })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER)
 				.registerAdditionalIcon("cool"));
 
@@ -233,17 +246,28 @@ public class TFTechness2 {
 		Component.registerComponent(new Component("tank",
 				TileMachineComponentTank.class, new Object[] { "aaa",
 						"a a",
-						"aaa" }).registerAdditionalIcon("open"));
+						"aaa" })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_PRESSURE)
+				.registerAdditionalIcon("open"));
 
 		//Electrode
 		Component.registerComponent(new Component("electrode",
 				TileMachineElectrode.class,
 				new Object[] { "a a", "b b", "a a" })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 		//Monitor
 		Component.registerComponent(new Component("monitor",
 				TileMachineMonitor.class, new Object[] { "aaa", "aba", "aaa" })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
 				.registerPropertySet(ComponentPropertySet.THERMOMETER_TIER));
 
 		//Turbine
@@ -251,18 +275,39 @@ public class TFTechness2 {
 				TileMachineComponentTurbine.class, new Object[] { "aba",
 						"aba",
 						"aba" })
-				.registerPropertySet(ComponentPropertySet.TURBINE_SPEED)
+
+		.registerPropertySet(ComponentPropertySet.TURBINE_SPEED)
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_PRESSURE)
 				.registerAdditionalIcon("open").registerAdditionalIcon("IO")
 				.registerAdditionalIcon("IO_open"));
 
 		//Dynamo
 		Component.registerComponent(new Component("dynamo",
 				TileMachineDynamo.class, new Object[] { "bbb", "bAb", "bbb" })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
 				.registerPropertySet(ComponentPropertySet.WIRE_TIER));
 
 		Component.registerComponent(new Component("firebox",
 				TileMachineFirebox.class, new Object[] { " a ", "A A", " a " })
+				.setPropertyRelevant(ComponentProperty.SPECIFIC_HEAT)
+				.setPropertyRelevant(ComponentProperty.CONDUCTIVITY)
+				.setPropertyRelevant(ComponentProperty.MAXIMUM_TEMPERATURE)
 				.registerAdditionalIcon("lit"));
+
+		// Anvil
+		// b: power type (steam/rf)
+		// c: metal tier (what sort of anvil can hit)
+		// d: type of action (light hit, medium hit, heavy hit, draw, punch, bend, upset or shrink)
+		Component.registerComponent(new Component("anvil",
+				TileMachineAnvil.class, new Object[] { "aba", "ada", "aca" })
+				.registerPropertySet(ComponentPropertySet.ANVIL_POWER_ASSIST)
+				.registerPropertySet(ComponentPropertySet.ANVIL_TIER)
+				.registerPropertySet(ComponentPropertySet.ANVIL_ACTION_TYPE));
 
 	}
 
@@ -614,7 +659,7 @@ public class TFTechness2 {
 		//TFTBlocks.machine = new BlockTFTMachine().setBlockName("Machine")
 		//		.setHardness(80);
 
-		GameRegistry.registerBlock(TFTBlocks.machine, "Machine");
+		//GameRegistry.registerBlock(TFTBlocks.machine, "Machine");
 
 		for (Material m : materials) {
 			BlockMoltenMetal moltenMetal = new BlockMoltenMetal(
@@ -1176,12 +1221,15 @@ public class TFTechness2 {
 
 		removeRollingMachineRecipes();
 
+		//standard rail
 		RollingMachineCraftingManager
 				.getInstance()
 				.getRecipeList()
 				.add(new ShapedOreRecipe(new ItemStack(
-						RailcraftItem.rail.item(), 8), "I I", "I I", "I I",
-						'I', "ingotIron"));
+						RailcraftItem.rail.item(), 16), "S S", "S S", "S S",
+						'S', "ingotSteel"));
+
+		//advanced rail
 
 		RollingMachineCraftingManager
 				.getInstance()
@@ -1252,21 +1300,25 @@ public class TFTechness2 {
 		rollingBatch.addCrafting(TFTMeta.railElectric);
 		rollingBatch.addCrafting(RailcraftItem.rebar.getStack());
 
+		rollingBatch.addCrafting(TFTMeta.railStandard);
 		rollingBatch.Execute();
 
 	}
 
 	private void addRailcraftRecipes() {
+
+		//for (FluidContainerData c : FluidContainerRegistry
+		//		.getRegisteredFluidContainerData()) {
+		//	if (FluidContainerRegistry.containsFluid(c.filledContainer,
+		//			new FluidStack(IEContent.fluidCreosote, 1000))) {
+		//		GameRegistry.addRecipe(new ShapedOreRecipe(RailcraftItem.tie
+		//				.getStack(), " c ", "www", 'c', c.filledContainer, 'w',
+		//				"woodLumber"));
+		//	}
+		//}
 		//wooden tie
-		for (FluidContainerData c : FluidContainerRegistry
-				.getRegisteredFluidContainerData()) {
-			if (FluidContainerRegistry.containsFluid(c.filledContainer,
-					new FluidStack(IEContent.fluidCreosote, 1000))) {
-				GameRegistry.addRecipe(new ShapedOreRecipe(RailcraftItem.tie
-						.getStack(), " c ", "www", 'c', c.filledContainer, 'w',
-						"woodLumber"));
-			}
-		}
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				RailcraftItem.tie.getStack(), "www", 'w', "lumberTreatedWood"));
 
 		//crowbar
 		GameRegistry.addRecipe(new ShapelessOreRecipe(ItemCrowbar.getItem(),
@@ -1430,6 +1482,11 @@ public class TFTechness2 {
 		//high pressure
 		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.boilerTankHigh, "m",
 				"m", 'm', "plateBlackSteel"));
+
+		//engines
+		GameRegistry.addRecipe(new ShapedOreRecipe(TFTMeta.steamEngineHobbyist,
+				" s ", "gtg", 's', "plateSteel", 'g', "gearGold", 't',
+				TFCItems.tuyereSteel));
 
 	}
 
@@ -1820,7 +1877,10 @@ public class TFTechness2 {
 
 		// blast furnace
 		BlastFurnaceRecipe.removeRecipes(TFTMeta.ieSteelIngot);
-		BlastFurnaceRecipe.addRecipe(new ItemStack(TFCItems.pigIronIngot),
+		ItemStack hotPigIron = new ItemStack(TFCItems.pigIronIngot);
+		TFC_ItemHeat.setTemp(hotPigIron, HeatRegistry.getInstance()
+				.getMeltingPoint(hotPigIron));
+		BlastFurnaceRecipe.addRecipe(hotPigIron,
 				"ingotIron",
 				1200,
 				TFTMeta.ieSlag);
@@ -2041,6 +2101,9 @@ public class TFTechness2 {
 		batch.addCrafting(ItemMagnifyingGlass.getItem());
 		batch.addCrafting(TFTMeta.ieConveyor);
 
+		batch.addCrafting(TFTMeta.steamEngineHobbyist);
+		batch.addCrafting(TFTMeta.steamEngineCommercial);
+		batch.addCrafting(TFTMeta.steamEngineIndustrial);
 		batch.Execute();
 
 	}

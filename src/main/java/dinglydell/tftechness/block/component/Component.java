@@ -1,6 +1,7 @@
 package dinglydell.tftechness.block.component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiScreen;
@@ -35,6 +36,13 @@ public class Component {
 	//TODO: make a ComponentPropertySet class, which contains the array of properties as well as data such as whether these properties should use the primary or secondary material
 	/** The list of sets of properties that come from the same material */
 	public List<ComponentPropertySet> propertySets = new ArrayList<ComponentPropertySet>();
+
+	/**
+	 * Properties that should show up in tooltips - those that are actually
+	 * relevant to this component
+	 */
+	protected HashSet<ComponentProperty> relevantProperties = new HashSet<ComponentProperty>();
+
 	private IIcon[] icons;
 	private Object[] recipe;
 	private Class<? extends TileMachineComponent> type;
@@ -47,7 +55,7 @@ public class Component {
 	 * the alphabet refers to a material in order, where a capital is the
 	 * primary material and lower case is the secondary Note: in all cases so
 	 * far the first property (A) will be the base component. Eg: A - iron
-	 * block, a - iron sheet.
+	 * double sheet, a - iron sheet (single).
 	 */
 	public Component(String name, Class<? extends TileMachineComponent> type,
 			Object... recipe) {
@@ -58,7 +66,7 @@ public class Component {
 
 		iconStrs.add(TFTechness2.MODID + ":machine/" + name.toLowerCase());
 		//universal
-		registerPropertySet(ComponentPropertySet.BASE);
+		registerPropertySet(ComponentPropertySet.BASE, false);
 
 		for (Object o : recipe) {
 			if (o instanceof String) {
@@ -96,10 +104,38 @@ public class Component {
 		return this;
 	}
 
+	/**
+	 * Registers a set of properties given by a single material
+	 * 
+	 * @param allRelevant
+	 *            If true, all properties will be displayed in tooltips.
+	 */
+	public Component registerPropertySet(ComponentPropertySet set,
+			boolean allRelevant) {
+		propertySets.add(set);
+		if (allRelevant) {
+			for (ComponentProperty p : set.properties) {
+				relevantProperties.add(p);
+			}
+		}
+
+		return this;
+	}
+
 	/** Registers a set of properties given by a single material */
 	public Component registerPropertySet(ComponentPropertySet set) {
-		propertySets.add(set);
+		return registerPropertySet(set, true);
+	}
 
+	public Component setPropertyRelevant(ComponentProperty property) {
+		relevantProperties.add(property);
+		return this;
+	}
+
+	public Component setAllBasePropertiesRelevant() {
+		for (ComponentProperty p : ComponentPropertySet.BASE.properties) {
+			relevantProperties.add(p);
+		}
 		return this;
 	}
 
@@ -117,16 +153,15 @@ public class Component {
 		if (nbt == null) {
 			return;
 		}
-		for (ComponentPropertySet set : propertySets) {
-			for (ComponentProperty prop : set.properties) {
-				list.add(EnumChatFormatting.DARK_AQUA.toString()
-						+ StatCollector
-								.translateToLocal("info.machine.property."
-										+ prop.name) + " "
-						+ EnumChatFormatting.RED.toString()
-						+ prop.getDisplayString(nbt));
-			}
+		//for (ComponentPropertySet set : propertySets) {
+		for (ComponentProperty prop : relevantProperties) {
+			list.add(EnumChatFormatting.DARK_AQUA.toString()
+					+ StatCollector.translateToLocal("info.machine.property."
+							+ prop.name) + " "
+					+ EnumChatFormatting.RED.toString()
+					+ prop.getDisplayString(nbt));
 		}
+		//	}
 
 	}
 
