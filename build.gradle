@@ -46,7 +46,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 	compile files (
-		"lib/[1.7.10]TerraFirmaCraft-deobf-0.79.25.jar"
+		"lib/[1.7.10]TerraFirmaCraft-deobf-0.79.29.jar"
 	)
 		compile files (
 		"lib/ImmersiveEngineering-0.7.7-deobf.jar"
@@ -55,11 +55,11 @@ dependencies {
 		"lib/Railcraft_1.7.10-9.8.0.0-dev.jar"
 	)
 	compile files (
-		"lib/AdvancedRocketry-deobf-1.7.10-1.0.19b.jar"
+		"lib/AdvancedRocketry-deobf-1.7.10-1.4.0-20-deobf.jar"
 		
 	)
 	compile files (
-		"lib/LibVulpes-1.7.10-0.1.20-deobf.jar"
+		"lib/LibVulpes-1.7.10-0.2.8-34-deobf.jar"
 	)
 	
 	

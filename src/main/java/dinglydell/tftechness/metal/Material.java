@@ -81,12 +81,17 @@ public class Material {
 	}
 
 	//haha! this doesn't exist!
-	private Item get(String type) throws NoSuchFieldException,
+	private Item get(String type) throws 
 			SecurityException, IllegalArgumentException, IllegalAccessException {
+		try {
 		Field field = TFCItems.class.getDeclaredField(StringUtil
 				.lowerCaseFirst(name.replaceAll(" ", "")) + type);
-
 		return (Item) field.get(null);
+		} catch(NoSuchFieldException ex){
+			TFTechness2.logger.warn("Could not find " + type + " for " + name);
+		}
+
+		return null;
 	}
 
 	public Material(String name, int tier, Alloy.EnumTier alloyTier,
