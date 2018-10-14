@@ -10,6 +10,7 @@ import net.minecraft.util.IIcon;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import com.bioxx.tfc.Core.TFC_Sounds;
 import com.bioxx.tfc.api.HeatRegistry;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 import com.bioxx.tfc.api.Crafting.AnvilManager;
@@ -113,6 +114,7 @@ public class TileMachineAnvil extends TileMachineInventory {
 			if (HeatRegistry.getInstance()
 					.isTemperatureWorkable(inventory[WORKING_SLOT_A])) {
 				setItemCraftingValue(getAction());
+				worldObj.playSoundEffect(xCoord, yCoord, zCoord, TFC_Sounds.METALIMPACT, 0.1f, 0.1F + (worldObj.rand.nextFloat()/4));
 				checkRecipes();
 			}
 			spitItem();
@@ -127,9 +129,9 @@ public class TileMachineAnvil extends TileMachineInventory {
 		EntityItem item = new EntityItem(worldObj, xCoord + 0.5 + 0.5
 				* spitDir.offsetX, yCoord + 0.5 + 0.5 * spitDir.offsetY, zCoord
 				+ 0.5 + 0.5 * spitDir.offsetZ, inventory[WORKING_SLOT_A]);
-		item.motionX = spitDir.offsetX * 0.1;
-		item.motionY = spitDir.offsetY * 0.1;
-		item.motionZ = spitDir.offsetZ * 0.1;
+		item.motionX = spitDir.offsetX * 0.05;
+		item.motionY = spitDir.offsetY * 0.05;
+		item.motionZ = spitDir.offsetZ * 0.05;
 
 		worldObj.spawnEntityInWorld(item);
 		inventory[WORKING_SLOT_A] = null;
