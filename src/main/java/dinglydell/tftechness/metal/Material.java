@@ -69,6 +69,7 @@ public class Material {
 	public String oreName;
 	private AlloyIngred[] alloyRecipe;
 	public int colour;
+	public boolean isAnvilGrade;
 
 	public Material(String name, int tier, boolean isTFC) {
 		this(name, tier, Alloy.EnumTier.TierI, isTFC);
@@ -101,6 +102,7 @@ public class Material {
 
 		if (isTFC) {
 			//no! don't look!
+
 			try {
 				sheet = get("Sheet");
 				sheet2x = get("Sheet2x");
@@ -111,6 +113,11 @@ public class Material {
 				ex.printStackTrace();
 			}
 		}
+	}
+
+	public Material setIsAnvilGrade(boolean anvilGrade) {
+		this.isAnvilGrade = anvilGrade;
+		return this;
 	}
 
 	public void initialise(RenderItemMetal render) {

@@ -11,7 +11,16 @@ public class ComponentPropertyAction extends ComponentProperty<AnvilAction> {
 
 	//follows the way they're named in TFC (with regards to lang)
 	public enum AnvilAction {
-		LightHit, MediumHit, HeavyHit, Draw, Punch, Bend, Upset, Shrink
+		LightHit(-3, 0), MediumHit(-6, 0), HeavyHit(-9, 0), Draw(-15, 1), Punch(
+				2, 3), Bend(7, 4), Upset(13, 5), Shrink(16, 6);
+
+		public short value;
+		public byte rule;
+
+		private AnvilAction(int value, int rule) {
+			this.value = (short) value;
+			this.rule = (byte) rule;
+		}
 
 	}
 

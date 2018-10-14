@@ -75,6 +75,7 @@ import com.bioxx.tfc.api.TFCFluids;
 import com.bioxx.tfc.api.TFCItems;
 import com.bioxx.tfc.api.TFC_ItemHeat;
 import com.bioxx.tfc.api.Constant.Global;
+import com.bioxx.tfc.api.Crafting.AnvilReq;
 import com.bioxx.tfc.api.Crafting.BarrelManager;
 import com.bioxx.tfc.api.Crafting.BarrelRecipe;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
@@ -110,8 +111,10 @@ import dinglydell.tftechness.block.component.BlockTFTComponent;
 import dinglydell.tftechness.block.component.Component;
 import dinglydell.tftechness.block.component.ComponentMaterial;
 import dinglydell.tftechness.block.component.property.ComponentProperty;
+import dinglydell.tftechness.block.component.property.ComponentPropertyAction.AnvilAction;
 import dinglydell.tftechness.block.component.property.ComponentPropertySet;
 import dinglydell.tftechness.block.component.property.ComponentPropertyThermometerTier.ThermometerTier;
+import dinglydell.tftechness.block.component.property.PowerType;
 import dinglydell.tftechness.config.TFTConfig;
 import dinglydell.tftechness.crop.CropIndexStack;
 import dinglydell.tftechness.crop.TFTCropManager;
@@ -303,11 +306,12 @@ public class TFTechness2 {
 		// b: power type (steam/rf)
 		// c: metal tier (what sort of anvil can hit)
 		// d: type of action (light hit, medium hit, heavy hit, draw, punch, bend, upset or shrink)
-		Component.registerComponent(new Component("anvil",
-				TileMachineAnvil.class, new Object[] { "aba", "ada", "aca" })
+		Component.registerComponent(new Component("autoAnvil",
+				TileMachineAnvil.class, new Object[] { "aBa", "ada", "aCa" })
 				.registerPropertySet(ComponentPropertySet.ANVIL_POWER_ASSIST)
 				.registerPropertySet(ComponentPropertySet.ANVIL_TIER)
-				.registerPropertySet(ComponentPropertySet.ANVIL_ACTION_TYPE));
+				.registerPropertySet(ComponentPropertySet.ANVIL_ACTION_TYPE)
+				.registerAdditionalIcon("IO"));
 
 	}
 
@@ -649,6 +653,9 @@ public class TFTechness2 {
 		GameRegistry.registerTileEntity(TileMachineFirebox.class,
 				"TFTMachineFirebox");
 
+		GameRegistry.registerTileEntity(TileMachineAnvil.class,
+				"TFTMachineAnvil");
+
 	}
 
 	private void registerBlocks() {
@@ -743,23 +750,27 @@ public class TFTechness2 {
 								//.setSheet(TFCItems.wroughtIronSheet)
 								//.setSheet2x(TFCItems.wroughtIronSheet2x)
 								.setNugget(TFTMeta.ieIronNugget)
-								.setOreName("Iron"),
+								.setOreName("Iron").setIsAnvilGrade(true),
 						new Material("Lead", 2, true)//.setIngot(TFCItems.leadIngot)
 								//.setUnshaped(TFCItems.leadUnshaped)
 								//.setSheet(TFCItems.leadSheet)
 								.setNugget(TFTMeta.ieLeadNugget),
-						new Material("Steel", 4, true)//.setIngot(TFCItems.steelIngot)
+						new Material("Steel", 4, true)
+								//.setIngot(TFCItems.steelIngot)
 								.setNugget(TFTMeta.ieSteelNugget)
 								//.setUnshaped(TFCItems.steelUnshaped)
-								.setBlock(IEContent.blockStorage, 7),
-						new Material("Copper", 1, true)//.setIngot(TFCItems.copperIngot)
+								.setBlock(IEContent.blockStorage, 7)
+								.setIsAnvilGrade(true),
+						new Material("Copper", 1, true)
+								//.setIngot(TFCItems.copperIngot)
 								.setNugget(TFTMeta.ieCopperNugget)
+								.setIsAnvilGrade(true)
 						//.setUnshaped(TFCItems.copperUnshaped)
 						,
 						new Material("Tin", 0, true)//.setIngot(TFCItems.tinIngot)
 						//.setUnshaped(TFCItems.tinUnshaped)
 						,
-						new Material("Bronze", 2, true)//.setIngot(TFCItems.bronzeIngot)
+						new Material("Bronze", 2, true).setIsAnvilGrade(true)//.setIngot(TFCItems.bronzeIngot)
 						//.setUnshaped(TFCItems.bronzeUnshaped)
 						,
 						new Material("Silver", 2, true)//.setIngot(TFCItems.silverIngot)
@@ -768,7 +779,19 @@ public class TFTechness2 {
 						new Material("Nickel", 4, true)//.setIngot(TFCItems.nickelIngot)
 								.setNugget(TFTMeta.ieNickelNugget),
 						new Material("Gold", 2, true).setNugget(new ItemStack(
-								Items.gold_nugget))
+								Items.gold_nugget)),
+						new Material("Bismuth Bronze", 2, true)
+								.setIsAnvilGrade(true),
+						new Material("Rose Gold", 2, true)
+								.setIsAnvilGrade(true),
+						new Material("Black Bronze", 2, true)
+								.setIsAnvilGrade(true),
+						new Material("Black Steel", 5, true)
+								.setIsAnvilGrade(true),
+						new Material("Blue Steel", 6, true)
+								.setIsAnvilGrade(true),
+						new Material("Red Steel", 6, true)
+								.setIsAnvilGrade(true)
 
 				}));
 
@@ -1617,7 +1640,7 @@ public class TFTechness2 {
 		for (Material m : materials) {
 			// register metal materials with conductivity property
 			if (m.sheet != null && m.sheet2x != null) {
-				ComponentMaterial
+				ComponentMaterial cm = ComponentMaterial
 						.registerMaterial(m.name,
 								"plateDouble" + m.oreName,
 								"plate" + m.oreName)
@@ -1634,6 +1657,10 @@ public class TFTechness2 {
 								(float) (Math.sqrt(statMap.get(m.name).yieldStress
 										/ (statMap.get(m.name).density * 0.5
 												* rotorCOMRadius * rotorCOMRadius)) / (2 * Math.PI)));
+				if (m.isAnvilGrade) {
+					cm.addProperty(ComponentProperty.ANVIL_TIER,
+							AnvilReq.getReqFromInt(m.tier));
+				}
 			}
 		}
 
@@ -1655,6 +1682,24 @@ public class TFTechness2 {
 		ComponentMaterial.getMaterial("hv")
 				.addProperty(ComponentProperty.THERMOMETER_TIER,
 						ThermometerTier.precise);
+
+		// power types for auto anvils
+		ComponentMaterial.registerMaterial("boiler",
+				TFTMeta.boilerTankHigh,
+				TFTMeta.boilerTankLow)
+				.addProperty(ComponentProperty.ANVIL_POWER, PowerType.STEAM);
+
+		ComponentMaterial.registerMaterial("wire",
+				TFTMeta.ieLvWireBlock,
+				TFTMeta.ieLvWire).addProperty(ComponentProperty.ANVIL_POWER,
+				PowerType.RF);
+
+		//anvil actions (placeholder) - will be dedicated items eventually
+		ComponentMaterial.registerMaterial("lightHitter",
+				new ItemStack(Blocks.lever),
+				new ItemStack(Blocks.lever))
+				.addProperty(ComponentProperty.ANVIL_ACTION_TYPE,
+						AnvilAction.Punch);
 
 		ComponentMaterial.registerRecipes();
 	}

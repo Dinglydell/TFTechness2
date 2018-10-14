@@ -103,6 +103,9 @@ metal.lv.name=LV Wire Coil
 metal.mv.name=MV Wire Coil
 metal.hv.name=HV Wire Coil
 
+metal.boiler.name=Boiler
+metal.wire.name=Wire Coil
+
 gas.nitrogen=Nitrogen
 gas.oxygen=Oxygen
 gas.argon=Argon
@@ -169,7 +172,12 @@ info.machine.property.maxPressure=Maximum Pressure:
 info.machine.property.maxTemperature=Maximum Temperature:
 info.machine.property.thermoTier=Thermometer Tier:
 info.machine.property.turbineSpeed=Maximum Rotor Speed:
+info.machine.property.anvilPower=Power Source:
+info.machine.property.anvilAction=Action:
+info.machine.property.anvilTier=Anvil Tier:
 
+info.powertype.steam.name=Steam
+info.powertype.rf.name=RF
 
 tile.wall.name=§7Machine Wall§r
 tile.heater.name=§7Machine Heating Element§r
@@ -181,6 +189,7 @@ tile.monitor.name=§7Machine Monitor§r
 tile.turbine.name=§7Machine Turbine§r
 tile.dynamo.name=§7Machine Dynamo§r
 tile.firebox.name=§7Machine Firebox§r
+tile.autoAnvil.name=§7Automated Anvil§r
 
 achievement.tftechness.stoneAge=The Stone Age
 achievement.tftechness.stoneAge.desc=Make a stone tool to enter the stone age.
