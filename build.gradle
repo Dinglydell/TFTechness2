@@ -55,7 +55,7 @@ dependencies {
 		"lib/Railcraft_1.7.10-9.8.0.0-dev.jar"
 	)
 	compile files (
-		"lib/AdvancedRocketry-deobf-1.7.10-1.4.0-20-deobf.jar"
+		"lib/AdvancedRocketry-1.7.10-1.4.0-20-deobf.jar"
 		
 	)
 	compile files (
